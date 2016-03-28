@@ -10,10 +10,10 @@ report issues and/or improvements!**
 
 ## TODO
 
- * Ask for rcmcarddav installation and/or check if *Baikal* is installed.
- * Update backup/restore scripts.
- * Improve installation and upgrade since composer take a long time
-   expecially when fetching repositories.
+ * Add enabled plugins dynamically to the config file
+ * Ask for rcmcarddav installation and/or check if *Baikal* or *ownCloud*
+   is installed
+ * Test to upgrade from the current Roundcube version
  * ...
 
 ## Links ##
