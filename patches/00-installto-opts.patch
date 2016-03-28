@@ -1,0 +1,32 @@
+--- a/bin/installto.sh	2016-03-26 19:17:32.092002076 +0100
++++ b/bin/installto.sh	2016-03-26 19:26:37.787511189 +0100
+@@ -23,6 +23,9 @@
+ 
+ require_once INSTALL_PATH . 'program/include/clisetup.php';
+ 
++// get arguments
++$opts = rcube_utils::get_opt(array('f' => 'force', 'y' => 'accept'));
++
+ $target_dir = unslashify($_SERVER['argv'][1]);
+ 
+ if (empty($target_dir) || !is_dir(realpath($target_dir)))
+@@ -35,13 +38,15 @@
+ 
+ $oldversion = $m[1];
+ 
+-if (version_compare(version_parse($oldversion), version_parse(RCMAIL_VERSION), '>='))
++if (version_compare(version_parse($oldversion), version_parse(RCMAIL_VERSION), '>=') && !opts['force'])
+   rcube::raise_error("Installation at target location is up-to-date!", false, true);
+ 
+-echo "Upgrading from $oldversion. Do you want to continue? (y/N)\n";
+-$input = trim(fgets(STDIN));
++if (!opts['accept']) {
++  echo "Upgrading from $oldversion. Do you want to continue? (y/N)\n";
++  $input = trim(fgets(STDIN));
++}
+ 
+-if (strtolower($input) == 'y') {
++if ($opts['accept'] || strtolower($input) == 'y') {
+   $err = false;
+   echo "Copying files to target location...";
+   $dirs = array('program','installer','bin','SQL','plugins','skins');

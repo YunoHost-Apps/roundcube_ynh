@@ -1,0 +1,107 @@
+#!/bin/bash
+
+set -e
+set -u
+
+# Retrieve arguments
+domain=$1
+path=${2%/}
+app=${!#}
+
+# Load common variables
+. ./_common.sh
+
+# Set app specific variables
+dbname=$app
+dbuser=$app
+
+# Source app helpers
+. /usr/share/yunohost/helpers
+
+# TODO: Check domain/path availability with app helper
+sudo yunohost app checkurl $domain$path -a $app \
+  || die "The path ${domain}${path} is not available for app installation."
+
+# Check destination directory
+DESTDIR="/var/www/$app"
+[[ -d $DESTDIR ]] && die \
+"The destination directory '$DESTDIR' already exists.\
+ You should safely delete it before installing this app."
+
+# Create tmp directory and install app inside
+TMPDIR=$(ynh_mkdir_tmp)
+extract_roundcube "$TMPDIR"
+init_composer "$TMPDIR"
+
+# Generate random DES key & password
+deskey=$(ynh_string_random 24)
+dbpass=$(ynh_string_random)
+
+# Initialize database
+ynh_mysql_create_db $dbname $dbuser $dbpass
+ynh_mysql_connect_as $dbuser $dbpass $dbname \
+    < "${TMPDIR}/SQL/mysql.initial.sql"
+
+# Copy and set Roundcube configuration
+rc_conf="${TMPDIR}/config/config.inc.php"
+cp ../conf/config.inc.php "$rc_conf"
+sed -i "s/#DESKEY#/${deskey}/g" "$rc_conf"
+sed -i "s/#DBUSER#/${dbuser}/g" "$rc_conf"
+sed -i "s/#DBPASS#/${dbpass}/g" "$rc_conf"
+sed -i "s/#DBNAME#/${dbname}/g" "$rc_conf"
+
+# Install files and set permissions
+sudo mv "$TMPDIR" "$DESTDIR"
+sudo mkdir -p "${DESTDIR}/logs" "${DESTDIR}/temp"
+sudo chown -R www-data: "$DESTDIR"
+
+# Install some plugins manually
+sudo cp -r ../sources/plugins/ldapAliasSync "${DESTDIR}/plugins"
+sudo chown -R www-data: "${DESTDIR}/plugins/ldapAliasSync"
+
+# Install additional plugins
+exec_composer www-data "$DESTDIR" require "johndoh/contextmenu dev-release-2.1"
+exec_composer www-data "$DESTDIR" require "sblaisot/automatic_addressbook"
+
+## Install rcmcarddav TODO: if baikal is detected
+#sudo yunohost app list -f baikal --json | grep '"installed": true'
+#if [ "$?" -eq 0 ]; then
+#  echo "Detected Baikal"
+#
+#  caldavdomain=$(sudo yunohost app setting baikal domain)
+#  caldavpath=$(sudo yunohost app setting baikal path)
+#  caldavpath=${caldavpath%/}
+#
+#  sed -i "s@yuno_baikal_domain@$caldavdomain@g" ../conf/rcmcarddav.config.inc.php
+#  sed -i "s@yuno_baikal_path@$caldavpath@g" ../conf/rcmcarddav.config.inc.php
+#  sudo cp ../conf/rcmcarddav.config.inc.php $final_path/plugins/carddav/config.inc.php
+#
+#  sudo sed -i "s@yuno_enable_carddav@True@g" $final_path/config/main.inc.php
+#
+#  mysql -u $dbuser -p$dbpass $dbname < ../sources/plugins/carddav/dbinit/mysql-drop.sql
+#  mysql -u $dbuser -p$dbpass $dbname < ../sources/plugins/carddav/dbinit/mysql.sql
+#else
+#  mysql -u $dbuser -p$dbpass $dbname < ../sources/plugins/carddav/dbinit/mysql-drop.sql
+#  sudo sed -i "s@yuno_enable_carddav@False@g" $final_path/config/main.inc.php
+#fi
+
+# Copy and set nginx configuration
+nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
+sed -i "s@#PATH#@${path}@g"        ../conf/nginx.conf
+sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/nginx.conf
+sudo cp ../conf/nginx.conf "$nginx_conf"
+
+# Copy and set php-fpm configuration
+phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
+sed -i "s@#POOLNAME#@${app}@g"     ../conf/php-fpm.conf
+sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/php-fpm.conf
+sudo cp ../conf/php-fpm.conf "$phpfpm_conf"
+sudo chown root: $phpfpm_conf
+sudo chmod 644 $phpfpm_conf
+
+# Save app settings
+ynh_app_setting_set $app mysqlpwd $dbpass
+
+# Reload services
+sudo service php5-fpm restart || true
+sudo service nginx reload || true

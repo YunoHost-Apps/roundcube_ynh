@@ -1,0 +1,107 @@
+#!/bin/bash
+
+set -e
+set -u
+
+# Load common variables and helpers
+. ./_common.sh
+
+# Set app specific variables
+app=${!#}
+dbname=$app
+dbuser=$app
+
+# Source app helpers
+. /usr/share/yunohost/helpers
+
+# Retrieve app settings
+domain=$(ynh_app_setting_get $app domain)
+path=$(ynh_app_setting_get $app path)
+dbpass=$(ynh_app_setting_get $app mysqlpwd)
+
+# Check destination directory
+DESTDIR="/var/www/$app"
+[[ ! -d $DESTDIR ]] && die \
+"The destination directory '$DESTDIR' does not exist.\
+ The app is not correctly installed, you should remove it first."
+
+# Create tmp directory and install app inside
+TMPDIR=$(ynh_mkdir_tmp)
+extract_roundcube "$TMPDIR"
+
+# Install the new Roundcube version
+sudo php "${TMPDIR}/bin/installto.sh" "$DESTDIR" --force --accept \
+  || die "Unable to update Roundcube installation"
+rm -rf "$TMPDIR"
+
+# Generate a new random DES key
+deskey=$(ynh_string_random 24)
+
+# Copy and set Roundcube configuration
+rc_conf="${DESTDIR}/config/config.inc.php"
+sed -i "s/#DESKEY#/${deskey}/g" ../conf/config.inc.php
+sed -i "s/#DBUSER#/${dbuser}/g" ../conf/config.inc.php
+sed -i "s/#DBPASS#/${dbpass}/g" ../conf/config.inc.php
+sed -i "s/#DBNAME#/${dbname}/g" ../conf/config.inc.php
+sudo cp ../conf/config.inc.php "$rc_conf"
+
+# Fix installation directories and permissions
+sudo mkdir -p "${DESTDIR}/logs" "${DESTDIR}/temp"
+sudo chown -R www-data: "$DESTDIR"
+
+# Check if dependencies need to be updated with composer
+if [[ -f ${DESTDIR}/composer.json ]]; then
+  # TODO: update new Roundcube dependencies versions
+  exec_composer www-data "$DESTDIR" update --no-dev
+else
+  init_composer "$DESTDIR"
+fi
+
+# Install some plugins manually
+sudo rm -rf "${DESTDIR}/plugins/ldapAliasSync"
+sudo cp -r ../sources/plugins/ldapAliasSync "${DESTDIR}/plugins"
+sudo chown -R www-data: "${DESTDIR}/plugins/ldapAliasSync"
+
+# Update or install additional plugins
+exec_composer www-data "$DESTDIR" require "johndoh/contextmenu dev-release-2.1"
+exec_composer www-data "$DESTDIR" require "sblaisot/automatic_addressbook"
+
+## Install rcmcarddav if baikal is detected
+#sudo yunohost app list -f baikal --json | grep '"installed": true'
+#if [ "$?" -eq 0 ]; then
+#  echo "Detected Baikal"
+#
+#  caldavdomain=$(sudo yunohost app setting baikal domain)
+#  caldavpath=$(sudo yunohost app setting baikal path)
+#  caldavpath=${caldavpath%/}
+#
+#  sed -i "s@yuno_baikal_domain@$caldavdomain@g" ../conf/rcmcarddav.config.inc.php
+#  sed -i "s@yuno_baikal_path@$caldavpath@g" ../conf/rcmcarddav.config.inc.php
+#  sudo cp ../conf/rcmcarddav.config.inc.php $final_path/plugins/carddav/config.inc.php
+#
+#  sudo sed -i "s@yuno_enable_carddav@True@g" $final_path/config/main.inc.php
+#
+#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql-drop.sql
+#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql.sql
+#else
+#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql-drop.sql
+#  sudo sed -i "s@yuno_enable_carddav@False@g" $final_path/config/main.inc.php
+#fi
+
+# Copy and set nginx configuration
+nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
+sed -i "s@#PATH#@${path}@g"        ../conf/nginx.conf
+sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/nginx.conf
+sudo cp ../conf/nginx.conf "$nginx_conf"
+
+# Copy and set php-fpm configuration
+phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
+sed -i "s@#POOLNAME#@${app}@g"     ../conf/php-fpm.conf
+sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/php-fpm.conf
+sudo cp ../conf/php-fpm.conf "$phpfpm_conf"
+sudo chown root: $phpfpm_conf
+sudo chmod 644 $phpfpm_conf
+
+# Reload services
+sudo service php5-fpm restart || true
+sudo service nginx reload || true

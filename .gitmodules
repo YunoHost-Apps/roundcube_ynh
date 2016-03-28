@@ -1,0 +1,3 @@
+[submodule "sources/plugins/ldapAliasSync"]
+	path = sources/plugins/ldapAliasSync
+	url = https://github.com/dim-0/ldapAliasSync
