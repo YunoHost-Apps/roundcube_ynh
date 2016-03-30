@@ -58,10 +58,16 @@ sudo chown -R www-data: "$DESTDIR"
 # Install some plugins manually
 sudo cp -r ../sources/plugins/ldapAliasSync "${DESTDIR}/plugins"
 sudo chown -R www-data: "${DESTDIR}/plugins/ldapAliasSync"
+installed_plugins=" 'ldapAliasSync',"
 
 # Install additional plugins
 exec_composer www-data "$DESTDIR" require "johndoh/contextmenu dev-release-2.1"
 exec_composer www-data "$DESTDIR" require "sblaisot/automatic_addressbook"
+installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+
+# Update Roundcube configuration
+sudo sed -i "s#^\s*// installed plugins#&\n   ${installed_plugins}#" \
+  "${DESTDIR}/config/config.inc.php"
 
 ## Install rcmcarddav TODO: if baikal is detected
 #sudo yunohost app list -f baikal --json | grep '"installed": true'

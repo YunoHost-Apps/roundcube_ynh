@@ -80,22 +80,6 @@ $config['product_name'] = 'YunoHost Webmail';
 // YOUR KEY MUST BE DIFFERENT THAN THE SAMPLE VALUE FOR SECURITY REASONS
 $config['des_key'] = '#DESKEY#';
 
-// List of active plugins (in plugins/ directory)
-$config['plugins'] = array(
-    'archive',
-    'zipdownload',
-    // additionnal plugins for YunoHost
-    'http_authentication',
-    'managesieve',
-    'markasjunk',
-    'new_user_dialog',
-    'new_user_identity',
-    'contextmenu',
-    'automatic_addressbook',
-    'ldapAliasSync',
-//    'carddav',
-);
-
 // skin name: folder from skins/
 $config['skin'] = 'larry';
 
@@ -116,6 +100,19 @@ $config['ldap_public']['yunohost'] = array(
         'firstname'   => 'givenName',
         'email'    => 'mail:*',
     ),
+);
+
+// List of active plugins (in plugins/ directory)
+$config['plugins'] = array(
+    'archive',
+    'zipdownload',
+    // additionnal plugins
+    'http_authentication',
+    'managesieve',
+    'markasjunk',
+    'new_user_dialog',
+    'new_user_identity',
+    // installed plugins
 );
 
 // ----------------------------------

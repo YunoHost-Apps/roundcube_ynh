@@ -10,7 +10,6 @@ report issues and/or improvements!**
 
 ## TODO
 
- * Add enabled plugins dynamically to the config file
  * Ask for rcmcarddav installation and/or check if *Baikal* or *ownCloud*
    is installed
  * Test to upgrade from the current Roundcube version
