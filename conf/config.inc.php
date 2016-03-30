@@ -133,7 +133,7 @@ $config['logout_url'] = 'https://'.$main_domain.'/yunohost/sso/?action=logout';
 $config['ldapAliasSync'] = array(
   // Mail parameters
   'mail' => array(
-    'dovecot_seperator' => '*',
+    'dovecot_separator' => '+',
   ),
   // LDAP parameters
   'ldap' => array(
