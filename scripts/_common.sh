@@ -83,7 +83,8 @@ init_composer() {
 
   # install composer
   curl -sS https://getcomposer.org/installer \
-    | exec_as "$AS_USER" php -- --quiet --install-dir="$DESTDIR" \
+    | exec_as "$AS_USER" COMPOSER_HOME="${DESTDIR}/.composer" \
+        php -- --quiet --install-dir="$DESTDIR" \
     || die "Unable to install Composer"
 
   # install composer.json

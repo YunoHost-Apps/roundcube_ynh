@@ -1,5 +1,5 @@
---- a/bin/installto.sh	2016-03-26 19:17:32.092002076 +0100
-+++ b/bin/installto.sh	2016-03-26 19:26:37.787511189 +0100
+--- a/bin/installto.sh	2016-03-30 15:46:11.686447589 +0200
++++ b/bin/installto.sh	2016-03-30 15:49:27.184064426 +0200
 @@ -23,6 +23,9 @@
  
  require_once INSTALL_PATH . 'program/include/clisetup.php';
@@ -30,3 +30,16 @@
    $err = false;
    echo "Copying files to target location...";
    $dirs = array('program','installer','bin','SQL','plugins','skins');
+@@ -77,7 +82,11 @@
+ 
+   if (!$err) {
+     echo "Running update script at target...\n";
+-    system("cd $target_dir && php bin/update.sh --version=$oldversion");
++    $command = "cd $target_dir && php bin/update.sh --version=$oldversion";
++    if ($opts['accept']) {
++      $command .= " --accept";
++    }
++    system($command);
+     echo "All done.\n";
+   }
+ }

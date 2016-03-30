@@ -63,7 +63,7 @@ if [[ -f ${DESTDIR}/composer.json ]]; then
   # TODO: update new Roundcube dependencies versions
   exec_composer www-data "$DESTDIR" update --no-dev
 else
-  init_composer "$DESTDIR"
+  init_composer "$DESTDIR" www-data
 fi
 
 # Install some plugins manually
