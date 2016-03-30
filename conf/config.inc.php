@@ -85,34 +85,34 @@ $config['skin'] = 'larry';
 
 // Enable YunoHost users search in the address book.
 $config['ldap_public']['yunohost'] = array(
-    'name' => 'YunoHost Users',
-    'hosts' => array('localhost'),
-    'port' => 389,
-    'user_specific' => false,
-    'base_dn' => 'ou=users,dc=yunohost,dc=org',
-    'scope' => 'list',
-    'filter' => '(objectClass=mailAccount)',
-    'hidden' => false,
-    'searchonly' => true,
-    'fieldmap' => array(
-        'name'        => 'uid',
-        'surname'     => 'sn',
-        'firstname'   => 'givenName',
-        'email'    => 'mail:*',
-    ),
+  'name' => 'YunoHost Users',
+  'hosts' => array('localhost'),
+  'port' => 389,
+  'user_specific' => false,
+  'base_dn' => 'ou=users,dc=yunohost,dc=org',
+  'scope' => 'list',
+  'filter' => '(objectClass=mailAccount)',
+  'hidden' => false,
+  'searchonly' => true,
+  'fieldmap' => array(
+    'name'        => 'uid',
+    'surname'     => 'sn',
+    'firstname'   => 'givenName',
+    'email'    => 'mail:*',
+  ),
 );
 
 // List of active plugins (in plugins/ directory)
 $config['plugins'] = array(
-    'archive',
-    'zipdownload',
-    // additionnal plugins
-    'http_authentication',
-    'managesieve',
-    'markasjunk',
-    'new_user_dialog',
-    'new_user_identity',
-    // installed plugins
+  'archive',
+  'zipdownload',
+  // additionnal plugins
+  'http_authentication',
+  'managesieve',
+  'markasjunk',
+  'new_user_dialog',
+  'new_user_identity',
+  // installed plugins
 );
 
 // ----------------------------------
@@ -131,28 +131,37 @@ $config['logout_url'] = 'https://'.$main_domain.'/yunohost/sso/?action=logout';
 
 // -- ldapAliasSync
 $config['ldapAliasSync'] = array(
-    // Mail parameters
-    'mail' => array(
-        'dovecot_seperator' => '*',
-    ),
-    // LDAP parameters
-    'ldap' => array(
-        'bind_dn' => '',
-    ),
-    # 'user_search' holds all config variables for the user search
-    'user_search' => array(
-        'base_dn'   => 'uid=%local,ou=users,dc=yunohost,dc=org',
-        'filter'    => '(objectClass=mailAccount)',
-        'mail_by'   => 'attribute',
-        'attr_mail' => 'mail',
-        'attr_name' => 'cn',
-    ),
-    # 'alias_search' holds all config variables for the alias search
-    'alias_search' => array(
-        'base_dn'   => 'uid=%local,ou=users,dc=yunohost,dc=org',
-        'filter'    => '(objectClass=mailAccount)',
-        'mail_by'   => 'attribute',
-        'attr_mail' => 'mailalias',
-        'attr_name' => 'cn',
-    ),
+  // Mail parameters
+  'mail' => array(
+    'dovecot_seperator' => '*',
+  ),
+  // LDAP parameters
+  'ldap' => array(
+    'bind_dn' => '',
+  ),
+  # 'user_search' holds all config variables for the user search
+  'user_search' => array(
+    'base_dn'   => 'uid=%local,ou=users,dc=yunohost,dc=org',
+    'filter'    => '(objectClass=mailAccount)',
+    'mail_by'   => 'attribute',
+    'attr_mail' => 'mail',
+    'attr_name' => 'cn',
+  ),
+  # 'alias_search' holds all config variables for the alias search
+  'alias_search' => array(
+    'base_dn'   => 'uid=%local,ou=users,dc=yunohost,dc=org',
+    'filter'    => '(objectClass=mailAccount)',
+    'mail_by'   => 'attribute',
+    'attr_mail' => 'mailalias',
+    'attr_name' => 'cn',
+  ),
 );
+
+// ----------------------------------
+// LOCAL CONFIGURATION
+// ----------------------------------
+
+$local_config = dirname(__FILE__) . '/local.inc.php';
+if (file_exists($local_config)) {
+  include $local_config;
+}
