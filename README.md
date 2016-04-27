@@ -77,6 +77,7 @@ case, do not forget to change ownerships to this folder to `www-data`.
 
  * Ask for rcmcarddav installation and/or check if *Baikal* or *ownCloud*
    is installed
+ * Move log file outside of the public folder or protect it at least
  * ...
 
 ## Links ##
