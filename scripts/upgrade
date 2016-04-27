@@ -78,7 +78,7 @@ exec_composer www-data "$DESTDIR" require "sblaisot/automatic_addressbook"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Update Roundcube configuration
-sudo sed -i "s#^\s*// installed plugins#&\n   ${installed_plugins}#" \
+sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
   "$rc_conf"
 
 ## Install rcmcarddav if baikal is detected
@@ -105,7 +105,7 @@ sudo sed -i "s#^\s*// installed plugins#&\n   ${installed_plugins}#" \
 
 # Copy and set nginx configuration
 nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-sed -i "s@#PATH#@${path}@g"        ../conf/nginx.conf
+sed -i "s@#PATH#@${path:-/}@g"     ../conf/nginx.conf
 sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/nginx.conf
 sudo cp ../conf/nginx.conf "$nginx_conf"
 
