@@ -4,8 +4,10 @@ Roundcube for YunoHost
 *This is a work-in-progress package review to update Roundcube to 1.1.x
 and make use of new YunoHost facilities - e.g. helpers - coming with 2.3.x.*
 
-Roundcube is a browser-based multilingual IMAP client with an application-like
-user interface.
+[Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
+an application-like user interface.
+
+**Shipped version:** 1.1.5
 
 ## Installation
 
@@ -68,7 +70,7 @@ Let's say for example that we want to install the
 Note that you should also check the plugin homepage for additional installation
 steps as needed.
 
-#### Download & extract
+#### Manual installation
 
 You can also download the plugin and put it under the `plugins/` directory. In that
 case, do not forget to change ownerships to this folder to `www-data`.
