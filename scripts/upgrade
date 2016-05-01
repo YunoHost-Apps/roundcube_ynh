@@ -29,15 +29,6 @@ DESTDIR="/var/www/$app"
 TMPDIR=$(ynh_mkdir_tmp)
 extract_roundcube "$TMPDIR"
 
-# Check if composer is already used
-if [[ -f ${DESTDIR}/composer.json ]]; then
-  # FIXME: Keep the installed roundcube plugin-installer and so installed.json
-  # composer file since 0.1.7 shipped version is buggy
-  cp -a "${DESTDIR}/vendor/composer/installed.json" "${TMPDIR}/vendor/composer"
-  cp -a "${DESTDIR}/vendor/roundcube/plugin-installer" \
-    "${TMPDIR}/vendor/roundcube"
-fi
-
 # Install the new Roundcube version
 sudo php "${TMPDIR}/bin/installto.sh" "$DESTDIR" --force --accept \
   || die "Unable to update Roundcube installation"
@@ -73,8 +64,9 @@ sudo chown -R www-data: "${DESTDIR}/plugins/ldapAliasSync"
 installed_plugins=" 'ldapAliasSync',"
 
 # Update or install additional plugins
-exec_composer www-data "$DESTDIR" require "johndoh/contextmenu dev-release-2.1"
-exec_composer www-data "$DESTDIR" require "sblaisot/automatic_addressbook"
+exec_composer www-data "$DESTDIR" require \
+    "johndoh/contextmenu dev-release-2.1" \
+    "sblaisot/automatic_addressbook"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Update Roundcube configuration

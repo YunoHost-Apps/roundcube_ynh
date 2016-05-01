@@ -6,10 +6,10 @@
 VERSION=1.1.4
 
 # Roundcube complete tarball checksum
-ROUNDCUBE_COMPLETE_MD5="260686b4894896744bffa2d8bb259995"
+ROUNDCUBE_SOURCE_MD5="051c0a07e744006c57fab7a5db79b5bc"
 
 # Remote URL to fetch Roundcube complete tarball
-ROUNDCUBE_COMPLETE_URL="https://downloads.sourceforge.net/project/roundcubemail/roundcubemail/${VERSION}/roundcubemail-${VERSION}-complete.tar.gz"
+ROUNDCUBE_SOURCE_URL="https://downloads.sourceforge.net/project/roundcubemail/roundcubemail/${VERSION}/roundcubemail-${VERSION}.tar.gz"
 
 # App package root directory should be the parent folder
 PKGDIR=$(cd ../; pwd)
@@ -32,9 +32,9 @@ extract_roundcube() {
 
   # retrieve and extract Roundcube tarball
   rc_tarball="${DESTDIR}/roundcube.tar.gz"
-  wget -q -O "$rc_tarball" "$ROUNDCUBE_COMPLETE_URL" \
+  wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
     || die "Unable to download Roundcube tarball"
-  echo "$ROUNDCUBE_COMPLETE_MD5 $rc_tarball" | md5sum -c >/dev/null \
+  echo "$ROUNDCUBE_SOURCE_MD5 $rc_tarball" | md5sum -c >/dev/null \
     || die "Invalid checksum of downloaded tarball"
   tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
     || die "Unable to extract Roundcube tarball"
