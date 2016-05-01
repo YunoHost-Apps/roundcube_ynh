@@ -5,7 +5,8 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "url": "http://roundcube.net/",
+    "url": "https://roundcube.net/",
+    "license": "GPL-3",
     "maintainer": {
         "name": "kload",
         "email": "kload@kload.fr"
