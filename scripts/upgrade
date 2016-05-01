@@ -17,6 +17,7 @@ dbuser=$app
 # Retrieve app settings
 domain=$(ynh_app_setting_get $app domain)
 path=$(ynh_app_setting_get $app path)
+path=${path%/}
 dbpass=$(ynh_app_setting_get $app mysqlpwd)
 
 # Check destination directory
