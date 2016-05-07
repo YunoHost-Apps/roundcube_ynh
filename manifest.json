@@ -11,14 +11,14 @@
         "name": "kload",
         "email": "kload@kload.fr"
     },
-    "multi_instance": "true",
+    "multi_instance": true,
     "services": [
         "nginx",
         "php5-fpm",
         "mysql"
     ],
     "requirements": {
-        "yunohost": ">= 2.3.10"
+        "yunohost": ">= 2.3.15"
     },
     "arguments": {
         "install" : [
