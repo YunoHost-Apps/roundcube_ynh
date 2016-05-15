@@ -21,6 +21,7 @@ domain=$(ynh_app_setting_get "$app" domain)
 path=$(ynh_app_setting_get "$app" path)
 path=${path%/}
 dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
+with_carddav=$(ynh_app_setting_get "$app" with_carddav)
 
 # Check destination directory
 DESTDIR="/var/www/$app"
@@ -72,31 +73,24 @@ exec_composer www-data "$DESTDIR" require \
     "sblaisot/automatic_addressbook"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
+# Guess with_carddav value if empty
+if [[ -z "${with_carddav:-}" ]]; then
+  [[ -d "${DESTDIR}/plugins/carddav" ]] \
+    && with_carddav=1 \
+    || with_carddav=0
+  ynh_app_setting_set "$app" with_carddav "$with_carddav"
+fi
+
+# Update or instal CardDAV plugin
+if [[ $with_carddav -eq 1 ]]; then
+  install_carddav "$DESTDIR" \
+    && installed_plugins+=" 'carddav'," \
+    || echo "Unable to install CardDAV plugin" >&2
+fi
+
 # Update Roundcube configuration
 sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "$rc_conf"
-
-## Install rcmcarddav if baikal is detected
-#sudo yunohost app list -f baikal --json | grep '"installed": true'
-#if [ "$?" -eq 0 ]; then
-#  echo "Detected Baikal"
-#
-#  caldavdomain=$(sudo yunohost app setting baikal domain)
-#  caldavpath=$(sudo yunohost app setting baikal path)
-#  caldavpath=${caldavpath%/}
-#
-#  sed -i "s@yuno_baikal_domain@$caldavdomain@g" ../conf/rcmcarddav.config.inc.php
-#  sed -i "s@yuno_baikal_path@$caldavpath@g" ../conf/rcmcarddav.config.inc.php
-#  sudo cp ../conf/rcmcarddav.config.inc.php $final_path/plugins/carddav/config.inc.php
-#
-#  sudo sed -i "s@yuno_enable_carddav@True@g" $final_path/config/main.inc.php
-#
-#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql-drop.sql
-#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql.sql
-#else
-#  mysql -u $db_user -p$db_pwd $db_user < ../sources/plugins/carddav/dbinit/mysql-drop.sql
-#  sudo sed -i "s@yuno_enable_carddav@False@g" $final_path/config/main.inc.php
-#fi
 
 # Copy and set nginx configuration
 nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"

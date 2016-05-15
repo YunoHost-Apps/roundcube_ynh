@@ -88,3 +88,35 @@ init_composer() {
   exec_composer "$AS_USER" "$DESTDIR" install --no-dev \
     || ynh_die "Unable to update Roundcube core dependencies"
 }
+
+# Install and configure CardDAV plugin for Roundcube
+# usage: install_carddav DESTDIR [AS_USER]
+install_carddav() {
+  local DESTDIR=$1
+  local AS_USER=${2:-www-data}
+
+  local carddav_config="${DESTDIR}/plugins/carddav/config.inc.php"
+  local carddav_tmp_config="${PKGDIR}/conf/carddav.config.inc.php"
+
+  exec_composer "$AS_USER" "$DESTDIR" require \
+      "roundcube/carddav dev-master"
+
+  # Look for installed and supported CardDAV servers
+  for carddav_app in "owncloud" "baikal"; do
+    sudo yunohost app list --installed -f "$carddav_app" | grep -q id \
+      || continue
+
+    # Retrieve app settings and enable relevant preset
+    carddav_domain=$(ynh_app_setting_get "$carddav_app" domain)
+    carddav_path=$(ynh_app_setting_get "$carddav_app" path)
+    carddav_url="https://${carddav_domain}${carddav_path%/}"
+    sed -i "s#{${carddav_app}_url}#${carddav_url}#g" "$carddav_tmp_config"
+    sed -i \
+"/\/\/\/\/ PRESET FOR: ${carddav_app}/\
+,/\/\/\/\/ END: ${carddav_app}/s/^\/\///" "$carddav_tmp_config"
+  done
+
+  # Copy plugin the configuration file
+  sudo cp "$carddav_tmp_config" "$carddav_config"
+  sudo chown "${AS_USER}:" "$carddav_config"
+}

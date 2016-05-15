@@ -23,6 +23,12 @@ or from the Web administration:
   * Scroll to the bottom of the page and put `https://github.com/jeromelebleu/roundcube_ynh/tree/dev`
     under **Install custom app**.
 
+## Upgrade
+
+You can upgrade to this package from the command line for testing purpose with:
+
+    $ sudo yunohost app upgrade -u https://github.com/jeromelebleu/roundcube_ynh/tree/dev roundcube
+
 ## Extend and tweaks
 
 ### Configuration
@@ -75,14 +81,7 @@ steps as needed.
 You can also download the plugin and put it under the `plugins/` directory. In that
 case, do not forget to change ownerships to this folder to `www-data`.
 
-## TODO
-
- * Ask for rcmcarddav installation and/or check if *Baikal* or *ownCloud*
-   is installed
- * Move log file outside of the public folder or protect it at least
- * ...
-
-## Links ##
+## Links
 
 **Roundcube**: https://roundcube.net/
 

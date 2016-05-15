@@ -42,6 +42,15 @@
                 },
                 "example": "/webmail",
                 "default": "/webmail"
+            },
+            {
+                "name": "with_carddav",
+                "type": "boolean",
+                "ask": {
+                    "en": "Install CardDAV synchronization plugin?",
+                    "fr": "Installer le plugin de synchronisation CardDAV ?"
+                },
+                "default": false
             }
         ]
     }
