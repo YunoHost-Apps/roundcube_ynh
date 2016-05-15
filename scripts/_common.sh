@@ -18,13 +18,6 @@ PKGDIR=$(cd ../; pwd)
 # Common helpers
 #
 
-# Print a message to stderr and exit
-# usage: print MSG [RETCODE]
-die() {
-  printf "%s" "$1" 1>&2
-  exit "${2:-1}"
-}
-
 # Download and extract Roundcube sources to the given directory
 # usage: extract_roundcube_to DESTDIR
 extract_roundcube() {
@@ -33,17 +26,17 @@ extract_roundcube() {
   # retrieve and extract Roundcube tarball
   rc_tarball="${DESTDIR}/roundcube.tar.gz"
   wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
-    || die "Unable to download Roundcube tarball"
+    || ynh_die "Unable to download Roundcube tarball"
   echo "$ROUNDCUBE_SOURCE_SHA256 $rc_tarball" | sha256sum -c >/dev/null \
-    || die "Invalid checksum of downloaded tarball"
+    || ynh_die "Invalid checksum of downloaded tarball"
   tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
-    || die "Unable to extract Roundcube tarball"
+    || ynh_die "Unable to extract Roundcube tarball"
   rm "$rc_tarball"
 
   # apply patches
   (cd "$DESTDIR" \
    && for p in ${PKGDIR}/patches/*.patch; do patch -p1 < $p; done) \
-    || die "Unable to apply patches to Roundcube"
+    || ynh_die "Unable to apply patches to Roundcube"
 
   # copy composer.json-dist for Roundcube with complete dependencies
   cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"
@@ -85,7 +78,7 @@ init_composer() {
   curl -sS https://getcomposer.org/installer \
     | exec_as "$AS_USER" COMPOSER_HOME="${DESTDIR}/.composer" \
         php -- --quiet --install-dir="$DESTDIR" \
-    || die "Unable to install Composer"
+    || ynh_die "Unable to install Composer"
 
   # install composer.json
   exec_as "$AS_USER" \
@@ -93,5 +86,5 @@ init_composer() {
 
   # update dependencies to create composer.lock
   exec_composer "$AS_USER" "$DESTDIR" install --no-dev \
-    || die "Unable to update Roundcube core dependencies"
+    || ynh_die "Unable to update Roundcube core dependencies"
 }

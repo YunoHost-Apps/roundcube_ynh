@@ -1,13 +1,15 @@
 #!/bin/bash
 
-set -e
-set -u
+# Exit on command errors and treat unset variables as an error
+set -eu
+
+# Get multi-instances specific variables
+app=$YNH_APP_INSTANCE_NAME
 
 # Load common variables and helpers
 . ./_common.sh
 
 # Set app specific variables
-app=${!#}
 dbname=$app
 dbuser=$app
 
@@ -15,14 +17,14 @@ dbuser=$app
 . /usr/share/yunohost/helpers
 
 # Retrieve app settings
-domain=$(ynh_app_setting_get $app domain)
-path=$(ynh_app_setting_get $app path)
+domain=$(ynh_app_setting_get "$app" domain)
+path=$(ynh_app_setting_get "$app" path)
 path=${path%/}
-dbpass=$(ynh_app_setting_get $app mysqlpwd)
+dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 
 # Check destination directory
 DESTDIR="/var/www/$app"
-[[ ! -d $DESTDIR ]] && die \
+[[ ! -d $DESTDIR ]] && ynh_die \
 "The destination directory '$DESTDIR' does not exist.\
  The app is not correctly installed, you should remove it first."
 
@@ -32,7 +34,7 @@ extract_roundcube "$TMPDIR"
 
 # Install the new Roundcube version
 sudo php "${TMPDIR}/bin/installto.sh" "$DESTDIR" --force --accept \
-  || die "Unable to update Roundcube installation"
+  || ynh_die "Unable to update Roundcube installation"
 rm -rf "$TMPDIR"
 
 # Generate a new random DES key
@@ -72,7 +74,7 @@ installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Update Roundcube configuration
 sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
-  "$rc_conf"
+    "$rc_conf"
 
 ## Install rcmcarddav if baikal is detected
 #sudo yunohost app list -f baikal --json | grep '"installed": true'

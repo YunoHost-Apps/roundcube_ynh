@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Retrieve arguments
-backup_dir=$1
-app=$2
+# Exit on command errors and treat unset variables as an error
+set -eu
+
+# Get multi-instances specific variables
+app=$YNH_APP_INSTANCE_NAME
 
 # Set app specific variables
 dbname=$app
@@ -12,9 +14,9 @@ dbuser=$app
 . /usr/share/yunohost/helpers
 
 # Retrieve app settings
-domain=$(ynh_app_setting_get $app domain)
-path=$(ynh_app_setting_get $app path)
-dbpass=$(ynh_app_setting_get $app mysqlpwd)
+domain=$(ynh_app_setting_get "$app" domain)
+path=$(ynh_app_setting_get "$app" path)
+dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 
 # Copy the app files
 DESTDIR="/var/www/$app"
