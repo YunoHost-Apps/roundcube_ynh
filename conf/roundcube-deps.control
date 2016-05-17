@@ -1,0 +1,20 @@
+Section: misc
+Priority: optional
+Homepage: https://roundcube.net/
+Standards-Version: 3.9.2
+
+Package: roundcube-deps
+Version: 1.1.5-1
+Depends: php5-cli, php5-common, php5-intl, php5-json, php5-mcrypt
+ , php-pear, php-auth-sasl, php-mail-mime, php-patchwork-utf8
+ , php-net-sieve, php-net-smtp, php-net-socket
+ , php-net-ldap2, php-net-ldap3, php-crypt-gpg
+Architecture: all
+Description: meta package for roundcube dependencies
+ RoundCube Webmail is a browser-based multilingual IMAP client with an
+ application-like user interface. It provides full functionality expected
+ from an e-mail client, including MIME support, address book, folder
+ manipulation and message filters.
+ .
+ .
+ This meta-package is only responsible of installing its dependencies.

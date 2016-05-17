@@ -26,3 +26,6 @@ sudo rm -f "/etc/php5/fpm/pool.d/${app}.conf"
 # Reload services
 sudo service php5-fpm restart || true
 sudo service nginx reload || true
+
+# Remove app dependencies
+ynh_package_autoremove "$DEPS_PKG_NAME" || true

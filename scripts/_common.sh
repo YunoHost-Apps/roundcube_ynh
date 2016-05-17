@@ -5,6 +5,9 @@
 # Roundcube version
 VERSION=1.1.5
 
+# Package name for Roundcube dependencies
+DEPS_PKG_NAME="roundcube-deps"
+
 # Roundcube complete tarball checksum
 ROUNDCUBE_SOURCE_SHA256="ed50384c5ca0bcd9df08e1d0f2a46f2e7f468f583bcf410709f0a0659e00c453"
 

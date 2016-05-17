@@ -29,6 +29,16 @@ DESTDIR="/var/www/$app"
 "The destination directory '$DESTDIR' does not exist.\
  The app is not correctly installed, you should remove it first."
 
+# FIXME: jessie-backports is needed for php-net-ldap3
+grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
+  echo "deb http://httpredir.debian.org/debian jessie-backports main" \
+    | sudo tee -a /etc/apt/sources.list.d/backports.list >/dev/null
+}
+
+# Install dependencies
+ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control \
+  || ynh_die "Unable to install dependencies"
+
 # Create tmp directory and install app inside
 TMPDIR=$(ynh_mkdir_tmp)
 extract_roundcube "$TMPDIR"
@@ -55,7 +65,6 @@ sudo chown -R www-data: "$DESTDIR"
 
 # Check if dependencies need to be updated with composer
 if [[ -f ${DESTDIR}/composer.json ]]; then
-  # TODO: update new Roundcube dependencies versions
   exec_composer www-data "$DESTDIR" update --no-dev
 else
   init_composer "$DESTDIR" www-data

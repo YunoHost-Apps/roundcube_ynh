@@ -31,6 +31,16 @@ DESTDIR="/var/www/$app"
 "The destination directory '$DESTDIR' already exists.\
  You should safely delete it before installing this app."
 
+# FIXME: jessie-backports is needed for php-net-ldap3
+grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
+  echo "deb http://httpredir.debian.org/debian jessie-backports main" \
+    | sudo tee -a /etc/apt/sources.list.d/backports.list >/dev/null
+}
+
+# Install dependencies
+ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control \
+  || ynh_die "Unable to install dependencies"
+
 # Create tmp directory and install app inside
 TMPDIR=$(ynh_mkdir_tmp)
 extract_roundcube "$TMPDIR"
