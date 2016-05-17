@@ -1,0 +1,14 @@
+{
+    "name": "dim-0/ldap-alias-sync",
+    "type": "roundcube-plugin",
+    "license": "GPLv3",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://plugins.roundcube.net"
+        }
+    ],
+    "require": {
+        "roundcube/plugin-installer": ">=0.1.3"
+    }
+}
