@@ -106,17 +106,18 @@ install_carddav() {
 
   # Look for installed and supported CardDAV servers
   for carddav_app in "owncloud" "baikal"; do
-    sudo yunohost app list --installed -f "$carddav_app" | grep -q id \
-      || continue
-
-    # Retrieve app settings and enable relevant preset
-    carddav_domain=$(ynh_app_setting_get "$carddav_app" domain)
-    carddav_path=$(ynh_app_setting_get "$carddav_app" path)
-    carddav_url="https://${carddav_domain}${carddav_path%/}"
-    sed -i "s#{${carddav_app}_url}#${carddav_url}#g" "$carddav_tmp_config"
-    sed -i \
+    local app_id=$(sudo yunohost app list --installed --output-as plain \
+            -f "$carddav_app" | ynh_get_plain_key '#id' | head -1)
+    [[ -z "$app_id" ]] || {
+      # Retrieve app settings and enable relevant preset
+      carddav_domain=$(ynh_app_setting_get "$app_id" domain)
+      carddav_path=$(ynh_app_setting_get "$app_id" path)
+      carddav_url="https://${carddav_domain}${carddav_path%/}"
+      sed -i "s#{${carddav_app}_url}#${carddav_url}#g" "$carddav_tmp_config"
+      sed -i \
 "/\/\/\/\/ PRESET FOR: ${carddav_app}/\
 ,/\/\/\/\/ END: ${carddav_app}/s/^\/\///" "$carddav_tmp_config"
+    }
   done
 
   # Copy plugin the configuration file
