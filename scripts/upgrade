@@ -84,7 +84,7 @@ installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Guess with_carddav value if empty
 if [[ -z "${with_carddav:-}" ]]; then
-  [[ -d "${DESTDIR}/plugins/carddav" ]] \
+  [[ -f "${DESTDIR}/plugins/carddav/config.inc.php" ]] \
     && with_carddav=1 \
     || with_carddav=0
   ynh_app_setting_set "$app" with_carddav "$with_carddav"
