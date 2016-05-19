@@ -1,35 +1,28 @@
 Roundcube for YunoHost
 ----------------------
 
-*This is a work-in-progress package review to update Roundcube to 1.1.x
-and make use of new YunoHost facilities - e.g. helpers - coming with 2.3.x.*
-
 [Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
 an application-like user interface.
 
 **Shipped version:** 1.1.5
 
-## Installation
+## Features
 
-While it's merged to the official application list, you can install it in order
-to try - or use it with caution! - either from the command line:
+In addition to Roundcube core features, the following are made available with
+this package:
 
-    $ sudo yunohost app install https://github.com/jeromelebleu/roundcube_ynh/tree/dev
+ * Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
+   search
+ * Synchronize your email aliases as identities in Roundcube
+ * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
+   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
+   plugins by default
+ * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
+   (address book) synchronization plugin at the installation - note that if
+   you have installed ownCloud or Baïkal, it will automatically add the
+   corresponding and existing address book.
 
-or from the Web administration:
-
-  * Go to *Applications*
-  * Click on *Install*
-  * Scroll to the bottom of the page and put `https://github.com/jeromelebleu/roundcube_ynh/tree/dev`
-    under **Install custom app**.
-
-## Upgrade
-
-You can upgrade to this package from the command line for testing purpose with:
-
-    $ sudo yunohost app upgrade -u https://github.com/jeromelebleu/roundcube_ynh/tree/dev roundcube
-
-## Extend and tweaks
+## Extend and tweak
 
 ### Configuration
 
@@ -83,6 +76,6 @@ case, do not forget to change ownerships to this folder to `www-data`.
 
 ## Links
 
-**Roundcube**: https://roundcube.net/
-
-**YunoHost**: https://yunohost.org/
+ * Report a bug: https://dev.yunohost.org/projects/apps/issues
+ * Roundcube website: https://roundcube.net/
+ * YunoHost website: https://yunohost.org/
