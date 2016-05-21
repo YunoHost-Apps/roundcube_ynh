@@ -70,6 +70,19 @@ $config['smtp_user'] = '%u';
 // will use the current user's password for login
 $config['smtp_pass'] = '%p';
 
+// SMTP socket context options
+// See http://php.net/manual/en/context.ssl.php
+// The server certificate validation is disabled, since the server is local
+// and the communication should be safe. Note that it can be enabled as
+// needed, just uncomment lines and set 'verify_peer' to true.
+$config['smtp_conn_options'] = array(
+  'ssl'         => array(
+    'verify_peer'  => false,
+//    'verify_depth' => 3,
+//    'cafile'       => '/etc/yunohost/certs/' . $main_domain . '/ca.pem',
+  ),
+);
+
 // provide an URL where a user can get support for this Roundcube installation
 // PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
 $config['support_url'] = 'https://dev.yunohost.org/projects/apps/issues?set_filter=1&f[]=category_id&op[category_id]=%3D&v[category_id][]=20';
