@@ -8,10 +8,10 @@
     },
     "url": "https://roundcube.net/",
     "license": "GPL-3",
-    "version": "1.1.5",
+    "version": "1.2.0",
     "maintainer": {
-        "name": "kload",
-        "email": "kload@kload.fr"
+        "name": "jerome",
+        "email": "jerome@yunohost.org"
     },
     "multi_instance": true,
     "services": [
@@ -20,7 +20,7 @@
         "mysql"
     ],
     "requirements": {
-        "yunohost": ">= 2.3.15"
+        "yunohost": ">= 2.4.0"
     },
     "arguments": {
         "install" : [

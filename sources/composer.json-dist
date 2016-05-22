@@ -4,12 +4,17 @@
     "license": "GPL-3.0+",
     "repositories": [
         {
+            "type": "vcs",
+            "url": "https://github.com/roundcube/Net_Sieve.git"
+        },
+        {
             "type": "composer",
             "url": "https://plugins.roundcube.net/"
         }
     ],
     "require": {
-        "roundcube/plugin-installer": "dev-master"
+        "roundcube/plugin-installer": "dev-master",
+        "roundcube/net_sieve": "~1.5.0"
     },
     "minimum-stability": "dev"
 }
