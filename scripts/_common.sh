@@ -106,8 +106,8 @@ install_carddav() {
 
   # Look for installed and supported CardDAV servers
   for carddav_app in "owncloud" "baikal"; do
-    local app_id=$(sudo yunohost app list --installed --output-as plain \
-            -f "$carddav_app" | ynh_get_plain_key '#id' | head -1)
+    local app_id=$(sudo yunohost app list --installed -f "$carddav_app" \
+            --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
     [[ -z "$app_id" ]] || {
       # Retrieve app settings and enable relevant preset
       carddav_domain=$(ynh_app_setting_get "$app_id" domain)
