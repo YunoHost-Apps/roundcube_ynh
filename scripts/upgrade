@@ -65,7 +65,7 @@ sudo chown -R www-data: "$DESTDIR"
 
 # Check if dependencies need to be updated with composer
 if [[ -f ${DESTDIR}/composer.json ]]; then
-  exec_composer www-data "$DESTDIR" update --no-dev
+  exec_composer www-data "$DESTDIR" update --no-dev --prefer-dist
 else
   init_composer "$DESTDIR" www-data
 fi
