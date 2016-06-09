@@ -144,6 +144,10 @@ $config['new_user_identity_addressbook'] = 'yunohost';
 // Redirect the client to this URL after logout.
 $config['logout_url'] = 'https://' . $main_domain . '/yunohost/sso/?action=logout';
 
+// -- managesieve
+// Enables separate management interface for vacation responses (out-of-office)
+$config['managesieve_vacation'] = 1;
+
 // -- ldapAliasSync
 $config['ldapAliasSync'] = array(
   // Mail parameters
