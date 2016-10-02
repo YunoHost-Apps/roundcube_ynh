@@ -3,13 +3,13 @@
 #
 
 # Roundcube version
-VERSION="1.2.1"
+VERSION="1.2.2"
 
 # Package name for Roundcube dependencies
 DEPS_PKG_NAME="roundcube-deps"
 
 # Roundcube complete tarball checksum
-ROUNDCUBE_SOURCE_SHA256="05c0b17c8951db1d220f2f2186e6981545789da0d084a543e28a7d2511db8302"
+ROUNDCUBE_SOURCE_SHA256="6c647ed28ea0ae1b730a1784018b63884e65ed6036208e9c3a6ee62123fe856d"
 
 # Remote URL to fetch Roundcube source tarball
 ROUNDCUBE_SOURCE_URL="https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}.tar.gz"
