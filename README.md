@@ -6,6 +6,8 @@ an application-like user interface.
 
 **Shipped version:** 1.2.2
 
+![](https://roundcube.net/images/screens/mailview.jpg)
+
 ## Features
 
 In addition to Roundcube core features, the following are made available with
