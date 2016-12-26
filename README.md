@@ -78,6 +78,5 @@ case, do not forget to change ownerships of this folder to `www-data`.
 
 ## Links
 
- * Report a bug: https://dev.yunohost.org/projects/apps/issues
  * Roundcube website: https://roundcube.net/
  * YunoHost website: https://yunohost.org/
