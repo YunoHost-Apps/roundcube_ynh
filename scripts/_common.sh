@@ -88,7 +88,7 @@ init_composer() {
     cp "${DESTDIR}/composer.json-dist" "${DESTDIR}/composer.json"
 
   # update dependencies to create composer.lock
-  exec_composer "$AS_USER" "$DESTDIR" install --no-dev \
+  exec_composer "$AS_USER" "$DESTDIR" install --no-dev --prefer-dist \
     || ynh_die "Unable to update Roundcube core dependencies"
 }
 
