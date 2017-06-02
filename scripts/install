@@ -42,8 +42,7 @@ grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
 }
 
 # Install dependencies
-ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control \
-  || ynh_die "Unable to install dependencies"
+ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control
 
 # Create system user dedicace for this app
 ynh_system_user_create $app
