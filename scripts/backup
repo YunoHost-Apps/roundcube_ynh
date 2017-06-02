@@ -6,21 +6,20 @@ set -eu
 # Get multi-instances specific variables
 app=$YNH_APP_INSTANCE_NAME
 
-# Set app specific variables
-dbname=$app
-dbuser=$app
-
 # Source app helpers
 . /usr/share/yunohost/helpers
 
 # Retrieve app settings
 domain=$(ynh_app_setting_get "$app" domain)
 path=$(ynh_app_setting_get "$app" path)
+with_carddav=$(ynh_app_setting_get "$app" with_carddav)
 dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
+dbname=$app
+dbuser=$app
 
 # Copy the app files
-DESTDIR="/var/www/$app"
-ynh_backup "$DESTDIR" "sources"
+finalpath="/var/www/$app"
+ynh_backup "$finalpath" "sources"
 
 # Copy the conf files
 ynh_backup "/etc/nginx/conf.d/${domain}.d/${app}.conf" "nginx.conf"

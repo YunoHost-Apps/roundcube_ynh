@@ -1,31 +1,36 @@
 #!/bin/bash
 
-# Load common variables and helpers
-. ./_common.sh
+# Exit on command errors and treat unset variables as an error
+set -u
 
-# Set app specific variables
-app=$1
-dbname=$app
-dbuser=$app
-
+if [ ! -e _common.sh ]; then
+	# Get file fonction if not been to the current directory
+	sudo cp ../settings/scripts/_common.sh ./_common.sh
+	sudo chmod a+rx _common.sh
+fi
 # Source app helpers
-. /usr/share/yunohost/helpers
+source ./_common.sh
+source /usr/share/yunohost/helpers
+
+# Get multi-instances specific variables
+app=$YNH_APP_INSTANCE_NAME
+
+# Retrieve arguments
+domain=$(ynh_app_setting_get "$app" domain)
 
 # Drop MySQL database and user
+dbname=$app
+dbuser=$app
 ynh_mysql_drop_db "$dbname" 2>&1 || true
 ynh_mysql_drop_user "$dbuser" 2>&1 || true
 
-# Retrieve domain from app settings
-domain=$(ynh_app_setting_get $app domain)
+ynh_secure_remove /var/www/$app
+ynh_secure_remove /etc/nginx/conf.d/$domain.d/$app.conf
+ynh_remove_fpm_config
 
-# Delete app directory and configurations
-sudo rm -rf "/var/www/${app}"
-sudo rm -f "/etc/php5/fpm/pool.d/${app}.conf"
-[[ -n $domain ]] && sudo rm -f "/etc/nginx/conf.d/${domain}.d/${app}.conf"
+ynh_system_user_delete $app
 
-# Reload services
-sudo service php5-fpm restart || true
-sudo service nginx reload || true
+sudo systemctl reload nginx
 
 # Remove app dependencies
 if ynh_package_is_installed "$DEPS_PKG_NAME"; then
