@@ -28,13 +28,13 @@ extract_roundcube() {
 
   # retrieve and extract Roundcube tarball
   rc_tarball="${DESTDIR}/roundcube.tar.gz"
-  wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
+  sudo wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
     || ynh_die "Unable to download Roundcube tarball"
   echo "$ROUNDCUBE_SOURCE_SHA256 $rc_tarball" | sha256sum -c >/dev/null \
     || ynh_die "Invalid checksum of downloaded tarball"
-  tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
+  sudo tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
     || ynh_die "Unable to extract Roundcube tarball"
-  rm "$rc_tarball"
+  sudo rm "$rc_tarball"
 
   # apply patches
   # (cd "$DESTDIR" \
@@ -42,7 +42,7 @@ extract_roundcube() {
   #   || ynh_die "Unable to apply patches to Roundcube"
 
   # copy composer.json-dist for Roundcube with complete dependencies
-  cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"
+  sudo cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"
 }
 
 # Execute a command as another user
