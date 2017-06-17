@@ -6,7 +6,7 @@ set -eu
 if [ ! -e _common.sh ]; then
   # Get file fonction if not been to the current directory
   sudo cp ../settings/scripts/_common.sh ./_common.sh
-  sudo chmod a+rx _common
+  sudo chmod a+rx _common.sh
 fi
 # Loads the generic functions usually used in the script
 source _common.sh
