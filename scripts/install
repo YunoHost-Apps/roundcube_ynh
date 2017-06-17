@@ -80,7 +80,7 @@ exec_composer admin "$final_path" require \
     "sblaisot/automatic_addressbook 0.4.2"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
-# Instal CardDAV plugin
+# Install CardDAV plugin
 if [[ $with_carddav -eq 1 ]]; then
   install_carddav "$final_path" \
     && installed_plugins+=" 'carddav'," \

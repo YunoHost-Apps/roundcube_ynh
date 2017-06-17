@@ -343,6 +343,40 @@ ynh_backup_before_upgrade () {  # Backup the current version of the app, restore
   fi
 }
 
+
+# Manage a fail of the script
+#
+# Print a warning to inform that the script was failed
+# Execute the ynh_clean_setup function if used in the app script
+#
+# usage of ynh_clean_setup function
+# This function provide a way to clean some residual of installation that not managed by remove script.
+# To use it, simply add in your script:
+# ynh_clean_setup () {
+#        instructions...
+# }
+# This function is optionnal.
+#
+# Usage: ynh_exit_properly is used only by the helper ynh_check_error.
+# You must not use it directly.
+ynh_exit_properly () {
+  exit_code=$?
+  if [ "$exit_code" -eq 0 ]; then
+      ynh_die # Exit without error if the script ended correctly
+  fi
+
+  trap '' EXIT  # Ignore new exit signals
+  set +eu # Do not exit anymore if a command fail or if a variable is empty
+
+  echo -e "!!\n  $app's script has encountered an error. Its execution was cancelled.\n!!" >&2
+
+  if type -t ynh_clean_setup > /dev/null; then  # Check if the function exist in the app script.
+    ynh_clean_setup # Call the function to do specific cleaning for the app.
+  fi
+
+  ynh_die # Exit with error status
+}
+
 # Exit if an error occurs during the execution of the script.
 #
 # Stop immediatly the execution if an error occured or if a empty variable is used.
