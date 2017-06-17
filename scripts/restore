@@ -66,11 +66,11 @@ ynh_mysql_create_db $dbname $dbuser $dbpass
 ynh_mysql_connect_as $dbuser $dbpass $dbname < ./dump.sql
 
 # Restore configuration files
-sudo cp -a ./conf/nginx.conf "${nginx_conf}"
+sudo cp -a ./nginx.conf "${nginx_conf}"
 
 # Restore php-fpm configuration files
-sudo cp -a ./conf/php-fpm.conf "${phpfpm_conf}"
-sudo cp -a ./conf/php-fpm.ini "${phpfpm_ini}"
+sudo cp -a ./php-fpm.conf "${phpfpm_conf}"
+sudo cp -a ./php-fpm.ini "${phpfpm_ini}"
 
 # Reload service
 sudo systemctl reload php5-fpm

@@ -21,9 +21,11 @@ dbuser=$app
 finalpath="/var/www/$app"
 ynh_backup "$finalpath" "sources"
 
-# Copy the conf files
+# Copy the nginx conf files
 ynh_backup "/etc/nginx/conf.d/${domain}.d/${app}.conf" "nginx.conf"
+# Copy the php-fpm conf files
 ynh_backup "/etc/php5/fpm/pool.d/${app}.conf" "php-fpm.conf"
+ynh_backup "/etc/php5/fpm/conf.d/20-${app}.ini" "php-fpm.ini"
 
 # Dump the database
 mysqldump -u "$dbuser" -p"$dbpass" --no-create-db "$dbname" > ./dump.sql

@@ -4,9 +4,9 @@
 set -eu
 
 if [ ! -e _common.sh ]; then
-  # Get file fonction if not been to the current directory
-  sudo cp ../settings/scripts/_common.sh ./_common.sh
-  sudo chmod a+rx _common.sh
+    # Get file fonction if not been to the current directory
+    sudo cp ../settings/scripts/_common.sh ./_common.sh
+    sudo chmod a+rx _common.sh
 fi
 # Loads the generic functions usually used in the script
 source _common.sh
@@ -14,9 +14,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 app=$YNH_APP_INSTANCE_NAME
-
-# Source app helpers
-. /usr/share/yunohost/helpers
 
 # Retrieve app settings
 domain=$(ynh_app_setting_get "$app" domain)
