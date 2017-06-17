@@ -55,7 +55,7 @@ exec_as() {
     eval $@
   else
     # use sudo twice to be root and be allowed to use another user
-    sudo -u "$USER" $@
+    sudo sudo -u "$USER" $@
   fi
 }
 
@@ -67,7 +67,7 @@ exec_composer() {
   shift 2
 
   exec_as "$AS_USER" COMPOSER_HOME="${WORKDIR}/.composer" \
-    sudo php "${WORKDIR}/composer.phar" $@ \
+    php "${WORKDIR}/composer.phar" $@ \
       -d "${WORKDIR}" --quiet --no-interaction
 }
 
@@ -78,7 +78,7 @@ init_composer() {
   local AS_USER=${2:-admin}
 
   # install composer
-  sudo curl -sS https://getcomposer.org/installer \
+  curl -sS https://getcomposer.org/installer \
     | exec_as "$AS_USER" COMPOSER_HOME="${DESTDIR}/.composer" \
         php -- --quiet --install-dir="$DESTDIR" \
     || ynh_die "Unable to install Composer"
