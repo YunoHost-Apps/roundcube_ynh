@@ -342,3 +342,14 @@ ynh_backup_before_upgrade () {  # Backup the current version of the app, restore
     ynh_die "Backup failed, the upgrade process was aborted."
   fi
 }
+
+# Exit if an error occurs during the execution of the script.
+#
+# Stop immediatly the execution if an error occured or if a empty variable is used.
+# The execution of the script is derivate to ynh_exit_properly function before exit.
+#
+# Usage: ynh_abort_if_errors
+ynh_abort_if_errors () {
+  set -eu # Exit if a command fail, and if a variable is used unset.
+  trap ynh_exit_properly EXIT # Capturing exit signals on shell script
+}
