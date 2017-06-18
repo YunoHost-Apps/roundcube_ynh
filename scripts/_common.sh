@@ -46,7 +46,7 @@ extract_roundcube() {
 
   # apply patches
   (cd "$DESTDIR" \
-   && for p in ${PKGDIR}/patches/*.patch; do patch -p1 < $p; done) \
+   && for p in ${PKGDIR}/patches/*.patch; do sudo patch -p1 < $p; done) \
     || ynh_die "Unable to apply patches to Roundcube"
 
   # copy composer.json-dist for Roundcube with complete dependencies
