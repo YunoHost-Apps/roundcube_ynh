@@ -95,9 +95,9 @@ if [[ -z "${with_carddav:-}" ]]; then
   ynh_app_setting_set "$app" with_carddav "$with_carddav"
 fi
 
-# Update or instal CardDAV plugin
+# Update or install CardDAV plugin
 if [[ $with_carddav -eq 1 ]]; then
-  install_carddav "${final_path}" \
+  install_carddav "${final_path}" admin \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
 fi
