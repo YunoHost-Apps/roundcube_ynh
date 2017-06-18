@@ -79,11 +79,10 @@ fi
 # Install some plugins manually
 sudo rm -rf "${final_path}/plugins/ldapAliasSync"
 sudo cp -r ../sources/plugins/ldapAliasSync "${final_path}/plugins"
-# sudo chown -R $app: "${final_path}/plugins/ldapAliasSync"
 installed_plugins=" 'ldapAliasSync',"
 
 # Update or install additional plugins
-exec_composer admin "${final_path}" require \
+exec_composer admin "${final_path}" update --no-dev --prefer-dist \
     "johndoh/contextmenu 2.1.2" \
     "sblaisot/automatic_addressbook 0.4.2"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
