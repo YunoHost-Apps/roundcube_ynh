@@ -17,6 +17,14 @@ ROUNDCUBE_SOURCE_URL="https://github.com/roundcube/roundcubemail/releases/downlo
 # App package root directory should be the parent folder
 PKGDIR=$(cd ../; pwd)
 
+QUIET () {  # Redirect standard out into /dev/null
+  $@ > /dev/null
+}
+
+WARNING () {  # Writes on the error channel to go into warning.
+  eval "$@" >&2
+}
+
 #
 # Common helpers
 #
@@ -37,9 +45,9 @@ extract_roundcube() {
   sudo rm "$rc_tarball"
 
   # apply patches
-  # (cd "$DESTDIR" \
-  #  && for p in ${PKGDIR}/patches/*.patch; do patch -p1 < $p; done) \
-  #   || ynh_die "Unable to apply patches to Roundcube"
+  (cd "$DESTDIR" \
+   && for p in ${PKGDIR}/patches/*.patch; do patch -p1 < $p; done) \
+    || ynh_die "Unable to apply patches to Roundcube"
 
   # copy composer.json-dist for Roundcube with complete dependencies
   sudo cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"

@@ -68,10 +68,9 @@ ynh_substitute_char "#DBNAME#" "$dbname" "$rc_conf"
 
 # Install files and set permissions
 sudo mkdir -p "${final_path}/logs" "${final_path}/temp"
-sudo chown -R $app: "${final_path}"
 
 # Check if dependencies need to be updated with composer
-if [[ -f ${DESTDIR}/composer.json ]]; then
+if [[ -f ${final_path}/composer.json ]]; then
   exec_composer admin "${final_path}" update --no-dev --prefer-dist
 else
   init_composer "${final_path}" admin
@@ -80,7 +79,7 @@ fi
 # Install some plugins manually
 sudo rm -rf "${final_path}/plugins/ldapAliasSync"
 sudo cp -r ../sources/plugins/ldapAliasSync "${final_path}/plugins"
-sudo chown -R $app: "${final_path}/plugins/ldapAliasSync"
+# sudo chown -R $app: "${final_path}/plugins/ldapAliasSync"
 installed_plugins=" 'ldapAliasSync',"
 
 # Update or install additional plugins
@@ -108,6 +107,9 @@ fi
 sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "$rc_conf"
 
+# Owner user app
+sudo chown -R $app: "${final_path}"
+
 # Modify Nginx configuration file and copy it to Nginx conf directory
 ynh_nginx_config
 
@@ -115,5 +117,4 @@ ynh_nginx_config
 ynh_fpm_config
 
 # Reload services
-sudo systemctl restart php5-fpm
 sudo systemctl reload nginx

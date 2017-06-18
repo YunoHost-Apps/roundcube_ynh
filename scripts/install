@@ -7,15 +7,16 @@ set -eu
 source ./_common.sh
 source /usr/share/yunohost/helpers
 
+app=$YNH_APP_INSTANCE_NAME
+
 # Retrieve arguments
 domain=$YNH_APP_ARG_DOMAIN
 path=$(ynh_normalize_url_path $YNH_APP_ARG_PATH)
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
 
-app=$YNH_APP_INSTANCE_NAME
-
 # Check domain/path availability
-sudo yunohost app checkurl "${domain}${path}" -a "$app"
+sudo yunohost app checkurl "${domain}${path}" -a "$app" \
+    || ynh_die "Path not available: ${domain}${path}"
 
 # Set app specific variables
 dbname=$app
@@ -23,9 +24,6 @@ dbuser=$app
 # Generate random DES key & password
 deskey=$(ynh_string_random 24)
 dbpass=$(ynh_string_random)
-
-# Check domain/path availability
-sudo yunohost app checkurl "${domain}${path}" -a "$app"
 
 # Save app settings
 ynh_app_setting_set $app domain $domain
