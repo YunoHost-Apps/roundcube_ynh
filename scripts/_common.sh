@@ -104,7 +104,7 @@ init_composer() {
 # usage: install_carddav DESTDIR [AS_USER]
 install_carddav() {
   local DESTDIR=$1
-  local AS_USER=${2:-www-data}
+  local AS_USER=${2:-admin}
 
   local carddav_config="${DESTDIR}/plugins/carddav/config.inc.php"
   local carddav_tmp_config="${PKGDIR}/conf/carddav.config.inc.php"
