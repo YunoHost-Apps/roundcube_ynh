@@ -74,8 +74,8 @@ installed_plugins=" 'ldapAliasSync',"
 
 # Install additional plugins
 exec_composer admin "$final_path" require \
-    "johndoh/contextmenu 2.1.2" \
-    "sblaisot/automatic_addressbook 0.4.2"
+    "johndoh/contextmenu dev-master" \
+    "sblaisot/automatic_addressbook dev-master"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Install CardDAV plugin

@@ -83,8 +83,8 @@ installed_plugins=" 'ldapAliasSync',"
 
 # Update or install additional plugins
 exec_composer admin "${final_path}" update --no-dev --prefer-dist \
-    "johndoh/contextmenu 2.1.2" \
-    "sblaisot/automatic_addressbook 0.4.2"
+    "johndoh/contextmenu dev-master" \
+    "sblaisot/automatic_addressbook dev-master"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Guess with_carddav value if empty
