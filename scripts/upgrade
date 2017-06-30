@@ -76,11 +76,6 @@ else
   init_composer "${final_path}" admin
 fi
 
-# Install some plugins manually
-sudo rm -rf "${final_path}/plugins/ldapAliasSync"
-sudo cp -r ../sources/plugins/ldapAliasSync "${final_path}/plugins"
-installed_plugins=" 'ldapAliasSync',"
-
 # Update or install additional plugins
 exec_composer admin "${final_path}" update --no-dev --prefer-dist \
     "johndoh/contextmenu dev-master" \

@@ -68,10 +68,6 @@ ynh_substitute_char "#DBNAME#" "$dbname" "$rc_conf"
 # Install files and set permissions
 sudo mkdir -p "${final_path}/logs" "${final_path}/temp"
 
-# Install some plugins manually
-sudo cp -r ../sources/plugins/ldapAliasSync "${final_path}/plugins"
-installed_plugins=" 'ldapAliasSync',"
-
 # Install additional plugins
 exec_composer admin "$final_path" require \
     "johndoh/contextmenu dev-master" \
