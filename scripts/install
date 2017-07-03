@@ -13,6 +13,7 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$YNH_APP_ARG_DOMAIN
 path=$(ynh_normalize_url_path $YNH_APP_ARG_PATH)
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
+with_enigma=$YNH_APP_ARG_WITH_ENIGMA
 
 # Check domain/path availability
 sudo yunohost app checkurl "${domain}${path}" -a "$app" \
