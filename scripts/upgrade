@@ -21,6 +21,7 @@ path=$(ynh_app_setting_get "$app" path)
 path=${path%/}
 dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 with_carddav=$(ynh_app_setting_get "$app" with_carddav)
+with_enigma=$(ynh_app_setting_get "$app" with_enigma)
 dbname=$app
 dbuser=$app
 
@@ -95,6 +96,21 @@ if [[ $with_carddav -eq 1 ]]; then
   install_carddav "${final_path}" admin \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
+fi
+
+# Guess with_enigma value if empty
+if [[ -z "${with_enigma:-}" ]]; then
+  [[ -f "${final_path}/plugins/enigma/config.inc.php" ]] \
+    && with_enigma=1 \
+    || with_enigma=0
+  ynh_app_setting_set "$app" with_enigma "$with_enigma"
+fi
+
+# Install Enigma plugin
+if [[ $with_enigma -eq 1 ]]; then
+  sudo cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+    && installed_plugins+=" 'enigma'," \
+    || echo "Unable to install Enigma plugin" >&2
 fi
 
 # Update Roundcube configuration

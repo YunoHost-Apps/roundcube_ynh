@@ -13,6 +13,7 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get "$app" domain)
 path=$(ynh_app_setting_get "$app" path)
 with_carddav=$(ynh_app_setting_get "$app" with_carddav)
+with_enigma=$(ynh_app_setting_get "$app" with_enigma)
 dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 dbname=$app
 dbuser=$app

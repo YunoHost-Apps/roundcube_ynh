@@ -29,6 +29,7 @@ dbpass=$(ynh_string_random)
 ynh_app_setting_set $app domain $domain
 ynh_app_setting_set $app path $path
 ynh_app_setting_set $app with_carddav $with_carddav
+ynh_app_setting_set $app with_enigma $with_enigma
 
 # Check destination directory
 final_path=/var/www/$app
@@ -79,6 +80,13 @@ if [[ $with_carddav -eq 1 ]]; then
   install_carddav "$final_path" admin \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
+fi
+
+# Install Enigma plugin
+if [[ $with_enigma -eq 1 ]]; then
+  sudo cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+    && installed_plugins+=" 'enigma'," \
+    || echo "Unable to install Enigma plugin" >&2
 fi
 
 # Update Roundcube configuration
