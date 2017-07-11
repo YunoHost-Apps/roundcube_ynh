@@ -56,7 +56,7 @@
                 "name": "with_enigma",
                 "type": "boolean",
                 "ask": {
-                    "en": "Install Enigma encrypt message plugin?",
+                    "en": "Install Enigma messages encryption plugin?",
                     "fr": "Installer le plugin de chiffrement des messages Enigma ?"
                 },
                 "default": false
