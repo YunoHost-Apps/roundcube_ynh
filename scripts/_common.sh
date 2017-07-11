@@ -2,17 +2,8 @@
 # Common variables
 #
 
-# Roundcube version
-VERSION="1.3.0"
-
 # Package name for Roundcube dependencies
 DEPS_PKG_NAME="roundcube-deps"
-
-# Roundcube complete tarball checksum
-ROUNDCUBE_SOURCE_SHA256="a37e55a3b5f83420930ae20ef3ac6dbedb499c920bbcf3fc93a8f784f7773d21"
-
-# Remote URL to fetch Roundcube source tarball
-ROUNDCUBE_SOURCE_URL="https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}.tar.gz"
 
 # App package root directory should be the parent folder
 PKGDIR=$(cd ../; pwd)
@@ -28,30 +19,6 @@ WARNING () {  # Writes on the error channel to go into warning.
 #
 # Common helpers
 #
-
-# Download and extract Roundcube sources to the given directory
-# usage: extract_roundcube_to DESTDIR
-extract_roundcube() {
-  local DESTDIR=$1
-
-  # retrieve and extract Roundcube tarball
-  rc_tarball="${DESTDIR}/roundcube.tar.gz"
-  sudo wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
-    || ynh_die "Unable to download Roundcube tarball"
-  echo "$ROUNDCUBE_SOURCE_SHA256 $rc_tarball" | sha256sum -c >/dev/null \
-    || ynh_die "Invalid checksum of downloaded tarball"
-  sudo tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
-    || ynh_die "Unable to extract Roundcube tarball"
-  sudo rm "$rc_tarball"
-
-  # apply patches
-  (cd "$DESTDIR" \
-   && for p in ${PKGDIR}/patches/*.patch; do sudo patch -p1 < $p; done) \
-    || ynh_die "Unable to apply patches to Roundcube"
-
-  # copy composer.json-dist for Roundcube with complete dependencies
-  sudo cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"
-}
 
 # Execute a command as another user
 # usage: exec_as USER COMMAND [ARG ...]
@@ -131,37 +98,6 @@ install_carddav() {
   # Copy plugin the configuration file
   sudo cp "$carddav_tmp_config" "$carddav_config"
   sudo chown "${AS_USER}:" "$carddav_config"
-}
-
-# Create a system user
-#
-# usage: ynh_system_user_create user_name [home_dir]
-# | arg: user_name - Name of the system user that will be create
-# | arg: home_dir - Path of the home dir for the user. Usually the final path of the app. If this argument is omitted, the user will be created without home
-ynh_system_user_create () {
-  if ! ynh_system_user_exists "$1"  # Check if the user exists on the system
-  then  # If the user doesn't exist
-    if [ $# -ge 2 ]; then # If a home dir is mentioned
-      user_home_dir="-d $2"
-    else
-      user_home_dir="--no-create-home"
-    fi
-    sudo useradd $user_home_dir --system --user-group $1 --shell /usr/sbin/nologin || ynh_die "Unable to create $1 system account"
-  fi
-}
-
-# Delete a system user
-#
-# usage: ynh_system_user_delete user_name
-# | arg: user_name - Name of the system user that will be create
-ynh_system_user_delete () {
-    if ynh_system_user_exists "$1"  # Check if the user exists on the system
-    then
-    echo "Remove the user $1" >&2
-    sudo userdel $1
-  else
-    echo "The user $1 was not found" >&2
-    fi
 }
 
 # Normalize the url path syntax
@@ -249,34 +185,6 @@ ynh_remove_fpm_config () {
   ynh_secure_remove "/etc/php5/fpm/pool.d/$app.conf"
   ynh_secure_remove "/etc/php5/fpm/conf.d/20-$app.ini"
   sudo systemctl reload php5-fpm
-}
-
-# Remove a file or a directory securely
-#
-# usage: ynh_secure_remove path_to_remove
-# | arg: path_to_remove - File or directory to remove
-ynh_secure_remove () {
-  path_to_remove=$1
-  forbidden_path=" \
-  /var/www \
-  /home/yunohost.app"
-
-  if [[ "$forbidden_path" =~ "$path_to_remove" \
-    # Match all path or subpath in $forbidden_path
-    || "$path_to_remove" =~ ^/[[:alnum:]]+$ \
-    # Match all first level path from / (Like /var, /root, etc...)
-    || "${path_to_remove:${#path_to_remove}-1}" = "/" ]]
-    # Match if the path finish by /. Because it's seems there is an empty variable
-  then
-    echo "Avoid deleting of $path_to_remove." >&2
-  else
-    if [ -e "$path_to_remove" ]
-    then
-      sudo rm -R "$path_to_remove"
-    else
-      echo "$path_to_remove doesn't deleted because it's not exist." >&2
-    fi
-  fi
 }
 
 ynh_compare_checksum_config () {

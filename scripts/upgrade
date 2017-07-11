@@ -48,7 +48,7 @@ ynh_system_user_create $app
 
 # Create final_path directory and install app inside
 sudo mkdir -p $final_path
-extract_roundcube "${final_path}"
+ynh_setup_source "${final_path}"
 # Change owner by admin for execute composer
 sudo chown -R admin: "${final_path}"
 # init_composer "${final_path}" admin
