@@ -33,6 +33,7 @@ ynh_system_user_delete $app
 sudo systemctl reload nginx
 
 # Remove app dependencies
-if ynh_package_is_installed "$DEPS_PKG_NAME"; then
-  ynh_package_autoremove "$DEPS_PKG_NAME"
-fi
+ynh_remove_app_dependencies
+# The following command is kept as a matter of transition with the previous way
+# of managing dependencies
+ynh_package_autoremove "php-net-ldap3" || true
