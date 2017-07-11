@@ -2,9 +2,6 @@
 # Common variables
 #
 
-# Package name for Roundcube dependencies
-DEPS_PKG_NAME="roundcube-deps"
-
 # App package root directory should be the parent folder
 PKGDIR=$(cd ../; pwd)
 

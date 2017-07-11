@@ -41,7 +41,10 @@ grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
 }
 
 # Install dependencies
-ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control
+ynh_install_app_dependencies php5-cli php5-common php5-intl php5-json php5-mcrypt \
+                              php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 \
+                              php-net-smtp php-net-socket php-crypt-gpg \
+                              php-net-ldap2 php-net-ldap3
 
 # Create system user dedicace for this app
 ynh_system_user_create $app
