@@ -103,7 +103,9 @@ sudo /usr/bin/php -q ./bin/install-jsdeps.sh
 popd
 
 # Change owner final_path directory
-sudo chown -R $app: "${final_path}"
+sudo chown -R root: "${final_path}"
+echo $final_path
+sudo chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
 
 # Modify Nginx configuration file and copy it to Nginx conf directory
 ynh_nginx_config
