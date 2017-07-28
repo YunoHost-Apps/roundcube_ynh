@@ -303,36 +303,3 @@ ynh_abort_if_errors () {
   set -eu # Exit if a command fail, and if a variable is used unset.
   trap ynh_exit_properly EXIT # Capturing exit signals on shell script
 }
-
-# Define and install dependencies with a equivs control file
-# This helper can/should only be called once per app
-#
-# usage: ynh_install_app_dependencies dep [dep [...]]
-# | arg: dep - the package name to install in dependence
-ynh_install_app_dependencies () {
-    dependencies=$@
-    manifest_path="../manifest.json"
-    if [ ! -e "$manifest_path" ]; then
-      manifest_path="../settings/manifest.json" # Into the restore script, the manifest is not at the same place
-    fi
-    version=$(sudo python3 -c "import sys, json;print(json.load(open(\"$manifest_path\"))['version'])") # Retrieve the version number in the manifest file.
-    dep_app=${app//_/-} # Replace all '_' by '-'
-
-    if ynh_package_is_installed "${dep_app}-ynh-deps"; then
-    echo "A package named ${dep_app}-ynh-deps is already installed" >&2
-    else
-        cat > ./${dep_app}-ynh-deps.control << EOF  # Make a control file for equivs-build
-Section: misc
-Priority: optional
-Package: ${dep_app}-ynh-deps
-Version: ${version}
-Depends: ${dependencies// /, }
-Architecture: all
-Description: Fake package for ${app} (YunoHost app) dependencies
- This meta-package is only responsible of installing its dependencies.
-EOF
-        ynh_package_install_from_equivs ./${dep_app}-ynh-deps.control \
-            || ynh_die "Unable to install dependencies" # Install the fake package and its dependencies
-        ynh_app_setting_set $app apt_dependencies $dependencies
-    fi
-}
