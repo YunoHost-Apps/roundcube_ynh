@@ -54,7 +54,9 @@ sudo chown -R admin: "${final_path}"
 # init_composer "${final_path}" admin
 
 # Install the new Roundcube version
-sudo php "${final_path}/bin/installto.sh" "$final_path" --force --accept
+pushd "${final_path}"
+sudo /usr/bin/php -q ./bin/installto.sh "${final_path}" || true
+popd
 
 # Generate a new random DES key
 deskey=$(ynh_string_random 24)
