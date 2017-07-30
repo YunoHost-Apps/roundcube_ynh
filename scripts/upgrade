@@ -1,20 +1,19 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
+# causes the shell to exit if any subcommand or pipeline returns a non-zero status
 set -eu
 
-# Get multi-instances specific variables
-app=$YNH_APP_INSTANCE_NAME
-
-# Load common variables and helpers
-. ./_common.sh
-
-# Set app specific variables
-dbname=$app
-dbuser=$app
-
+if [ ! -e _common.sh ]; then
+    # Get file fonction if not been to the current directory
+    sudo cp ../settings/scripts/_common.sh ./_common.sh
+    sudo chmod a+rx _common.sh
+fi
+# Loads the generic functions usually used in the script
+source _common.sh
 # Source app helpers
-. /usr/share/yunohost/helpers
+source /usr/share/yunohost/helpers
+
+app=$YNH_APP_INSTANCE_NAME
 
 # Retrieve app settings
 domain=$(ynh_app_setting_get "$app" domain)
@@ -22,12 +21,18 @@ path=$(ynh_app_setting_get "$app" path)
 path=${path%/}
 dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 with_carddav=$(ynh_app_setting_get "$app" with_carddav)
+with_enigma=$(ynh_app_setting_get "$app" with_enigma)
+dbname=$app
+dbuser=$app
 
-# Check destination directory
-DESTDIR="/var/www/$app"
-[[ ! -d $DESTDIR ]] && ynh_die \
-"The destination directory '$DESTDIR' does not exist.\
- The app is not correctly installed, you should remove it first."
+ynh_backup_before_upgrade # Backup the current version of the app
+ynh_clean_setup () {
+  ynh_backup_fail_upgrade # restore it if the upgrade fails
+}
+ynh_abort_if_errors # Active trap pour arrêter le script si une erreur est détectée.
+
+# Init final_path, if ever it got deleted somehow
+final_path=/var/www/$app
 
 # FIXME: jessie-backports is needed for php-net-ldap3
 grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
@@ -36,85 +41,98 @@ grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
 }
 
 # Install dependencies
-ynh_package_install_from_equivs ../conf/${DEPS_PKG_NAME}.control \
-  || ynh_die "Unable to install dependencies"
+ynh_install_app_dependencies "$PKG_DEPENDENCIES"
 
-# Create tmp directory and install app inside
-TMPDIR=$(ynh_mkdir_tmp)
-extract_roundcube "$TMPDIR"
+# Create system user dedicace for this app
+ynh_system_user_create $app
+
+# Create final_path directory and install app inside
+sudo mkdir -p $final_path
+ynh_setup_source "${final_path}"
+# Change owner by admin for execute composer
+sudo chown -R admin: "${final_path}"
+# init_composer "${final_path}" admin
 
 # Install the new Roundcube version
-sudo php "${TMPDIR}/bin/installto.sh" "$DESTDIR" --force --accept \
-  || ynh_die "Unable to update Roundcube installation"
-rm -rf "$TMPDIR"
+pushd "${final_path}"
+sudo /usr/bin/php -q ./bin/installto.sh "${final_path}" || true
+popd
 
 # Generate a new random DES key
 deskey=$(ynh_string_random 24)
 
 # Copy and set Roundcube configuration
-rc_conf="${DESTDIR}/config/config.inc.php"
-sed -i "s/#DESKEY#/${deskey}/g" ../conf/config.inc.php
-sed -i "s/#DBUSER#/${dbuser}/g" ../conf/config.inc.php
-sed -i "s/#DBPASS#/${dbpass}/g" ../conf/config.inc.php
-sed -i "s/#DBNAME#/${dbname}/g" ../conf/config.inc.php
-sudo cp ../conf/config.inc.php "$rc_conf"
+rc_conf="${final_path}/config/config.inc.php"
+cp ../conf/config.inc.php "$rc_conf"
+ynh_substitute_char "#DESKEY#" "$deskey" "$rc_conf"
+ynh_substitute_char "#DBUSER#" "$dbuser" "$rc_conf"
+ynh_substitute_char "#DBPASS#" "$dbpass" "$rc_conf"
+ynh_substitute_char "#DBNAME#" "$dbname" "$rc_conf"
 
-# Fix installation directories and permissions
-sudo mkdir -p "${DESTDIR}/logs" "${DESTDIR}/temp"
-sudo chown -R www-data: "$DESTDIR"
+# Install files and set permissions
+sudo mkdir -p "${final_path}/logs" "${final_path}/temp"
 
 # Check if dependencies need to be updated with composer
-if [[ -f ${DESTDIR}/composer.json ]]; then
-  exec_composer www-data "$DESTDIR" update --no-dev --prefer-dist
+if [[ -f ${final_path}/composer.json ]]; then
+  exec_composer admin "${final_path}" update --no-dev --prefer-dist
 else
-  init_composer "$DESTDIR" www-data
+  init_composer "${final_path}" admin
 fi
 
-# Install some plugins manually
-sudo rm -rf "${DESTDIR}/plugins/ldapAliasSync"
-sudo cp -r ../sources/plugins/ldapAliasSync "${DESTDIR}/plugins"
-sudo chown -R www-data: "${DESTDIR}/plugins/ldapAliasSync"
-installed_plugins=" 'ldapAliasSync',"
-
 # Update or install additional plugins
-exec_composer www-data "$DESTDIR" require \
-    "johndoh/contextmenu dev-release-2.1" \
-    "sblaisot/automatic_addressbook"
+exec_composer admin "${final_path}" update --no-dev --prefer-dist \
+    "johndoh/contextmenu dev-master" \
+    "sblaisot/automatic_addressbook dev-master"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Guess with_carddav value if empty
 if [[ -z "${with_carddav:-}" ]]; then
-  [[ -f "${DESTDIR}/plugins/carddav/config.inc.php" ]] \
+  [[ -f "${final_path}/plugins/carddav/config.inc.php" ]] \
     && with_carddav=1 \
     || with_carddav=0
   ynh_app_setting_set "$app" with_carddav "$with_carddav"
 fi
 
-# Update or instal CardDAV plugin
+# Update or install CardDAV plugin
 if [[ $with_carddav -eq 1 ]]; then
-  install_carddav "$DESTDIR" \
+  install_carddav "${final_path}" admin \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
+fi
+
+# Guess with_enigma value if empty
+if [[ -z "${with_enigma:-}" ]]; then
+  [[ -f "${final_path}/plugins/enigma/config.inc.php" ]] \
+    && with_enigma=1 \
+    || with_enigma=0
+  ynh_app_setting_set "$app" with_enigma "$with_enigma"
+fi
+
+# Install Enigma plugin
+if [[ $with_enigma -eq 1 ]]; then
+  sudo cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+    && installed_plugins+=" 'enigma'," \
+    || echo "Unable to install Enigma plugin" >&2
 fi
 
 # Update Roundcube configuration
 sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "$rc_conf"
 
-# Copy and set nginx configuration
-nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-sed -i "s@#PATH#@${path:-/}@g"     ../conf/nginx.conf
-sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/nginx.conf
-sudo cp ../conf/nginx.conf "$nginx_conf"
+# Update javascript dependencies
+pushd ${final_path}
+sudo /usr/bin/php -q ./bin/install-jsdeps.sh
+popd
 
-# Copy and set php-fpm configuration
-phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
-sed -i "s@#POOLNAME#@${app}@g"     ../conf/php-fpm.conf
-sed -i "s@#DESTDIR#@${DESTDIR}/@g" ../conf/php-fpm.conf
-sudo cp ../conf/php-fpm.conf "$phpfpm_conf"
-sudo chown root: $phpfpm_conf
-sudo chmod 644 $phpfpm_conf
+# Owner user app
+sudo chown -R root: "${final_path}"
+sudo chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
+
+# Modify Nginx configuration file and copy it to Nginx conf directory
+ynh_nginx_config
+
+# Create the php-fpm pool config
+ynh_fpm_config
 
 # Reload services
-sudo service php5-fpm restart || true
-sudo service nginx reload || true
+sudo systemctl reload nginx

@@ -1,58 +1,79 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
+# causes the shell to exit if any subcommand or pipeline returns a non-zero status
 set -eu
 
-# Get multi-instances specific variables
+if [ ! -e _common.sh ]; then
+	# Get file fonction if not been to the current directory
+	sudo cp ../settings/scripts/_common.sh ./_common.sh
+	sudo chmod a+rx _common.sh
+fi
+# Loads the generic functions usually used in the script
+source _common.sh
+# Source app helpers
+source /usr/share/yunohost/helpers
+
 app=$YNH_APP_INSTANCE_NAME
 
-# Set app specific variables
+# Retrieve arguments
+domain=$(ynh_app_setting_get "$app" domain)
+path=$(ynh_app_setting_get "$app" path)
+with_carddav=$(ynh_app_setting_get "$app" with_carddav)
+with_enigma=$(ynh_app_setting_get "$app" with_enigma)
+dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
 dbname=$app
 dbuser=$app
 
-# Source app helpers
-. /usr/share/yunohost/helpers
-
-# Retrieve old app settings
-domain=$(ynh_app_setting_get "$app" domain)
-path=$(ynh_app_setting_get "$app" path)
-dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
-
 # Check domain/path availability
 sudo yunohost app checkurl "${domain}${path}" -a "$app" \
-  || exit 1
+    || ynh_die "Path not available: ${domain}${path}"
 
-# Check destination directory
-DESTDIR="/var/www/$app"
-[[ -d $DESTDIR ]] && ynh_die \
-"The destination directory '$DESTDIR' already exists.\
- You should safely delete it before restoring this app."
+# Check $final_path
+final_path="/var/www/${app}"
+if [ -d $final_path ]; then
+	ynh_die "There is already a directory: $final_path"
+fi
 
 # Check configuration files
 nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-[[ -f $nginx_conf ]] && ynh_die \
-"The NGINX configuration already exists at '${nginx_conf}'.
- You should safely delete it before restoring this app."
+if [ -f $nginx_conf ]; then
+	ynh_die "The NGINX configuration already exists at '${nginx_conf}'. 
+	You should safely delete it before restoring this app."
+fi
+# Check configuration files php-fpm
 phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
-[[ -f $phpfpm_conf ]] && ynh_die \
-"The PHP FPM configuration already exists at '${phpfpm_conf}'.
- You should safely delete it before restoring this app."
+if [ -f $phpfpm_conf ]; then 
+	ynh_die "The PHP FPM configuration already exists at '${phpfpm_conf}'. 
+	You should safely delete it before restoring this app."
+fi
 
-# Restore the app files
-sudo cp -a ./sources "$DESTDIR"
+phpfpm_ini="/etc/php5/fpm/conf.d/20-${app}.ini"
+if [ -f $phpfpm_ini ]; then
+	ynh_die "The PHP FPM INI configuration already exists at '${phpfpm_ini}'. 
+	You should safely delete it before restoring this app."
+fi
+
+# Create system user dedicace for this app
+ynh_system_user_create $app
+
+# Restore sources & data
+sudo cp -a "./sources" $final_path
+
+# Set permissions
+sudo chown -R $app: $final_path
 
 # Create and restore the database
 ynh_mysql_create_db $dbname $dbuser $dbpass
 ynh_mysql_connect_as $dbuser $dbpass $dbname < ./dump.sql
 
-# Fix installation directories and permissions
-sudo mkdir -p "${DESTDIR}/logs" "${DESTDIR}/temp"
-sudo chown -R www-data: "$DESTDIR"
-
 # Restore configuration files
-sudo cp -a ./nginx.conf   "$nginx_conf"
-sudo cp -a ./php-fpm.conf "$phpfpm_conf"
+sudo cp -a ./nginx.conf "${nginx_conf}"
 
-# Reload services
-sudo service php5-fpm restart || true
-sudo service nginx reload || true
+# Restore php-fpm configuration files
+sudo cp -a ./php-fpm.conf "${phpfpm_conf}"
+sudo cp -a ./php-fpm.ini "${phpfpm_ini}"
+
+# Reload service
+sudo systemctl reload php5-fpm
+sudo systemctl reload nginx
+sudo yunohost app ssowatconf

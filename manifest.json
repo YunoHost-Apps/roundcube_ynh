@@ -1,14 +1,14 @@
 {
-    "package_format": 1,
     "id": "roundcube",
     "name": "Roundcube",
+    "packaging_format": 1,
     "description": {
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
     "url": "https://roundcube.net/",
     "license": "GPL-3",
-    "version": "1.2.3",
+    "version": "1.3.0",
     "maintainer": {
         "name": "-",
         "email": "-"
@@ -49,6 +49,15 @@
                 "ask": {
                     "en": "Install CardDAV synchronization plugin?",
                     "fr": "Installer le plugin de synchronisation CardDAV ?"
+                },
+                "default": false
+            },
+            {
+                "name": "with_enigma",
+                "type": "boolean",
+                "ask": {
+                    "en": "Install Enigma messages encryption plugin?",
+                    "fr": "Installer le plugin de chiffrement des messages Enigma ?"
                 },
                 "default": false
             }

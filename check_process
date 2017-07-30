@@ -4,6 +4,7 @@
 		domain="domain.tld"	(DOMAIN)
 		path="/path"	(PATH)
 		with_carddav=1
+		with_enigma=1
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1
