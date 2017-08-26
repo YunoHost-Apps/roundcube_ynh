@@ -1,118 +1,189 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-set -eu
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source app helpers
 source ./_common.sh
 source /usr/share/yunohost/helpers
 
-app=$YNH_APP_INSTANCE_NAME
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
 
-# Retrieve arguments
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+
 domain=$YNH_APP_ARG_DOMAIN
-path=$(ynh_normalize_url_path $YNH_APP_ARG_PATH)
+path_url=$YNH_APP_ARG_PATH
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
 with_enigma=$YNH_APP_ARG_WITH_ENIGMA
 
-# Check domain/path availability
-sudo yunohost app checkurl "${domain}${path}" -a "$app" \
-    || ynh_die "Path not available: ${domain}${path}"
+app=$YNH_APP_INSTANCE_NAME
 
-# Set app specific variables
-dbname=$app
-dbuser=$app
-# Generate random DES key & password
-deskey=$(ynh_string_random 24)
-dbpass=$(ynh_string_random)
+#=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
 
-# Save app settings
+# Normalize the url path syntax
+path_url=$(ynh_normalize_url_path $path_url)
+
+final_path=/var/www/$app
+test ! -e "$final_path" || ynh_die "This path already contains a folder"
+
+# Check web path availability
+ynh_webpath_available $domain $path_url
+# Register (book) web path
+ynh_webpath_register $app $domain $path_url
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+
 ynh_app_setting_set $app domain $domain
-ynh_app_setting_set $app path $path
+ynh_app_setting_set $app path $path_url
 ynh_app_setting_set $app with_carddav $with_carddav
 ynh_app_setting_set $app with_enigma $with_enigma
 
-# Check destination directory
-final_path=/var/www/$app
+#=================================================
+# STANDARD MODIFICATIONS
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
 
-# FIXME: jessie-backports is needed for php-net-ldap3
+# jessie-backports is needed for php-net-ldap3
 grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
   echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-    | sudo tee -a /etc/apt/sources.list.d/backports.list >/dev/null
+    | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
 }
 
-# Install dependencies
-ynh_install_app_dependencies "$PKG_DEPENDENCIES"
+ynh_install_app_dependencies "$pkg_dependencies"
 
-# Create system user dedicace for this app
+#=================================================
+# CREATE A MYSQL DATABASE
+#=================================================
+
+db_name=$(ynh_sanitize_dbid $app)
+ynh_app_setting_set $app db_name $db_name
+ynh_mysql_setup_db $db_name $db_name
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+ynh_app_setting_set $app final_path $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+
+# Create a system user
 ynh_system_user_create $app
 
-# Create final_path directory and install app inside
-sudo mkdir -p $final_path
-ynh_setup_source "${final_path}"
-# Change owner by admin for execute composer
-sudo chown -R admin: "${final_path}"
-init_composer "${final_path}"
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
 
-# Initialize database
-ynh_mysql_create_db "$dbname" "$dbuser" "$dbpass"
-ynh_mysql_connect_as "$dbuser" "$dbpass" "$dbname" \
+# Create a dedicated php-fpm config
+ynh_add_fpm_config
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# INSTALL AND INITIALIZE COMPOSER
+#=================================================
+
+init_composer "$final_path"
+
+#=================================================
+# INITIALIZE DATABASE
+#=================================================
+
+ynh_mysql_connect_as "$db_name" "$db_pwd" "$db_name" \
     < "${final_path}/SQL/mysql.initial.sql"
 
-# Copy and set Roundcube configuration
+#=================================================
+# CONFIGURE ROUNDCUBE
+#=================================================
+
 rc_conf="${final_path}/config/config.inc.php"
 cp ../conf/config.inc.php "$rc_conf"
-ynh_substitute_char "#DESKEY#" "$deskey" "$rc_conf"
-ynh_substitute_char "#DBUSER#" "$dbuser" "$rc_conf"
-ynh_substitute_char "#DBPASS#" "$dbpass" "$rc_conf"
-ynh_substitute_char "#DBNAME#" "$dbname" "$rc_conf"
 
-# Install files and set permissions
-sudo mkdir -p "${final_path}/logs" "${final_path}/temp"
+ynh_replace_string "#DESKEY#" "$(ynh_string_random 24)" "$rc_conf"
+ynh_replace_string "#DBUSER#" "$db_name" "$rc_conf"
+ynh_replace_string "#DBPASS#" "$db_pwd" "$rc_conf"
+ynh_replace_string "#DBNAME#" "$db_name" "$rc_conf"
 
-# Install additional plugins
-exec_composer admin "$final_path" require \
-    "johndoh/contextmenu dev-master" \
-    "sblaisot/automatic_addressbook dev-master"
+#=================================================
+# INSTALL ADDITIONAL PLUGINS
+#=================================================
+
+# Create logs and temp directories
+mkdir -p "${final_path}/logs" "${final_path}/temp"
+
+# Install contextmenu and automatic_addressbook plugins
+# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
+# https://plugins.roundcube.net/packages/johndoh/contextmenu
+exec_composer "$final_path" require \
+    "johndoh/contextmenu $contextmenu_version" \
+    "sblaisot/automatic_addressbook $automatic_addressbook_version"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Install CardDAV plugin
 if [[ $with_carddav -eq 1 ]]; then
-  install_carddav "$final_path" admin \
+  install_carddav "$final_path" \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
 fi
 
 # Install Enigma plugin
 if [[ $with_enigma -eq 1 ]]; then
-  sudo cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+  cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
     && installed_plugins+=" 'enigma'," \
     || echo "Unable to install Enigma plugin" >&2
 fi
 
-# Update Roundcube configuration
-sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
+#=================================================
+# UPDATE ROUNDCUBE CONFIGURATION
+#=================================================
+
+sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "${final_path}/config/config.inc.php"
 
 # Update javascript dependencies
-pushd ${final_path}
-sudo /usr/bin/php -q ./bin/install-jsdeps.sh
-popd
+(cd "${final_path}"
+/usr/bin/php -q ./bin/install-jsdeps.sh)
 
-# Change owner final_path directory
-sudo chown -R root: "${final_path}"
-sudo chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
+# Store the config file checksum into the app settings
+ynh_store_file_checksum "${final_path}/config/config.inc.php"
 
-# Modify Nginx configuration file and copy it to Nginx conf directory
-ynh_nginx_config
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
 
-# Create the php-fpm pool config
-ynh_fpm_config
+# Set permissions to app files
+chown -R root: "$final_path"
+chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
 
-# Save app settings
-ynh_app_setting_set "$app" with_carddav "$with_carddav"
-ynh_app_setting_set "$app" mysqlpwd "$dbpass"
+#=================================================
+# RELOAD NGINX
+#=================================================
 
-# Reload services
-sudo systemctl restart php5-fpm
-sudo systemctl reload nginx
+systemctl reload nginx

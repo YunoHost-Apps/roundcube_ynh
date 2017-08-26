@@ -10,8 +10,8 @@
     "license": "GPL-3",
     "version": "1.3.0",
     "maintainer": {
-        "name": "-",
-        "email": "-"
+        "name": "YunoHost Contributors",
+        "email": "apps@yunohost.org"
     },
     "multi_instance": true,
     "services": [
@@ -20,7 +20,7 @@
         "mysql"
     ],
     "requirements": {
-        "yunohost": ">= 2.4.0"
+        "yunohost": ">= 2.6.4"
     },
     "arguments": {
         "install" : [

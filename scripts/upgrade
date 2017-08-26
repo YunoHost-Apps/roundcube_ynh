@@ -1,88 +1,145 @@
 #!/bin/bash
 
-# causes the shell to exit if any subcommand or pipeline returns a non-zero status
-set -eu
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-if [ ! -e _common.sh ]; then
-    # Get file fonction if not been to the current directory
-    sudo cp ../settings/scripts/_common.sh ./_common.sh
-    sudo chmod a+rx _common.sh
-fi
-# Loads the generic functions usually used in the script
 source _common.sh
-# Source app helpers
 source /usr/share/yunohost/helpers
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
 
 app=$YNH_APP_INSTANCE_NAME
 
-# Retrieve app settings
-domain=$(ynh_app_setting_get "$app" domain)
-path=$(ynh_app_setting_get "$app" path)
-path=${path%/}
-dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
-with_carddav=$(ynh_app_setting_get "$app" with_carddav)
-with_enigma=$(ynh_app_setting_get "$app" with_enigma)
-dbname=$app
-dbuser=$app
+domain=$(ynh_app_setting_get $app domain)
+path_url=$(ynh_app_setting_get $app path)
+final_path=$(ynh_app_setting_get $app final_path)
+db_name=$(ynh_app_setting_get $app db_name)
+with_carddav=$(ynh_app_setting_get $app with_carddav)
+with_enigma=$(ynh_app_setting_get $app with_enigma)
 
-ynh_backup_before_upgrade # Backup the current version of the app
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+
+ynh_backup_before_upgrade	# Backup the current version of the app
 ynh_clean_setup () {
-  ynh_backup_fail_upgrade # restore it if the upgrade fails
+	ynh_restore_upgradebackup	# restore it if the upgrade fails
 }
-ynh_abort_if_errors # Active trap pour arrêter le script si une erreur est détectée.
+ynh_abort_if_errors	# Active trap pour arrêter le script si une erreur est détectée.
 
-# Init final_path, if ever it got deleted somehow
-final_path=/var/www/$app
+#=================================================
+# CHECK THE PATH
+#=================================================
 
-# FIXME: jessie-backports is needed for php-net-ldap3
+# Normalize the URL path syntax
+path_url=$(ynh_normalize_url_path $path_url)
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+
+# jessie-backports is needed for php-net-ldap3
 grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
   echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-    | sudo tee -a /etc/apt/sources.list.d/backports.list >/dev/null
+    | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
 }
 
-# Install dependencies
-ynh_install_app_dependencies "$PKG_DEPENDENCIES"
+ynh_install_app_dependencies "$pkg_dependencies"
 
-# Create system user dedicace for this app
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+
+# Create a system user
 ynh_system_user_create $app
 
-# Create final_path directory and install app inside
-sudo mkdir -p $final_path
-ynh_setup_source "${final_path}"
-# Change owner by admin for execute composer
-sudo chown -R admin: "${final_path}"
-# init_composer "${final_path}" admin
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
 
-# Install the new Roundcube version
-pushd "${final_path}"
-sudo /usr/bin/php -q ./bin/installto.sh "${final_path}" || true
-popd
+# Get the current version of roundcube
+oldversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
 
-# Generate a new random DES key
-deskey=$(ynh_string_random 24)
+ynh_app_setting_set $app final_path $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
 
-# Copy and set Roundcube configuration
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config
+
+#=================================================
+# SPECIFIC UPGRADE
+#=================================================
+# INSTALL THE NEW ROUNDCUBE VERSION
+#=================================================
+
+# Verify the checksum and backup the file if it's different
+ynh_store_file_checksum "${final_path}/config/config.inc.php"
+
+# Get the new version of roundcube
+newversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
+
+# Do the upgrade only if it's really needed
+if [ "$newversion" != "$oldversion" ]
+then
+    (cd "$final_path"
+    /usr/bin/php -q ./bin/installto.sh "${final_path}")
+fi
+
+#=================================================
+# CONFIGURE ROUNDCUBE
+#=================================================
+
 rc_conf="${final_path}/config/config.inc.php"
 cp ../conf/config.inc.php "$rc_conf"
-ynh_substitute_char "#DESKEY#" "$deskey" "$rc_conf"
-ynh_substitute_char "#DBUSER#" "$dbuser" "$rc_conf"
-ynh_substitute_char "#DBPASS#" "$dbpass" "$rc_conf"
-ynh_substitute_char "#DBNAME#" "$dbname" "$rc_conf"
+ynh_replace_string "#DESKEY#" "$(ynh_string_random 24)" "$rc_conf"
+ynh_replace_string "#DBUSER#" "$db_name" "$rc_conf"
+db_pwd=$(ynh_app_setting_get $app mysqlpwd)
+ynh_replace_string "#DBPASS#" "$db_pwd" "$rc_conf"
+ynh_replace_string "#DBNAME#" "$db_name" "$rc_conf"
 
-# Install files and set permissions
-sudo mkdir -p "${final_path}/logs" "${final_path}/temp"
+#=================================================
+# UPDATE DEPENDENCIES WITH COMPOSER
+#=================================================
 
 # Check if dependencies need to be updated with composer
 if [[ -f ${final_path}/composer.json ]]; then
-  exec_composer admin "${final_path}" update --no-dev --prefer-dist
+  exec_composer "${final_path}" update --no-dev --prefer-dist
 else
-  init_composer "${final_path}" admin
+  init_composer "${final_path}"
 fi
 
-# Update or install additional plugins
-exec_composer admin "${final_path}" update --no-dev --prefer-dist \
-    "johndoh/contextmenu dev-master" \
-    "sblaisot/automatic_addressbook dev-master"
+#=================================================
+# UPGRADE ADDITIONAL PLUGINS
+#=================================================
+
+# Create logs and temp directories
+mkdir -p "${final_path}/logs" "${final_path}/temp"
+
+# Update or install contextmenu and automatic_addressbook plugins
+# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
+# https://plugins.roundcube.net/packages/johndoh/contextmenu
+exec_composer "${final_path}" update --no-dev --prefer-dist \
+    "johndoh/contextmenu $contextmenu_version" \
+    "sblaisot/automatic_addressbook $automatic_addressbook_version"
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Guess with_carddav value if empty
@@ -95,7 +152,7 @@ fi
 
 # Update or install CardDAV plugin
 if [[ $with_carddav -eq 1 ]]; then
-  install_carddav "${final_path}" admin \
+  install_carddav "${final_path}" \
     && installed_plugins+=" 'carddav'," \
     || echo "Unable to install CardDAV plugin" >&2
 fi
@@ -115,24 +172,32 @@ if [[ $with_enigma -eq 1 ]]; then
     || echo "Unable to install Enigma plugin" >&2
 fi
 
-# Update Roundcube configuration
-sudo sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
+#=================================================
+# UPDATE ROUNDCUBE CONFIGURATION
+#=================================================
+
+sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "$rc_conf"
 
 # Update javascript dependencies
-pushd ${final_path}
-sudo /usr/bin/php -q ./bin/install-jsdeps.sh
-popd
+( cd "${final_path}"
+/usr/bin/php -q ./bin/install-jsdeps.sh)
 
-# Owner user app
-sudo chown -R root: "${final_path}"
-sudo chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
+# Store the config file checksum into the app settings
+ynh_store_file_checksum "${final_path}/config/config.inc.php"
 
-# Modify Nginx configuration file and copy it to Nginx conf directory
-ynh_nginx_config
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
 
-# Create the php-fpm pool config
-ynh_fpm_config
+# Set permissions to app files
+chown -R root: "$final_path"
+chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
 
-# Reload services
-sudo systemctl reload nginx
+#=================================================
+# RELOAD NGINX
+#=================================================
+
+systemctl reload nginx

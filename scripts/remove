@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-set -u
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
 if [ ! -e _common.sh ]; then
 	# Get file fonction if not been to the current directory
@@ -9,31 +12,68 @@ if [ ! -e _common.sh ]; then
 	sudo chmod a+rx _common.sh
 fi
 # Source app helpers
-source ./_common.sh
+source _common.sh
 source /usr/share/yunohost/helpers
 
-# Get multi-instances specific variables
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
 app=$YNH_APP_INSTANCE_NAME
 
-# Retrieve arguments
-domain=$(ynh_app_setting_get "$app" domain)
+domain=$(ynh_app_setting_get $app domain)
+db_name=$(ynh_app_setting_get $app db_name)
 
-# Drop MySQL database and user
-dbname=$app
-dbuser=$app
-ynh_mysql_drop_db "$dbname" 2>&1 || true
-ynh_mysql_drop_user "$dbuser" 2>&1 || true
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# REMOVE DEPENDENCIES
+#=================================================
 
-ynh_secure_remove /var/www/$app
-ynh_secure_remove /etc/nginx/conf.d/$domain.d/$app.conf
+# Remove metapackage and its dependencies
+ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE THE MYSQL DATABASE
+#=================================================
+
+# Remove a database if it exists, along with the associated user
+ynh_mysql_remove_db $db_name $db_name
+
+#=================================================
+# REMOVE APP MAIN DIR
+#=================================================
+
+# Remove the app directory securely
+ynh_secure_remove "/var/www/$app"
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+
+# Remove the dedicated nginx config
+ynh_remove_nginx_config
+
+#=================================================
+# REMOVE PHP-FPM CONFIGURATION
+#=================================================
+
+# Remove the dedicated php-fpm config
 ynh_remove_fpm_config
 
-ynh_system_user_delete $app
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
 
-sudo systemctl reload nginx
-
-# Remove app dependencies
-ynh_remove_app_dependencies
 # The following command is kept as a matter of transition with the previous way
 # of managing dependencies
 ynh_package_autoremove "roundcube-ynh-deps" || true
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+
+# Delete a system user
+ynh_system_user_delete $app
