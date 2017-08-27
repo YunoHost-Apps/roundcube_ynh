@@ -167,7 +167,7 @@ fi
 
 # Install Enigma plugin
 if [[ $with_enigma -eq 1 ]]; then
-  sudo cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+  cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
     && installed_plugins+=" 'enigma'," \
     || echo "Unable to install Enigma plugin" >&2
 fi

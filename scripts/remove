@@ -8,8 +8,8 @@
 
 if [ ! -e _common.sh ]; then
 	# Get file fonction if not been to the current directory
-	sudo cp ../settings/scripts/_common.sh ./_common.sh
-	sudo chmod a+rx _common.sh
+	cp ../settings/scripts/_common.sh ./_common.sh
+	chmod a+rx _common.sh
 fi
 # Source app helpers
 source _common.sh
