@@ -1,58 +1,95 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
+#=================================================
+# GENERIC START
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+# Exit on command errors and treat access to unset variables as an error
 set -eu
 
-# Get multi-instances specific variables
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+if [ ! -e _common.sh ]; then
+	# Get the _common.sh file if it's not in the current directory
+	cp ../settings/scripts/_common.sh ./_common.sh
+	chmod a+rx _common.sh
+fi
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
 app=$YNH_APP_INSTANCE_NAME
 
-# Set app specific variables
-dbname=$app
-dbuser=$app
+domain=$(ynh_app_setting_get $app domain)
+path_url=$(ynh_app_setting_get $app path)
+final_path=$(ynh_app_setting_get $app final_path)
+db_name=$(ynh_app_setting_get $app db_name)
 
-# Source app helpers
-. /usr/share/yunohost/helpers
+#=================================================
+# CHECK IF THE APP CAN BE RESTORED
+#=================================================
 
-# Retrieve old app settings
-domain=$(ynh_app_setting_get "$app" domain)
-path=$(ynh_app_setting_get "$app" path)
-dbpass=$(ynh_app_setting_get "$app" mysqlpwd)
+ynh_webpath_available $domain $path_url \
+	|| ynh_die "Path not available: ${domain}${path_url}"
+test ! -d $final_path \
+	|| ynh_die "There is already a directory: $final_path "
 
-# Check domain/path availability
-sudo yunohost app checkurl "${domain}${path}" -a "$app" \
-  || exit 1
+#=================================================
+# STANDARD RESTORATION STEPS
+#=================================================
+# RESTORE THE NGINX CONFIGURATION
+#=================================================
 
-# Check destination directory
-DESTDIR="/var/www/$app"
-[[ -d $DESTDIR ]] && ynh_die \
-"The destination directory '$DESTDIR' already exists.\
- You should safely delete it before restoring this app."
+ynh_restore_file "/etc/nginx/conf.d/$domain.d/$app.conf"
 
-# Check configuration files
-nginx_conf="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-[[ -f $nginx_conf ]] && ynh_die \
-"The NGINX configuration already exists at '${nginx_conf}'.
- You should safely delete it before restoring this app."
-phpfpm_conf="/etc/php5/fpm/pool.d/${app}.conf"
-[[ -f $phpfpm_conf ]] && ynh_die \
-"The PHP FPM configuration already exists at '${phpfpm_conf}'.
- You should safely delete it before restoring this app."
+#=================================================
+# RESTORE THE APP MAIN DIR
+#=================================================
 
-# Restore the app files
-sudo cp -a ./sources "$DESTDIR"
+ynh_restore_file "$final_path"
 
-# Create and restore the database
-ynh_mysql_create_db $dbname $dbuser $dbpass
-ynh_mysql_connect_as $dbuser $dbpass $dbname < ./dump.sql
+#=================================================
+# RESTORE THE MYSQL DATABASE
+#=================================================
 
-# Fix installation directories and permissions
-sudo mkdir -p "${DESTDIR}/logs" "${DESTDIR}/temp"
-sudo chown -R www-data: "$DESTDIR"
+db_pwd=$(ynh_app_setting_get $app mysqlpwd)
+ynh_mysql_setup_db $db_name $db_name $db_pwd
+ynh_mysql_connect_as $db_name $db_pwd $db_name < ./db.sql
 
-# Restore configuration files
-sudo cp -a ./nginx.conf   "$nginx_conf"
-sudo cp -a ./php-fpm.conf "$phpfpm_conf"
+#=================================================
+# RECREATE THE DEDICATED USER
+#=================================================
 
-# Reload services
-sudo service php5-fpm restart || true
-sudo service nginx reload || true
+# Create the dedicated user (if not existing)
+ynh_system_user_create $app
+
+#=================================================
+# RESTORE USER RIGHTS
+#=================================================
+
+# Restore permissions on app files
+chown -R root: "$final_path"
+chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
+
+#=================================================
+# RESTORE THE PHP-FPM CONFIGURATION
+#=================================================
+
+ynh_restore_file "/etc/php5/fpm/pool.d/$app.conf"
+ynh_restore_file "/etc/php5/fpm/conf.d/20-$app.ini"
+
+#=================================================
+# GENERIC FINALISATION
+#=================================================
+# RELOAD NGINX AND PHP-FPM
+#=================================================
+
+systemctl reload php5-fpm
+systemctl reload nginx

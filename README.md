@@ -4,7 +4,7 @@ Roundcube for YunoHost
 [Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
 an application-like user interface.
 
-**Shipped version:** 1.2.3
+**Shipped version:** 1.2.5
 
 ![](https://roundcube.net/images/screens/mailview.jpg)
 
@@ -48,10 +48,10 @@ Let's say for example that we want to install the
    $ sudo -i
    ```
 
-2. Log in as the `www-data` user - which owns the roundcube directory - and navigate
+2. Log in as the `roundcube` user - which owns the roundcube directory - and navigate
    in it:
    ```
-   # su -s /bin/bash - www-data
+   # su -s /bin/bash - roundcube
    $ cd /var/www/roundcube
    ```
 
@@ -74,7 +74,7 @@ steps as needed.
 #### Manual installation
 
 You can also download the plugin and put it under the `plugins/` directory. In this
-case, do not forget to change ownerships of this folder to `www-data`.
+case, do not forget to change ownerships of this folder to `roundcube`.
 
 ## Links
 
