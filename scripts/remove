@@ -1,33 +1,79 @@
 #!/bin/bash
 
-# Load common variables and helpers
-. ./_common.sh
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Set app specific variables
-app=$1
-dbname=$app
-dbuser=$app
-
-# Source app helpers
-. /usr/share/yunohost/helpers
-
-# Drop MySQL database and user
-ynh_mysql_drop_db "$dbname" 2>&1 || true
-ynh_mysql_drop_user "$dbuser" 2>&1 || true
-
-# Retrieve domain from app settings
-domain=$(ynh_app_setting_get $app domain)
-
-# Delete app directory and configurations
-sudo rm -rf "/var/www/${app}"
-sudo rm -f "/etc/php5/fpm/pool.d/${app}.conf"
-[[ -n $domain ]] && sudo rm -f "/etc/nginx/conf.d/${domain}.d/${app}.conf"
-
-# Reload services
-sudo service php5-fpm restart || true
-sudo service nginx reload || true
-
-# Remove app dependencies
-if ynh_package_is_installed "$DEPS_PKG_NAME"; then
-  ynh_package_autoremove "$DEPS_PKG_NAME"
+if [ ! -e _common.sh ]; then
+	# Get file fonction if not been to the current directory
+	cp ../settings/scripts/_common.sh ./_common.sh
+	chmod a+rx _common.sh
 fi
+# Source app helpers
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$(ynh_app_setting_get $app domain)
+db_name=$(ynh_app_setting_get $app db_name)
+
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# REMOVE DEPENDENCIES
+#=================================================
+
+# Remove metapackage and its dependencies
+ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE THE MYSQL DATABASE
+#=================================================
+
+# Remove a database if it exists, along with the associated user
+ynh_mysql_remove_db $db_name $db_name
+
+#=================================================
+# REMOVE APP MAIN DIR
+#=================================================
+
+# Remove the app directory securely
+ynh_secure_remove "/var/www/$app"
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+
+# Remove the dedicated nginx config
+ynh_remove_nginx_config
+
+#=================================================
+# REMOVE PHP-FPM CONFIGURATION
+#=================================================
+
+# Remove the dedicated php-fpm config
+ynh_remove_fpm_config
+
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
+
+# The following command is kept as a matter of transition with the previous way
+# of managing dependencies
+ynh_package_autoremove "roundcube-ynh-deps" || true
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+
+# Delete a system user
+ynh_system_user_delete $app

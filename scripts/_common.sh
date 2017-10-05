@@ -1,112 +1,66 @@
-#
-# Common variables
-#
 
-# Roundcube version
-VERSION="1.2.3"
 
-# Package name for Roundcube dependencies
-DEPS_PKG_NAME="roundcube-deps"
+# =============================================================================
+# COMMON VARIABLES
+# =============================================================================
 
-# Roundcube complete tarball checksum
-ROUNDCUBE_SOURCE_SHA256="2df820d2ccc7bb320f854a821a1dc9983792f42a3353a1d38fe0822d94980d4d"
+# Package dependencies
+pkg_dependencies="php5-cli php5-common php5-intl php5-json php5-mcrypt php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 php-net-smtp php-net-socket php-crypt-gpg php-net-ldap2 php-net-ldap3"
 
-# Remote URL to fetch Roundcube source tarball
-ROUNDCUBE_SOURCE_URL="https://github.com/roundcube/roundcubemail/releases/download/${VERSION}/roundcubemail-${VERSION}.tar.gz"
+# Plugins version
+contextmenu_version=2.3
+automatic_addressbook_version=v0.4.3
+carddav_version=2.0.4
 
-# App package root directory should be the parent folder
-PKGDIR=$(cd ../; pwd)
-
-#
-# Common helpers
-#
-
-# Download and extract Roundcube sources to the given directory
-# usage: extract_roundcube_to DESTDIR
-extract_roundcube() {
-  local DESTDIR=$1
-
-  # retrieve and extract Roundcube tarball
-  rc_tarball="${DESTDIR}/roundcube.tar.gz"
-  wget -q -O "$rc_tarball" "$ROUNDCUBE_SOURCE_URL" \
-    || ynh_die "Unable to download Roundcube tarball"
-  echo "$ROUNDCUBE_SOURCE_SHA256 $rc_tarball" | sha256sum -c >/dev/null \
-    || ynh_die "Invalid checksum of downloaded tarball"
-  tar xf "$rc_tarball" -C "$DESTDIR" --strip-components 1 \
-    || ynh_die "Unable to extract Roundcube tarball"
-  rm "$rc_tarball"
-
-  # apply patches
-  (cd "$DESTDIR" \
-   && for p in ${PKGDIR}/patches/*.patch; do patch -p1 < $p; done) \
-    || ynh_die "Unable to apply patches to Roundcube"
-
-  # copy composer.json-dist for Roundcube with complete dependencies
-  cp "${PKGDIR}/sources/composer.json-dist" "${DESTDIR}/composer.json-dist"
-}
-
-# Execute a command as another user
-# usage: exec_as USER COMMAND [ARG ...]
-exec_as() {
-  local USER=$1
-  shift 1
-
-  if [[ $USER = $(whoami) ]]; then
-    eval $@
-  else
-    # use sudo twice to be root and be allowed to use another user
-    sudo sudo -u "$USER" $@
-  fi
-}
+# =============================================================================
+# COMMON ROUNDCUBE FUNCTIONS
+# =============================================================================
 
 # Execute a composer command from a given directory
-# usage: composer_exec AS_USER WORKDIR COMMAND [ARG ...]
+# usage: composer_exec workdir COMMAND [ARG ...]
 exec_composer() {
-  local AS_USER=$1
-  local WORKDIR=$2
-  shift 2
+  local workdir=$1
+  shift 1
 
-  exec_as "$AS_USER" COMPOSER_HOME="${WORKDIR}/.composer" \
-    php "${WORKDIR}/composer.phar" $@ \
-      -d "${WORKDIR}" --quiet --no-interaction
+  COMPOSER_HOME="${workdir}/.composer" \
+    php "${workdir}/composer.phar" $@ \
+      -d "${workdir}" --quiet --no-interaction
 }
 
 # Install and initialize Composer in the given directory
-# usage: init_composer DESTDIR [AS_USER]
+# usage: init_composer destdir
 init_composer() {
-  local DESTDIR=$1
-  local AS_USER=${2:-admin}
+  local destdir=$1
 
   # install composer
   curl -sS https://getcomposer.org/installer \
-    | exec_as "$AS_USER" COMPOSER_HOME="${DESTDIR}/.composer" \
-        php -- --quiet --install-dir="$DESTDIR" \
+    | COMPOSER_HOME="${destdir}/.composer" \
+        php -- --quiet --install-dir="$destdir" \
     || ynh_die "Unable to install Composer"
 
   # install composer.json
-  exec_as "$AS_USER" \
-    cp "${DESTDIR}/composer.json-dist" "${DESTDIR}/composer.json"
+  cp "${destdir}/composer.json-dist" "${destdir}/composer.json"
 
   # update dependencies to create composer.lock
-  exec_composer "$AS_USER" "$DESTDIR" install --no-dev --prefer-dist \
+  exec_composer "$destdir" install --no-dev \
     || ynh_die "Unable to update Roundcube core dependencies"
 }
 
 # Install and configure CardDAV plugin for Roundcube
-# usage: install_carddav DESTDIR [AS_USER]
+# usage: install_carddav destdir
+# https://plugins.roundcube.net/packages/roundcube/carddav
 install_carddav() {
-  local DESTDIR=$1
-  local AS_USER=${2:-www-data}
+  local destdir=$1
 
-  local carddav_config="${DESTDIR}/plugins/carddav/config.inc.php"
-  local carddav_tmp_config="${PKGDIR}/conf/carddav.config.inc.php"
+  local carddav_config="${destdir}/plugins/carddav/config.inc.php"
+  local carddav_tmp_config="../conf/carddav.config.inc.php"
 
-  exec_composer "$AS_USER" "$DESTDIR" require \
-      "roundcube/carddav dev-master"
+  exec_composer "$destdir" require \
+      "roundcube/carddav $carddav_version"
 
   # Look for installed and supported CardDAV servers
   for carddav_app in "owncloud" "baikal"; do
-    local app_id=$(sudo yunohost app list --installed -f "$carddav_app" \
+    local app_id=$(yunohost app list --installed -f "$carddav_app" \
             --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
     [[ -z "$app_id" ]] || {
       # Retrieve app settings and enable relevant preset
@@ -121,6 +75,5 @@ install_carddav() {
   done
 
   # Copy plugin the configuration file
-  sudo cp "$carddav_tmp_config" "$carddav_config"
-  sudo chown "${AS_USER}:" "$carddav_config"
+  cp "$carddav_tmp_config" "$carddav_config"
 }
