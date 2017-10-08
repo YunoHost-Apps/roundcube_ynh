@@ -40,8 +40,8 @@
                     "en": "Choose a path for Roundcube",
                     "fr": "Choisissez un chemin pour Roundcube"
                 },
-                "example": "/webmail",
-                "default": "/webmail"
+                "example": "/roundcube",
+                "default": "/roundcube"
             },
             {
                 "name": "with_carddav",

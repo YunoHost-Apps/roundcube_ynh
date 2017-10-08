@@ -58,10 +58,13 @@ ynh_app_setting_set $app with_enigma $with_enigma
 #=================================================
 
 # jessie-backports is needed for php-net-ldap3
-grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
-  echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-    | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
-}
+if test -f /etc/apt/sources.list -o -d /etc/apt/sources.list.d
+then
+  grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
+    echo "deb http://httpredir.debian.org/debian jessie-backports main" \
+      | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
+  }
+fi
 
 ynh_install_app_dependencies "$pkg_dependencies"
 
@@ -77,7 +80,7 @@ ynh_mysql_setup_db $db_name $db_name
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
-ynh_app_setting_set $app final_path $final_path
+ynh_app_setting_set "$app" final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source "$final_path"
 
@@ -165,7 +168,7 @@ fi
 sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
     "${final_path}/config/config.inc.php"
 
-# Update javascript dependencies
+# Update JavaScript dependencies
 (cd "${final_path}"
 /usr/bin/php -q ./bin/install-jsdeps.sh)
 
