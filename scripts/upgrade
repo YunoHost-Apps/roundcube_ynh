@@ -27,13 +27,13 @@ with_enigma=$(ynh_app_setting_get $app with_enigma)
 #=================================================
 
 # If db_name doesn't exist, create it
-if [ -z $db_name ]; then
+if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid $app)
 	ynh_app_setting_set $app db_name $db_name
 fi
 
 # If final_path doesn't exist, create it
-if [ -z $final_path ]; then
+if [ -z "$final_path" ]; then
 	final_path=/var/www/$app
 	ynh_app_setting_set $app final_path $final_path
 fi
@@ -83,7 +83,6 @@ ynh_system_user_create $app
 # Get the current version of roundcube
 oldversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
 
-ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source "$final_path"
 
@@ -104,25 +103,11 @@ ynh_add_fpm_config
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# INSTALL THE NEW ROUNDCUBE VERSION
+# CONFIGURE ROUNDCUBE
 #=================================================
 
 # Verify the checksum and backup the file if it's different
-ynh_store_file_checksum "${final_path}/config/config.inc.php"
-
-# Get the new version of roundcube
-newversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
-
-# Do the upgrade only if it's really needed
-if [ "$newversion" != "$oldversion" ]
-then
-    (cd "$final_path"
-    /usr/bin/php -q ./bin/installto.sh "${final_path}")
-fi
-
-#=================================================
-# CONFIGURE ROUNDCUBE
-#=================================================
+ynh_backup_if_checksum_is_different "${final_path}/config/config.inc.php"
 
 rc_conf="${final_path}/config/config.inc.php"
 cp ../conf/config.inc.php "$rc_conf"
@@ -137,7 +122,7 @@ ynh_replace_string "#DBNAME#" "$db_name" "$rc_conf"
 #=================================================
 
 # Check if dependencies need to be updated with composer
-if [[ -f ${final_path}/composer.json ]]; then
+if [ -f "${final_path}/composer.json" ]; then
   exec_composer "${final_path}" update --no-dev --prefer-dist
 else
   init_composer "${final_path}"
@@ -201,6 +186,13 @@ sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
 
 # Store the config file checksum into the app settings
 ynh_store_file_checksum "${final_path}/config/config.inc.php"
+
+#=================================================
+# UPDATE ROUNDCUBE CORE
+#=================================================
+
+( cd "${final_path}"
+./bin/update.sh --version=$oldversion -y) >&2
 
 #=================================================
 # GENERIC FINALIZATION
