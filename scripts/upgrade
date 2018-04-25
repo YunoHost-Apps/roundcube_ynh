@@ -61,12 +61,6 @@ path_url=$(ynh_normalize_url_path $path_url)
 # INSTALL DEPENDENCIES
 #=================================================
 
-# jessie-backports is needed for php-net-ldap3
-grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
-  echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-    | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
-}
-
 ynh_install_app_dependencies "$pkg_dependencies"
 
 #=================================================
