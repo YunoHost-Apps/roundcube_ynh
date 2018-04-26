@@ -57,6 +57,7 @@ ynh_app_setting_set $app with_enigma $with_enigma
 # INSTALL DEPENDENCIES
 #=================================================
 
+# jessie-backports is needed for php-net-ldap3
 if [ "$(lsb_release --codename --short)" = "jessie" ]; then
       grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
          echo "deb http://httpredir.debian.org/debian jessie-backports main" \
