@@ -12,6 +12,7 @@
 		setup_private=0
 		setup_public=0
 		upgrade=1
+		upgrade=1	from_commit=269500433bdbce3b477fa84d0af0db3ac466244d
 		backup_restore=1
 		multi_instance=1
 		incorrect_path=1
@@ -33,3 +34,7 @@
 ;;; Options
 Email=
 Notification=none
+;;; Upgrade options
+	; commit=269500433bdbce3b477fa84d0af0db3ac466244d
+		name=Fix install+upgrade and refactoring
+		manifest_arg=domain=DOMAIN&path=PATH&with_carddav=1&with_enigma=1&
