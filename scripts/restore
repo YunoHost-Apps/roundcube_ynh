@@ -97,7 +97,6 @@ chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
 #=================================================
 
 ynh_restore_file "/etc/php5/fpm/pool.d/$app.conf"
-ynh_restore_file "/etc/php5/fpm/conf.d/20-$app.ini"
 
 #=================================================
 # GENERIC FINALISATION
