@@ -1,10 +1,17 @@
 Roundcube for YunoHost
 ----------------------
 
+[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube)  
+[![Install roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=roundcube)
+
+> *This package allow you to install roundcube quickly and simply on a YunoHost server.  
+If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
+
+## Overview
 [Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
 an application-like user interface.
 
-**Shipped version:** 1.3.6
+**Shipped version:** 1.3.8
 
 ![](https://roundcube.net/images/screens/mailview.jpg)
 
@@ -76,7 +83,26 @@ steps as needed.
 You can also download the plugin and put it under the `plugins/` directory. In this
 case, do not forget to change ownerships of this folder to `roundcube`.
 
+## YunoHost specific features
+
+#### Multi-users support
+
+Are LDAP and HTTP auth supported?
+Can the app be used by multiple users?
+
+#### Supported architectures
+
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Community%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Community%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
+* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Community%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
+
+## Limitations
+
+* No known limitations.
+
+
 ## Links
 
+ * Report a bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
  * Roundcube website: https://roundcube.net/
  * YunoHost website: https://yunohost.org/
