@@ -92,9 +92,9 @@ Can the app be used by multiple users?
 
 #### Supported architectures
 
-* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Community%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Community%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
-* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Community%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
+* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Official%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
 
 ## Limitations
 
