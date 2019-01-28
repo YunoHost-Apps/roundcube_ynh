@@ -15,7 +15,7 @@ fi
 # Plugins version
 contextmenu_version=2.3
 automatic_addressbook_version=v0.4.3
-carddav_version=2.0.4
+carddav_version=3.0.3
 
 # =============================================================================
 # COMMON ROUNDCUBE FUNCTIONS
