@@ -1,4 +1,4 @@
-Roundcube for YunoHost
+# Roundcube for YunoHost
 ----------------------
 
 [![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube)  
@@ -14,6 +14,10 @@ an application-like user interface.
 **Shipped version:** 1.3.8
 
 ![](https://roundcube.net/images/screens/mailview.jpg)
+
+## Licence
+
+LICENCE: GPL-3.0-only
 
 ## Features
 
