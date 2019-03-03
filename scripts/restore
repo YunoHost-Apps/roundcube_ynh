@@ -3,23 +3,18 @@
 #=================================================
 # GENERIC START
 #=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-# Exit on command errors and treat access to unset variables as an error
-set -eu
-
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
-if [ ! -e _common.sh ]; then
-	# Get the _common.sh file if it's not in the current directory
-	cp ../settings/scripts/_common.sh ./_common.sh
-	chmod a+rx _common.sh
-fi
-source _common.sh
+source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
 #=================================================
 # LOAD SETTINGS
@@ -42,20 +37,6 @@ test ! -d $final_path \
 	|| ynh_die "There is already a directory: $final_path "
 
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-
-# jessie-backports is needed for php-net-ldap3
-if [ "$(lsb_release --codename --short)" = "jessie" ]; then
-      grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
-         echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-           | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
-      }
-fi
-
-ynh_install_app_dependencies "$pkg_dependencies"
-
-#=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
@@ -70,14 +51,6 @@ ynh_restore_file "/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_restore_file "$final_path"
 
 #=================================================
-# RESTORE THE MYSQL DATABASE
-#=================================================
-
-db_pwd=$(ynh_app_setting_get $app mysqlpwd)
-ynh_mysql_setup_db $db_name $db_name $db_pwd
-ynh_mysql_connect_as $db_name $db_pwd $db_name < ./db.sql
-
-#=================================================
 # RECREATE THE DEDICATED USER
 #=================================================
 
@@ -90,19 +63,37 @@ ynh_system_user_create $app
 
 # Restore permissions on app files
 chown -R root: "$final_path"
-chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
+chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 #=================================================
 # RESTORE THE PHP-FPM CONFIGURATION
 #=================================================
 
-ynh_restore_file "/etc/php5/fpm/pool.d/$app.conf"
+ynh_restore_file "/etc/php/7.0/fpm/pool.d/$app.conf"
 
 #=================================================
-# GENERIC FINALISATION
+# SPECIFIC RESTORATION
+#=================================================
+# REINSTALL DEPENDENCIES
+#=================================================
+
+# Define and install dependencies
+ynh_install_app_dependencies "$pkg_dependencies"
+
+#=================================================
+# RESTORE THE MYSQL DATABASE
+#=================================================
+
+db_pwd=$(ynh_app_setting_get $app mysqlpwd)
+ynh_mysql_setup_db $db_name $db_name $db_pwd
+ynh_mysql_connect_as $db_name $db_pwd $db_name < ./db.sql
+
+#=================================================
+# GENERIC FINALIZATION
 #=================================================
 # RELOAD NGINX AND PHP-FPM
 #=================================================
 
 systemctl reload php5-fpm
 systemctl reload nginx
+

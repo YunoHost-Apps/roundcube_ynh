@@ -6,8 +6,11 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-source ./_common.sh
+source _common.sh
 source /usr/share/yunohost/helpers
+# Overload the helper ynh_handle_getopts_args to have fixes from unstable.
+# Needed for composer helpers
+source _getopts_fix.sh
 
 #=================================================
 # MANAGE SCRIPT FAILURE
@@ -31,14 +34,12 @@ app=$YNH_APP_INSTANCE_NAME
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
 
-# Normalize the url path syntax
-path_url=$(ynh_normalize_url_path $path_url)
-
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
 
-# Check web path availability
-ynh_webpath_available $domain $path_url
+# Normalize the url path syntax
+path_url=$(ynh_normalize_url_path $path_url)
+
 # Register (book) web path
 ynh_webpath_register $app $domain $path_url
 
@@ -56,14 +57,6 @@ ynh_app_setting_set $app with_enigma $with_enigma
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-
-# jessie-backports is needed for php-net-ldap3
-if [ "$(lsb_release --codename --short)" = "jessie" ]; then
-      grep -q -R 'jessie-backports' /etc/apt/sources.list{,.d} || {
-         echo "deb http://httpredir.debian.org/debian jessie-backports main" \
-           | tee -a /etc/apt/sources.list.d/backports.list >/dev/null
-      }
-fi
 
 ynh_install_app_dependencies "$pkg_dependencies"
 
@@ -110,69 +103,96 @@ ynh_add_fpm_config
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
 
-init_composer "$final_path"
+# Install composer.json
+cp "$final_path/composer.json-dist" "$final_path/composer.json"
+
+# Install composer
+ynh_install_composer
 
 #=================================================
 # INITIALIZE DATABASE
 #=================================================
 
 ynh_mysql_connect_as "$db_name" "$db_pwd" "$db_name" \
-    < "${final_path}/SQL/mysql.initial.sql"
+    < "$final_path/SQL/mysql.initial.sql"
 
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
+rc_conf="$final_path/config/config.inc.php"
 
-rc_conf="${final_path}/config/config.inc.php"
 cp ../conf/config.inc.php "$rc_conf"
 
-ynh_replace_string "#DESKEY#" "$(ynh_string_random 24)" "$rc_conf"
-ynh_replace_string "#DBUSER#" "$db_name" "$rc_conf"
-ynh_replace_string "#DBPASS#" "$db_pwd" "$rc_conf"
-ynh_replace_string "#DBNAME#" "$db_name" "$rc_conf"
+ynh_replace_string "__DESKEY__" "$(ynh_string_random 24)" "$rc_conf"
+ynh_replace_string "__DBUSER__" $db_name "$rc_conf"
+ynh_replace_string "__DBPASS__" "$db_pwd" "$rc_conf"
+ynh_replace_string "__DBNAME__" $db_name "$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
 #=================================================
 
 # Create logs and temp directories
-mkdir -p "${final_path}/logs" "${final_path}/temp"
+mkdir -p "$final_path/"{logs,temp}
 
 # Install contextmenu and automatic_addressbook plugins
 # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
-exec_composer "$final_path" require \
-    "johndoh/contextmenu $contextmenu_version" \
-    "sblaisot/automatic_addressbook $automatic_addressbook_version"
+ynh_composer_exec --commands="require \
+    johndoh/contextmenu $contextmenu_version \
+    sblaisot/automatic_addressbook $automatic_addressbook_version"
+
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 # Install CardDAV plugin
-if [[ $with_carddav -eq 1 ]]; then
-  install_carddav "$final_path" \
-    && installed_plugins+=" 'carddav'," \
-    || echo "Unable to install CardDAV plugin" >&2
+if [ $with_carddav -eq 1 ]
+then
+    ynh_composer_exec --commands="require roundcube/carddav $carddav_version"
+
+    carddav_tmp_config="../conf/carddav.config.inc.php"
+
+    # Look for installed and supported CardDAV servers
+    for carddav_app in "owncloud" "baikal"
+    do
+        carddav_app_id=$(yunohost app list --installed -f $carddav_app \
+            --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
+        if [ -n "$carddav_app_id" ]
+        then
+            # Retrieve app settings and enable relevant preset
+            carddav_domain=$(ynh_app_setting_get $carddav_app_id domain)
+            carddav_path=$(ynh_app_setting_get $carddav_app_id path)
+            carddav_url="https://${carddav_domain}${carddav_path%/}"
+            ynh_replace_string "{${carddav_app}_url}" "$carddav_url" "$carddav_tmp_config"
+            sed -i "/\/\/\/\/ PRESET FOR: $carddav_app/,/\/\/\/\/ END: $carddav_app/s/^\/\///" "$carddav_tmp_config"
+        fi
+    done
+
+    # Copy the plugin configuration file
+    cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
+
+    installed_plugins+=" 'carddav',"
 fi
 
 # Install Enigma plugin
-if [[ $with_enigma -eq 1 ]]; then
-  cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
-    && installed_plugins+=" 'enigma'," \
-    || echo "Unable to install Enigma plugin" >&2
+if [ $with_enigma -eq 1 ]
+then
+    cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+        && installed_plugins+=" 'enigma'," \
+        || ynh_print_warn "Unable to install Enigma plugin"
 fi
 
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
 
-sed -i "s#^\s*// installed plugins#&\n ${installed_plugins}#" \
-    "${final_path}/config/config.inc.php"
+ynh_replace_string "^\s*// installed plugins" "&\n $installed_plugins" "$rc_conf"
 
 # Update javascript dependencies
-(cd "${final_path}"
+(cd "$final_path"
 /usr/bin/php -q ./bin/install-jsdeps.sh)
 
 # Store the config file checksum into the app settings
-ynh_store_file_checksum "${final_path}/config/config.inc.php"
+ynh_store_file_checksum "$rc_conf"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -182,8 +202,7 @@ ynh_store_file_checksum "${final_path}/config/config.inc.php"
 
 # Set permissions to app files
 chown -R root: "$final_path"
-chown -R $app: "${final_path}/temp/" "${final_path}/logs/"
-chown -R $app: "$final_path/plugins/enigma/home"
+chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 #=================================================
 # RELOAD NGINX

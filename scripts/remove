@@ -6,12 +6,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-if [ ! -e _common.sh ]; then
-	# Get file fonction if not been to the current directory
-	cp ../settings/scripts/_common.sh ./_common.sh
-	chmod a+rx _common.sh
-fi
-# Source app helpers
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -23,6 +17,7 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get $app domain)
 db_name=$(ynh_app_setting_get $app db_name)
+final_path=$(ynh_app_setting_get $app final_path)
 
 #=================================================
 # STANDARD REMOVE
@@ -45,7 +40,7 @@ ynh_mysql_remove_db $db_name $db_name
 #=================================================
 
 # Remove the app directory securely
-ynh_secure_remove "/var/www/$app"
+ynh_secure_remove "$final_path"
 
 #=================================================
 # REMOVE NGINX CONFIGURATION
@@ -60,14 +55,6 @@ ynh_remove_nginx_config
 
 # Remove the dedicated php-fpm config
 ynh_remove_fpm_config
-
-#=================================================
-# SPECIFIC REMOVE
-#=================================================
-
-# The following command is kept as a matter of transition with the previous way
-# of managing dependencies
-ynh_package_autoremove "roundcube-ynh-deps" || true
 
 #=================================================
 # GENERIC FINALIZATION
