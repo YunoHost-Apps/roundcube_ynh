@@ -101,7 +101,7 @@ ynh_mysql_connect_as $db_name $db_pwd $db_name < ./db.sql
 #=================================================
 ynh_print_info "Reloading nginx web server and php-fpm..."
 
-systemctl reload php5-fpm
+systemctl reload php7.0-fpm
 systemctl reload nginx
 
 #=================================================
