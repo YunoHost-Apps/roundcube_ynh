@@ -33,6 +33,7 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
+ynh_print_info "Validating installation parameters..."
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
@@ -46,6 +47,7 @@ ynh_webpath_register $app $domain $path_url
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
+ynh_print_info "Storing installation settings..."
 
 ynh_app_setting_set $app domain $domain
 ynh_app_setting_set $app path $path_url
@@ -57,12 +59,14 @@ ynh_app_setting_set $app with_enigma $with_enigma
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
+ynh_print_info "Installing dependencies..."
 
 ynh_install_app_dependencies "$pkg_dependencies"
 
 #=================================================
 # CREATE A MYSQL DATABASE
 #=================================================
+ynh_print_info "Creating a MySQL database..."
 
 db_name=$(ynh_sanitize_dbid $app)
 ynh_app_setting_set $app db_name $db_name
@@ -71,6 +75,7 @@ ynh_mysql_setup_db $db_name $db_name
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_print_info "Setting up source files..."
 
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
@@ -79,6 +84,7 @@ ynh_setup_source "$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
+ynh_print_info "Configuring nginx web server..."
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -86,6 +92,7 @@ ynh_add_nginx_config
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
+ynh_print_info "Configuring system user..."
 
 # Create a system user
 ynh_system_user_create $app
@@ -93,6 +100,7 @@ ynh_system_user_create $app
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
+ynh_print_info "Configuring php-fpm..."
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config
@@ -102,6 +110,7 @@ ynh_add_fpm_config
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
+ynh_print_info "Installing roundcube with composer..."
 
 # Install composer.json
 cp "$final_path/composer.json-dist" "$final_path/composer.json"
@@ -112,6 +121,7 @@ ynh_install_composer
 #=================================================
 # INITIALIZE DATABASE
 #=================================================
+ynh_print_info "Initializing database..."
 
 ynh_mysql_connect_as "$db_name" "$db_pwd" "$db_name" \
     < "$final_path/SQL/mysql.initial.sql"
@@ -119,6 +129,8 @@ ynh_mysql_connect_as "$db_name" "$db_pwd" "$db_name" \
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
+ynh_print_info "Configuring roundcube..."
+
 rc_conf="$final_path/config/config.inc.php"
 
 cp ../conf/config.inc.php "$rc_conf"
@@ -131,6 +143,7 @@ ynh_replace_string "__DBNAME__" $db_name "$rc_conf"
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
 #=================================================
+ynh_print_info "Installing additional plugins..."
 
 # Create logs and temp directories
 mkdir -p "$final_path/"{logs,temp}
@@ -184,6 +197,7 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
+ynh_print_info "Updating roundcube configuration..."
 
 ynh_replace_string "^\s*// installed plugins" "&\n $installed_plugins" "$rc_conf"
 
@@ -207,5 +221,12 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
+ynh_print_info "Reloading nginx web server..."
 
 systemctl reload nginx
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info "Installation of $app completed"

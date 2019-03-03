@@ -15,6 +15,7 @@ source _getopts_fix.sh
 #=================================================
 # LOAD SETTINGS
 #=================================================
+ynh_print_info "Loading installation settings..."
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -28,6 +29,7 @@ with_enigma=$(ynh_app_setting_get $app with_enigma)
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
+ynh_print_info "Ensuring downward compatibility..."
 
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
@@ -66,6 +68,7 @@ fi
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
+ynh_print_info "Backing up the app before upgrading (may take a while)..."
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -88,6 +91,7 @@ path_url=$(ynh_normalize_url_path $path_url)
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_print_info "Upgrading source files..."
 
 # Get the current version of roundcube
 oldversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
@@ -98,6 +102,7 @@ ynh_setup_source "$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
+ynh_print_info "Upgrading nginx web server configuration..."
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -105,12 +110,14 @@ ynh_add_nginx_config
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
+ynh_print_info "Upgrading dependencies..."
 
 ynh_install_app_dependencies "$pkg_dependencies"
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
+ynh_print_info "Making sure dedicated system user exists..."
 
 # Create a dedicated user (if not existing)
 ynh_system_user_create $app
@@ -118,6 +125,7 @@ ynh_system_user_create $app
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
+ynh_print_info "Upgrading php-fpm configuration..."
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config
@@ -127,6 +135,7 @@ ynh_add_fpm_config
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
+ynh_print_info "Reconfiguring roundcube..."
 
 rc_conf="$final_path/config/config.inc.php"
 
@@ -144,6 +153,7 @@ ynh_replace_string "__DBNAME__" $db_name "$rc_conf"
 #=================================================
 # UPDATE DEPENDENCIES WITH COMPOSER
 #=================================================
+ynh_print_info "Updating dependencies with composer..."
 
 # Check if dependencies need to be updated with composer
 if [ -f "$final_path/composer.json" ]
@@ -159,6 +169,7 @@ fi
 #=================================================
 # UPGRADE ADDITIONAL PLUGINS
 #=================================================
+ynh_print_info "Upgrading additional plugins..."
 
 # Create logs and temp directories
 mkdir -p "$final_path/"{logs,temp}
@@ -212,6 +223,7 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
+ynh_print_info "Updating roundcube configuration..."
 
 ynh_replace_string "^\s*// installed plugins" "&\n $installed_plugins" "$rc_conf"
 
@@ -225,6 +237,7 @@ ynh_store_file_checksum "$rc_conf"
 #=================================================
 # UPDATE ROUNDCUBE CORE
 #=================================================
+ynh_print_info "Updating roundcube core..."
 
 ( cd "$final_path"
 ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
@@ -242,5 +255,12 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
+ynh_print_info "Reloading nginx web server..."
 
 systemctl reload nginx
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info "Upgrade of $app completed"
