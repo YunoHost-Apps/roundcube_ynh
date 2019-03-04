@@ -191,7 +191,7 @@ then
     carddav_tmp_config="../conf/carddav.config.inc.php"
 
     # Look for installed and supported CardDAV servers
-    for carddav_app in "owncloud" "baikal"
+    for carddav_app in "owncloud" "nextcloud" "baikal"
     do
         carddav_app_id=$(yunohost app list --installed -f $carddav_app \
             --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
