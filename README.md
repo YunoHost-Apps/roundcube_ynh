@@ -13,27 +13,11 @@ an application-like user interface.
 
 **Shipped version:** 1.3.8
 
-![](https://roundcube.net/images/screens/mailview.jpg)
+![](https://roundcube.net/images/screens/mailbox.png)
 
 ## Licence
 
 LICENCE: GPL-3.0-only
-
-## Features
-
-In addition to Roundcube core features, the following are made available with
-this package:
-
- * Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
-   search
- * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
-   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
-   plugins by default
- * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
-   (address book) synchronization plugin at the installation - note that if
-   you have installed ownCloud or Baïkal, it will automatically add the
-   corresponding and existing address book.
 
 ## Extend and tweak
 
@@ -89,11 +73,21 @@ case, do not forget to change ownerships of this folder to `roundcube`.
 
 ## YunoHost specific features
 
+In addition to Roundcube core features, the following are made available with
+this package:
+
+ * Synchronize your email aliases as identities in Roundcube
+ * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
+   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
+   plugins by default
+ * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
+   (address book) synchronization plugin at the installation - note that if
+   you have installed ownCloud or Baïkal, it will automatically add the
+   corresponding and existing address book.
+
 #### Multi-users support
-
-Are LDAP and HTTP auth supported?
-Can the app be used by multiple users?
-
+* Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
+  search
 #### Supported architectures
 
 * x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
