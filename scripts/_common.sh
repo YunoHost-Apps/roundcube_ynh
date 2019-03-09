@@ -10,7 +10,7 @@ pkg_dependencies="php-cli php-common php-intl php-json php-mcrypt php-pear php-a
 # Plugins version
 contextmenu_version=2.3
 automatic_addressbook_version=v0.4.3
-carddav_version=2.0.4
+carddav_version=3.0.3
 
 #=================================================
 # EXPERIMENTAL HELPERS

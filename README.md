@@ -7,11 +7,10 @@
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
 ## Overview
-
 [Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
 an application-like user interface.
 
-**Shipped version:** 1.3.6
+**Shipped version:** 1.3.8
 
 ## Screenshots
 
@@ -28,23 +27,16 @@ You can extend - or even override - the Roundcube configuration which is coming 
 ## Documentation
 
  * Official documentation: https://github.com/roundcube/roundcubemail/wiki
- * YunoHost documentation: https://github.com/YunoHost/doc/blob/master/app_roundcube.md
+ * YunoHost documentation: https://github.com/YunoHost/doc/blob/master/app_roundcube.md:
+
+## Licence
+
+LICENCE: GPL-3.0-only
 
 ## YunoHost specific features
 
 In addition to Roundcube core features, the following are made available with
-this package:
-
- * Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
-   search
- * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
-   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
-   plugins by default
- * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
-   (address book) synchronization plugin at the installation - note that if
-   you have installed ownCloud or Baïkal, it will automatically add the
-   corresponding and existing address book.
+this package
 
 #### Multi-users support
 
@@ -101,6 +93,34 @@ steps as needed.
 
 You can also download the plugin and put it under the `plugins/` directory. In this
 case, do not forget to change ownerships of this folder to `roundcube`.
+
+## YunoHost specific features
+
+In addition to Roundcube core features, the following are made available with
+this package:
+
+ * Synchronize your email aliases as identities in Roundcube
+ * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
+   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
+   plugins by default
+ * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
+   (address book) synchronization plugin at the installation - note that if
+   you have installed ownCloud or Baïkal, it will automatically add the
+   corresponding and existing address book.
+
+#### Multi-users support
+* Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
+  search
+#### Supported architectures
+
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
+* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Official%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
+
+## Limitations
+
+* No known limitations.
+
 
 ## Links
 
