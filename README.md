@@ -113,9 +113,9 @@ this package:
   search
 #### Supported architectures
 
-* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Official%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
-* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Official%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
+* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
 
 ## Limitations
 
@@ -126,6 +126,7 @@ this package:
 
  * Report a bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
  * Roundcube website: https://roundcube.net/
+ * Roundcube repository: https://github.com/roundcube/roundcubemail
  * YunoHost website: https://yunohost.org/
 
 ---
