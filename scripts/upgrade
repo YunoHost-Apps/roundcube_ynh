@@ -155,6 +155,9 @@ ynh_replace_string "__DBNAME__" $db_name "$rc_conf"
 #=================================================
 ynh_print_info "Updating dependencies with composer..."
 
+# Upgrade composer itself
+ynh_install_composer
+
 # Check if dependencies need to be updated with composer
 if [ -f "$final_path/composer.json" ]
 then
@@ -162,10 +165,8 @@ then
 else
     # Install composer.json
     cp "$final_path/composer.json-dist" "$final_path/composer.json"
-
-    # Install composer
-    ynh_install_composer
 fi
+
 #=================================================
 # UPGRADE ADDITIONAL PLUGINS
 #=================================================
