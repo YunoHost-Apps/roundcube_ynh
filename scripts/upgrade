@@ -165,6 +165,9 @@ then
     #=================================================
     ynh_script_progression --message="Updating dependencies with composer..." --weight=30
 
+    # Upgrade composer itself
+    ynh_install_composer
+
     # Check if dependencies need to be updated with composer
     if [ -f "$final_path/composer.json" ]
     then
@@ -172,9 +175,6 @@ then
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
-
-        # Install composer
-        ynh_install_composer
     fi
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
