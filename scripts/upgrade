@@ -8,39 +8,42 @@
 
 source _common.sh
 source /usr/share/yunohost/helpers
-# Overload the helper ynh_handle_getopts_args to have fixes from unstable.
-# Needed for composer helpers
-source _getopts_fix.sh
 
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_print_info "Loading installation settings..."
+ynh_script_progression --message="Loading installation settings..." --weight=2
 
 app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get $app domain)
-path_url=$(ynh_app_setting_get $app path)
-final_path=$(ynh_app_setting_get $app final_path)
-db_name=$(ynh_app_setting_get $app db_name)
-with_carddav=$(ynh_app_setting_get $app with_carddav)
-with_enigma=$(ynh_app_setting_get $app with_enigma)
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+path_url=$(ynh_app_setting_get --app=$app --key=path)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
+with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
+
+#=================================================
+# CHECK VERSION
+#=================================================
+
+upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_print_info "Ensuring downward compatibility..."
+ynh_script_progression --message="Ensuring downward compatibility..."
 
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
-	db_name=$(ynh_sanitize_dbid $app)
-	ynh_app_setting_set $app db_name $db_name
+	db_name=$(ynh_sanitize_dbid --db_name=$app)
+	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 fi
 
 # If final_path doesn't exist, create it
 if [ -z "$final_path" ]; then
 	final_path=/var/www/$app
-	ynh_app_setting_set $app final_path $final_path
+	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
 # If with_carddav doesn't exist, create it
@@ -51,7 +54,7 @@ if [ -z "$with_carddav" ]; then
 	else
 		with_carddav=0
 	fi
-	ynh_app_setting_set $app with_carddav $with_carddav
+	ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 fi
 
 # If with_enigma doesn't exist, create it
@@ -62,13 +65,13 @@ if [ -z "$with_enigma" ]; then
 	else
 		with_enigma=0
 	fi
-	ynh_app_setting_set $app with_enigma $with_enigma
+	ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 fi
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_print_info "Backing up the app before upgrading (may take a while)..."
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=30
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -84,25 +87,29 @@ ynh_abort_if_errors
 #=================================================
 
 # Normalize the URL path syntax
-path_url=$(ynh_normalize_url_path $path_url)
+path_url=$(ynh_normalize_url_path --path_url=$path_url)
 
 #=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_print_info "Upgrading source files..."
 
 # Get the current version of roundcube
 oldversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
 
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+if [ "$upgrade_type" == "UPGRADE_APP" ]
+then
+	ynh_script_progression --message="Upgrading source files..." --weight=3
+
+	# Download, check integrity, uncompress and patch the source from app.src
+	ynh_setup_source --dest_dir="$final_path"
+fi
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_print_info "Upgrading nginx web server configuration..."
+ynh_script_progression --message="Upgrading nginx web server configuration..."
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -110,22 +117,22 @@ ynh_add_nginx_config
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
-ynh_print_info "Upgrading dependencies..."
+ynh_script_progression --message="Upgrading dependencies..." --weight=25
 
 ynh_install_app_dependencies "$pkg_dependencies"
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_print_info "Making sure dedicated system user exists..."
+ynh_script_progression --message="Making sure dedicated system user exists..."
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create $app
+ynh_system_user_create --username=$app
 
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_print_info "Upgrading php-fpm configuration..."
+ynh_script_progression --message="Upgrading php-fpm configuration..." --weight=5
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config
@@ -135,114 +142,117 @@ ynh_add_fpm_config
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_print_info "Reconfiguring roundcube..."
 
-rc_conf="$final_path/config/config.inc.php"
-
-# Verify the checksum and backup the file if it's different
-ynh_backup_if_checksum_is_different "$rc_conf"
-
-cp ../conf/config.inc.php "$rc_conf"
-
-ynh_replace_string "__DESKEY__" "$(ynh_string_random 24)" "$rc_conf"
-ynh_replace_string "__DBUSER__" $db_name "$rc_conf"
-db_pwd=$(ynh_app_setting_get $app mysqlpwd)
-ynh_replace_string "__DBPASS__" "$db_pwd" "$rc_conf"
-ynh_replace_string "__DBNAME__" $db_name "$rc_conf"
-
-#=================================================
-# UPDATE DEPENDENCIES WITH COMPOSER
-#=================================================
-ynh_print_info "Updating dependencies with composer..."
-
-# Upgrade composer itself
-ynh_install_composer
-
-# Check if dependencies need to be updated with composer
-if [ -f "$final_path/composer.json" ]
+if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-    ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
-else
-    # Install composer.json
-    cp "$final_path/composer.json-dist" "$final_path/composer.json"
+    ynh_script_progression --message="Reconfiguring roundcube..."
+
+    rc_conf="$final_path/config/config.inc.php"
+
+    # Verify the checksum and backup the file if it's different
+    ynh_backup_if_checksum_is_different "$rc_conf"
+
+    cp ../conf/config.inc.php "$rc_conf"
+
+    ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
+    db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
+    ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DBNAME__" --replace_string=$db_name --target_file="$rc_conf"
+
+    #=================================================
+    # UPDATE DEPENDENCIES WITH COMPOSER
+    #=================================================
+    ynh_script_progression --message="Updating dependencies with composer..." --weight=30
+
+    # Upgrade composer itself
+    ynh_install_composer
+
+    # Check if dependencies need to be updated with composer
+    if [ -f "$final_path/composer.json" ]
+    then
+        ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
+    else
+        # Install composer.json
+        cp "$final_path/composer.json-dist" "$final_path/composer.json"
+    fi
+    #=================================================
+    # UPGRADE ADDITIONAL PLUGINS
+    #=================================================
+    ynh_script_progression --message="Upgrading additional plugins..." --weight=30
+
+    # Create logs and temp directories
+    mkdir -p "$final_path/"{logs,temp}
+
+    # Update or install contextmenu and automatic_addressbook plugins
+    # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
+    # https://plugins.roundcube.net/packages/johndoh/contextmenu
+    ynh_composer_exec --commands="update --no-dev --prefer-dist \
+        johndoh/contextmenu $contextmenu_version \
+        sblaisot/automatic_addressbook $automatic_addressbook_version"
+
+    installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+
+    # Update or install CardDAV plugin
+    if [ $with_carddav -eq 1 ]
+    then
+        ynh_composer_exec --commands="require roundcube/carddav $carddav_version"
+
+        carddav_tmp_config="../conf/carddav.config.inc.php"
+
+        # Look for installed and supported CardDAV servers
+        for carddav_app in "owncloud" "nextcloud" "baikal"
+        do
+            carddav_app_id=$(yunohost app list --installed -f $carddav_app \
+                --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
+            if [ -n "$carddav_app_id" ]
+            then
+                # Retrieve app settings and enable relevant preset
+                carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
+                carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
+                carddav_url="https://${carddav_domain}${carddav_path%/}"
+                ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$carddav_tmp_config"
+                ynh_replace_string --match_string="\/\* PRESET FOR: $carddav_app" --replace_string="" --target_file="$carddav_tmp_config"
+                ynh_replace_string --match_string="END: $carddav_app \*\/" --replace_string="" --target_file="$carddav_tmp_config"
+            fi
+        done
+
+        # Copy the plugin configuration file
+        cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
+
+        installed_plugins+=" 'carddav',"
+    fi
+
+    # Install Enigma plugin
+    if [ $with_enigma -eq 1 ]
+    then
+        cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+            && installed_plugins+=" 'enigma'," \
+            || ynh_print_warn --message="Unable to install Enigma plugin"
+    fi
+
+    #=================================================
+    # UPDATE ROUNDCUBE CONFIGURATION
+    #=================================================
+    ynh_script_progression --message="Updating roundcube configuration..." --weight=4
+
+    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
+
+    # Update javascript dependencies
+    (cd "$final_path"
+    /usr/bin/php -q ./bin/install-jsdeps.sh)
+
+    # Store the config file checksum into the app settings
+    ynh_store_file_checksum --file="$rc_conf"
+
+    #=================================================
+    # UPDATE ROUNDCUBE CORE
+    #=================================================
+    ynh_script_progression --message="Updating roundcube core..." --weight=4
+
+    ( cd "$final_path"
+    ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 fi
-
-#=================================================
-# UPGRADE ADDITIONAL PLUGINS
-#=================================================
-ynh_print_info "Upgrading additional plugins..."
-
-# Create logs and temp directories
-mkdir -p "$final_path/"{logs,temp}
-
-# Update or install contextmenu and automatic_addressbook plugins
-# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
-# https://plugins.roundcube.net/packages/johndoh/contextmenu
-ynh_composer_exec --commands="update --no-dev --prefer-dist \
-    johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version"
-
-installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
-
-# Update or install CardDAV plugin
-if [ $with_carddav -eq 1 ]
-then
-    ynh_composer_exec --commands="require roundcube/carddav $carddav_version"
-
-    carddav_tmp_config="../conf/carddav.config.inc.php"
-
-    # Look for installed and supported CardDAV servers
-    for carddav_app in "owncloud" "nextcloud" "baikal"
-    do
-        carddav_app_id=$(yunohost app list --installed -f $carddav_app \
-            --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
-        if [ -n "$carddav_app_id" ]
-        then
-            # Retrieve app settings and enable relevant preset
-            carddav_domain=$(ynh_app_setting_get $carddav_app_id domain)
-            carddav_path=$(ynh_app_setting_get $carddav_app_id path)
-            carddav_url="https://${carddav_domain}${carddav_path%/}"
-            ynh_replace_string "{${carddav_app}_url}" "$carddav_url" "$carddav_tmp_config"
-            ynh_replace_string "\/\* PRESET FOR: $carddav_app" "" "$carddav_tmp_config"
-            ynh_replace_string "END: $carddav_app \*\/" "" "$carddav_tmp_config"
-        fi
-    done
-
-    # Copy the plugin configuration file
-    cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
-
-    installed_plugins+=" 'carddav',"
-fi
-
-# Install Enigma plugin
-if [ $with_enigma -eq 1 ]
-then
-    cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
-        && installed_plugins+=" 'enigma'," \
-        || ynh_print_warn "Unable to install Enigma plugin"
-fi
-
-#=================================================
-# UPDATE ROUNDCUBE CONFIGURATION
-#=================================================
-ynh_print_info "Updating roundcube configuration..."
-
-ynh_replace_string "^\s*// installed plugins" "&\n $installed_plugins" "$rc_conf"
-
-# Update javascript dependencies
-(cd "$final_path"
-/usr/bin/php -q ./bin/install-jsdeps.sh)
-
-# Store the config file checksum into the app settings
-ynh_store_file_checksum "$rc_conf"
-
-#=================================================
-# UPDATE ROUNDCUBE CORE
-#=================================================
-ynh_print_info "Updating roundcube core..."
-
-( cd "$final_path"
-ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 
 #=================================================
 # GENERIC FINALIZATION
@@ -257,12 +267,12 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_print_info "Reloading nginx web server..."
+ynh_script_progression --message="Reloading nginx web server..."
 
-systemctl reload nginx
+ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info "Upgrade of $app completed"
+ynh_script_progression --message="Installation of $app completed" --last
