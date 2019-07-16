@@ -211,6 +211,7 @@ ynh_store_file_checksum --file="$rc_conf"
 
 # Set permissions to app files
 chown -R root: "$final_path"
+mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 #=================================================
