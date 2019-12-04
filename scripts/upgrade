@@ -226,7 +226,11 @@ then
     # Install Enigma plugin
     if [ $with_enigma -eq 1 ]
     then
-        cp -a "$final_path/plugins/enigma/config.inc.php.dist" "$final_path/plugins/enigma/config.inc.php" \
+        enigma_tmp_config="../conf/enigma.config.inc.php"
+
+        ynh_replace_string --match_string="__DIR__" --replace_string="$final_path/plugins/enigma/home" --target_file="$enigma_tmp_config"
+
+        cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
             && installed_plugins+=" 'enigma'," \
             || ynh_print_warn --message="Unable to install Enigma plugin"
     fi
@@ -262,6 +266,7 @@ fi
 
 # Set permissions to app files
 chown -R root: "$final_path"
+mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 #=================================================
