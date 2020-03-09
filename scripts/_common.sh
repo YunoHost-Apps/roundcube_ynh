@@ -5,7 +5,7 @@
 #=================================================
 
 # Package dependencies
-pkg_dependencies="php-cli php-common php-intl php-json php-mcrypt php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 php-net-smtp php-net-socket php-net-ldap2 php-net-ldap3 php-zip php-gd php-mbstring php-curl"
+pkg_dependencies="php-cli php-common php-intl php-json php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 php-net-smtp php-net-socket php-net-ldap2 php-net-ldap3 php-zip php-gd php-mbstring php-curl"
 
 # Plugins version
 contextmenu_version=2.3
