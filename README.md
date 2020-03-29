@@ -1,6 +1,6 @@
 # Roundcube for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube)
+[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
 [![Install Roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=roundcube)
 
 > *This package allow you to install Roundcube quickly and simply on a YunoHost server.
@@ -44,7 +44,7 @@ this package:
    corresponding and existing address book.
 
 #### Multi-users support
-* Integrate with YunoHost users and SSO - i.e. logout button, YunoHost users
+* Integrate with YunoHost users and SSO - i.e logout button, YunoHost users
   search
 
 #### Supported architectures
