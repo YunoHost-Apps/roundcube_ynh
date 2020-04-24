@@ -184,6 +184,9 @@ then
     # Create logs and temp directories
     mkdir -p "$final_path/"{logs,temp}
 
+    # Install net_LDAP
+    ynh_composer_exec --commands="require kolab/net_ldap3"
+
     # Update or install contextmenu and automatic_addressbook plugins
     # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
     # https://plugins.roundcube.net/packages/johndoh/contextmenu
