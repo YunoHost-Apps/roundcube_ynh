@@ -184,6 +184,9 @@ then
     # Create logs and temp directories
     mkdir -p "$final_path/"{logs,temp}
 
+    # Install net_LDAP
+    ynh_composer_exec --commands="require kolab/net_ldap3"
+
     # Update or install contextmenu and automatic_addressbook plugins
     # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
     # https://plugins.roundcube.net/packages/johndoh/contextmenu
@@ -199,6 +202,7 @@ then
         ynh_composer_exec --commands="require roundcube/carddav $carddav_version"
 
         carddav_tmp_config="../conf/carddav.config.inc.php"
+        carddav_server=0
 
         # Look for installed and supported CardDAV servers
         for carddav_app in "owncloud" "nextcloud" "baikal"
@@ -207,6 +211,7 @@ then
                 --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
             if [ -n "$carddav_app_id" ]
             then
+                carddav_server=1
                 # Retrieve app settings and enable relevant preset
                 carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
                 carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
@@ -220,7 +225,11 @@ then
         # Copy the plugin configuration file
         cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
 
-        installed_plugins+=" 'carddav',"
+        # Do not actually add the carddav plugin if there's no carddav server available...
+        if [ $carddav_server -eq 1 ]
+        then
+            installed_plugins+=" 'carddav',"
+        fi
     fi
 
     # Install Enigma plugin
