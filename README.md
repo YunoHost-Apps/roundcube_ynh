@@ -10,11 +10,11 @@ If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to
 [Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
 an application-like user interface.
 
-**Shipped version:** 1.4.6
+**Shipped version:** 1.4.7
 
 ## Screenshots
 
-![](https://roundcube.net/images/screens/mailbox.png)
+![](https://roundcube.net/screens/skins/elastic/desktop/screens/mailbox_widescreen.png)
 
 ## Demo
 
@@ -49,9 +49,8 @@ this package:
 
 #### Supported architectures
 
-* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
 * ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
-* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-stretch.nohost.me/ci/apps/roundcube/)
 
 ## Limitations
 
@@ -115,7 +114,6 @@ case, do not forget to change ownerships of this folder to `roundcube`.
 Developers info
 ----------------
 
-**Only if you want to use a testing branch for coding, instead of merging directly into master.**
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
