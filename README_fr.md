@@ -38,7 +38,7 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
  * Installer [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
    et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
    plugins par default
- * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)(carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé ownCloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant et existant.
+ * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)(carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant et existant.
 
 #### Multi-users support
 * Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, les utilisateurs YunoHost chercher
