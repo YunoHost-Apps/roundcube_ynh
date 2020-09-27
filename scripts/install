@@ -51,13 +51,6 @@ ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."
-
-ynh_install_app_dependencies "$pkg_dependencies"
-
-#=================================================
 # CREATE A MYSQL DATABASE
 #=================================================
 ynh_script_progression --message="Creating a MySQL database..."
@@ -78,9 +71,9 @@ ynh_setup_source --dest_dir="$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx web server..."
+ynh_script_progression --message="Configuring NGINX web server..." --weight=2
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -94,17 +87,18 @@ ynh_system_user_create --username=$app
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring php-fpm..." --weight=2
+ynh_script_progression --message="Configuring PHP-FPM..." --weight=2
 
-# Create a dedicated php-fpm config
-ynh_add_fpm_config
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config --phpversion=$YNH_PHP_VERSION --package="$extra_php_dependencies"
+phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
 # SPECIFIC SETUP
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-ynh_script_progression --message="Installing roundcube with composer..." --weight=30
+ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
 
 # Install composer.json
 cp "$final_path/composer.json-dist" "$final_path/composer.json"
@@ -123,7 +117,7 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring roundcube..."
+ynh_script_progression --message="Configuring Roundcube..."
 
 rc_conf="$final_path/config/config.inc.php"
 
@@ -163,7 +157,7 @@ then
     carddav_server=0
 
     # Look for installed and supported CardDAV servers
-    for carddav_app in "owncloud" "nextcloud" "baikal"
+    for carddav_app in "nextcloud" "baikal"
     do
         carddav_app_id=$(yunohost app list --installed -f $carddav_app \
             --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
@@ -183,7 +177,7 @@ then
     # Copy the plugin configuration file
     cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
 
-    # Do not actualy add the carddav plugin if there's no carddav server available...
+    # Do not actualy add the carddav plugin if there's no CardDAV server available...
     if [ $carddav_server -eq 1 ]
     then
         installed_plugins+=" 'carddav',"
@@ -205,7 +199,7 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Updating roundcube configuration..." --weight=3
+ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
 
 ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
 
@@ -230,7 +224,7 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading nginx web server..." --weight=2
+ynh_script_progression --message="Reloading NGINX web server..." --weight=2
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -238,4 +232,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression --message="Installation of Roundcube completed" --last

@@ -4,8 +4,10 @@
 # COMMON VARIABLES
 #=================================================
 
+YNH_PHP_VERSION="7.3"
+
 # Package dependencies
-pkg_dependencies="php-cli php-common php-intl php-json php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 php-net-smtp php-net-socket php-zip php-gd php-mbstring php-curl"
+extra_php_dependencies="php${YNH_PHP_VERSION}-cli php${YNH_PHP_VERSION}-common php${YNH_PHP_VERSION}-intl php${YNH_PHP_VERSION}-json php${YNH_PHP_VERSION}-pear php${YNH_PHP_VERSION}-auth-sasl php${YNH_PHP_VERSION}-mail-mime php${YNH_PHP_VERSION}-patchwork-utf8 php${YNH_PHP_VERSION}-net-smtp php${YNH_PHP_VERSION}-net-socket php${YNH_PHP_VERSION}-zip php${YNH_PHP_VERSION}-gd php${YNH_PHP_VERSION}-mbstring php${YNH_PHP_VERSION}-curl"
 
 # Plugins version
 contextmenu_version=2.3
@@ -31,7 +33,7 @@ ynh_composer_exec () {
 	# Manage arguments with getopts
 	ynh_handle_getopts_args "$@"
 	workdir="${workdir:-$final_path}"
-	phpversion="${phpversion:-7.0}"
+	phpversion="${phpversion:-7.3}"
 
 	COMPOSER_HOME="$workdir/.composer" \
 		php${phpversion} "$workdir/composer.phar" $commands \
@@ -51,7 +53,7 @@ ynh_install_composer () {
 	# Manage arguments with getopts
 	ynh_handle_getopts_args "$@"
 	workdir="${workdir:-$final_path}"
-	phpversion="${phpversion:-7.0}"
+	phpversion="${phpversion:-7.3}"
 
 	curl -sS https://getcomposer.org/installer \
 		| COMPOSER_HOME="$workdir/.composer" \
