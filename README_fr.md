@@ -30,18 +30,18 @@ Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie 
  * Documentation officielle : https://github.com/roundcube/roundcubemail/wiki
  * Documentation YunoHost : https://github.com/YunoHost/doc/blob/master/app_roundcube.md:
 
-## YunoHost specific features
+## Caractéristiques spécifiques YunoHost
 
-En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce package :
+En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce paquet :
 
- * Synchronisez vos alias de messagerie en tant qu'identités dans Roundcube
- * Installer [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
-   et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
-   plugins par default
- * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)(carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant et existant.
+ * Synchronisez vos alias de messagerie en tant qu'identités dans Roundcube.
+ * Installation des plugins [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
+   et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) par default.
+ * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant.
 
-#### Multi-users support
-* Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, les utilisateurs YunoHost chercher
+#### Support multi-utilisateur
+
+* Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, reconnaissance des autres utilisateurs de l'instance YunoHost.
 
 #### Supported architectures
 
@@ -56,14 +56,13 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
 
 #### Plugins
 
-Vous pouvez également installer d'autres plugins (qui ne seront pas supprimés avec les mises à niveau). Faire cela,
-vous pouvez utiliser le [Plugin Repository](https://plugins.roundcube.net/) officiel.
+Vous pouvez également installer d'autres plugins (qui ne seront pas supprimés avec les mises à niveau). Pour cela, vous pouvez utiliser le [Plugin Repository](https://plugins.roundcube.net/) officiel.
 
 ##### Depuis le dépôt de plugins
 
-Disons par exemple que nous voulons installer le [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier) plugin.
+Si, par exemple, vous voulez installer le plugin [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier).
 
-1. Connectez-vous à votre serveur en tant que root en utilisant SSH :
+1. Connectez-vous en SSH à votre serveur en tant que root :
    ```
    $ ssh admin@1.2.3.4
    $ sudo -i
@@ -76,7 +75,7 @@ Disons par exemple que nous voulons installer le [html5_notifier](https://plugin
    ```
 
 3. Installez le plugin que vous voulez en utilisant Composer - notez que vous devez spécifier
-   *kitist/html5_notifier* et pas seulement *html5_notifier*:
+   *kitist/html5_notifier* et pas seulement *html5_notifier* :
    ```
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
@@ -89,20 +88,20 @@ Disons par exemple que nous voulons installer le [html5_notifier](https://plugin
 
 Notez que vous devriez également vérifier la page d'accueil du plugin pour une installation supplémentaire si besoin.
 
-##### Manual installation
+##### Installation manuelle
 
 Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins/`. Dans ce cas, n'oubliez pas de changer l'*ownerships* de ce dossier à `roundcube`.
 
-## Links
+## Liens
 
- * Report a bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
- * Roundcube website: https://roundcube.net/
- * Roundcube repository: https://github.com/roundcube/roundcubemail
- * YunoHost website: https://yunohost.org/
+ * Signaler un bug : https://github.com/YunoHost-Apps/roundcube_ynh/issues
+ * Site de l'application : https://roundcube.net/
+ * Dépôt de l'application principale : https://github.com/roundcube/roundcubemail
+ * Site web YunoHost : https://yunohost.org/
 
 ---
 
-## Developers info
+## Informations pour les développeurs
 
 Merci de faire vos pull request sur la [branche testing](https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing).
 
