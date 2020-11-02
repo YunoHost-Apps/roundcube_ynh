@@ -72,7 +72,7 @@ fi
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_script_progression --message="Backing up Roundcube before upgrading (may take a while)..." --weight=30
+ynh_script_progression --message="Backing up $app before upgrading (may take a while)..." --weight=30
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -152,7 +152,7 @@ then
     ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
     db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
     ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBNAME__" --replace_string=$db_name --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
@@ -241,7 +241,7 @@ then
     #=================================================
     # UPDATE ROUNDCUBE CONFIGURATION
     #=================================================
-    ynh_script_progression --message="Updating Roundcube configuration..." --weight=4
+    ynh_script_progression --message="Updating $app configuration..." --weight=4
 
     ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
 
@@ -255,7 +255,7 @@ then
     #=================================================
     # UPDATE ROUNDCUBE CORE
     #=================================================
-    ynh_script_progression --message="Updating Roundcube core..." --weight=4
+    ynh_script_progression --message="Updating $app core..." --weight=4
 
     ( cd "$final_path"
     ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
@@ -283,4 +283,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of Roundcube completed" --last
+ynh_script_progression --message="Installation of $app completed" --last

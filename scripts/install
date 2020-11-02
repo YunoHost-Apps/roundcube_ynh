@@ -117,7 +117,7 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring Roundcube..."
+ynh_script_progression --message="Configuring $app..."
 
 rc_conf="$final_path/config/config.inc.php"
 
@@ -232,4 +232,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of Roundcube completed" --last
+ynh_script_progression --message="Installation of $app completed" --last
