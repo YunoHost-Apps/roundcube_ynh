@@ -7,7 +7,7 @@
 YNH_PHP_VERSION="7.3"
 
 # Package dependencies
-extra_php_dependencies="php${YNH_PHP_VERSION}-cli php${YNH_PHP_VERSION}-common php${YNH_PHP_VERSION}-intl php${YNH_PHP_VERSION}-json php${YNH_PHP_VERSION}-pear php${YNH_PHP_VERSION}-auth-sasl php${YNH_PHP_VERSION}-mail-mime php${YNH_PHP_VERSION}-patchwork-utf8 php${YNH_PHP_VERSION}-net-smtp php${YNH_PHP_VERSION}-net-socket php${YNH_PHP_VERSION}-zip php${YNH_PHP_VERSION}-gd php${YNH_PHP_VERSION}-mbstring php${YNH_PHP_VERSION}-curl"
+extra_php_dependencies="php${YNH_PHP_VERSION}-cli php${YNH_PHP_VERSION}-intl php${YNH_PHP_VERSION}-json php${YNH_PHP_VERSION}-pear php${YNH_PHP_VERSION}-zip php${YNH_PHP_VERSION}-gd php${YNH_PHP_VERSION}-mbstring php${YNH_PHP_VERSION}-dom php${YNH_PHP_VERSION}-curl"
 
 # Plugins version
 contextmenu_version=2.3
