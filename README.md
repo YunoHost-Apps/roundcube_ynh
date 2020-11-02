@@ -111,8 +111,7 @@ case, do not forget to change ownerships of this folder to `roundcube`.
 
 ---
 
-Developers info
-----------------
+## Developers info
 
 Please do your pull request to the [testing branch](https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing).
 
