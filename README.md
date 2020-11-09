@@ -7,8 +7,7 @@
 If you don't have YunoHost, please see [here](https://yunohost.org/#/install) to know how to install and enjoy it.*
 
 ## Overview
-[Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with
-an application-like user interface.
+[Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with an application-like user interface.
 
 **Shipped version:** 1.4.9
 
@@ -35,17 +34,12 @@ In addition to Roundcube core features, the following are made available with
 this package:
 
  * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
-   and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook)
-   plugins by default
- * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav)
-   (address book) synchronization plugin at the installation - note that if
-   you have installed ownCloud or Baïkal, it will automatically add the
-   corresponding and existing address book.
+ * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu) and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) plugins by default
+ * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed ownCloud or Baïkal, it will automatically add the corresponding and existing address book.
 
 #### Multi-users support
-* Integrate with YunoHost users and SSO - i.e logout button, YunoHost users
-  search
+
+* Integrate with YunoHost users and SSO - i.e logout button, YunoHost users search
 
 #### Supported architectures
 
