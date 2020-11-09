@@ -130,7 +130,6 @@ ynh_replace_string --match_string="__DBUSER__" --replace_string="$db_name" --tar
 ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
 ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
 ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
