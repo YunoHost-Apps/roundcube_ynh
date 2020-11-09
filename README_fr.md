@@ -8,12 +8,12 @@
 > *Ce package vous permet d'installer Roundcube rapidement et simplement sur un serveur YunoHost.  
 Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install) pour apprendre comment l'installer.*
 
-## Vue d'ensemble
-[Roundcube](https://roundcube.net/) is a browser-based multilingual IMAP client with an application-like user interface.
+## Overview
+[Roundcube](https://roundcube.net/) est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
 
-**Version incluse :** 1.4.9
+**Shipped version:** 1.4.9
 
-## Captures d'écran
+## Screenshots
 
 ![](https://roundcube.net/screens/skins/elastic/desktop/screens/mailbox_widescreen.png)
 
@@ -23,7 +23,7 @@ Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install
 
 ## Configuration
 
-Vous pouvez étendre - ou même remplacer - la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
+Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
 
 ## Documentation
 
@@ -32,42 +32,43 @@ Vous pouvez étendre - ou même remplacer - la configuration de Roundcube fourni
 
 ## Caractéristiques spécifiques YunoHost
 
-En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce package:
+En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce paquet :
 
-  * Synchronisez vos alias de messagerie en tant qu'identités dans Roundcube
-  * Installez les plugins [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu) et [carnet d'adresses automatique](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) par défaut
-  * Permettre d'installer le plugin de synchronisation [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (carnet d'adresses) lors de l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant et existant.
+ * Synchronisez vos alias de messagerie en tant qu'identités dans Roundcube.
+ * Installation des plugins [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
+   et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) par default.
+ * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant.
 
 #### Support multi-utilisateur
 
-* Intégration avec les utilisateurs de YunoHost et SSO - c'est-à-dire le bouton de déconnexion, recherche des utilisateurs de YunoHost 
+* Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, reconnaissance des autres utilisateurs de l'instance YunoHost.
 
-#### Architectures supportées
+#### Supported architectures
 
 * x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
 * ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
 
 ## Limitations
 
-* Limitations connues.
+* Aucune limitation connue.
 
-## Informations additionnelles
+## Additional information
 
 #### Plugins
 
-Vous pouvez également installer d'autres plugins qui ne seront pas supprimés avec les mises à niveau. Pour ce faire, vous pouvez utiliser le [répertoire de plugins](https://plugins.roundcube.net/) officiel.
+Vous pouvez également installer d'autres plugins (qui ne seront pas supprimés avec les mises à niveau). Pour cela, vous pouvez utiliser le [Plugin Repository](https://plugins.roundcube.net/) officiel.
 
-##### Depuis le répertoire de plugins
+##### Depuis le dépôt de plugins
 
-Si vous voulez par exemple installer le plugin [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier).
+Si, par exemple, vous voulez installer le plugin [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier).
 
-1. Connectez-vous à votre serveur en tant que root en utilisant SSH :
+1. Connectez-vous en SSH à votre serveur en tant que root :
    ```
    $ ssh admin@1.2.3.4
    $ sudo -i
    ```
-
-2. Connectez-vous en tant qu'utilisateur `roundcube` - qui possède le répertoire roundcube - et naviguez dedans :
+   
+2. Connectez-vous en tant qu'utilisateur `roundcube` (qui possède le répertoire roundcube) et naviguez dedans :
    ```
    # su -s /bin/bash - roundcube
    $ cd /var/www/roundcube
@@ -83,7 +84,7 @@ Si vous voulez par exemple installer le plugin [html5_notifier](https://plugins.
    <?php
    $config['plugins'][] = 'html5_notifier';
    ```
-
+   
 Notez que vous devez également consulter la page d'accueil du plugin pour connaître les étapes d'installation supplémentaires si nécessaire.
 
 ##### Installation manual 
@@ -107,5 +108,6 @@ Pour essayer la branche testing, procédez comme suit.
 ```
 sudo yunohost app install https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 or
+ou
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```
