@@ -7,6 +7,9 @@
 # Package dependencies
 pkg_dependencies="php-cli php-common php-intl php-json php-pear php-auth-sasl php-mail-mime php-patchwork-utf8 php-net-smtp php-net-socket php-zip php-gd php-mbstring php-curl"
 
+# Composer version
+composer_version=1.10.17
+
 # Plugins version
 contextmenu_version=2.3
 automatic_addressbook_version=v0.4.3
@@ -55,7 +58,7 @@ ynh_install_composer () {
 
 	curl -sS https://getcomposer.org/installer \
 		| COMPOSER_HOME="$workdir/.composer" \
-		php${phpversion} -- --quiet --install-dir="$workdir" \
+		php${phpversion} -- --quiet --install-dir="$workdir" --version="$composer_version" \
 		|| ynh_die "Unable to install Composer."
 
 	# update dependencies to create composer.lock
