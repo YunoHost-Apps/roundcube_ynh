@@ -97,7 +97,7 @@ $config['product_name'] = 'YunoHost Webmail';
 $config['des_key'] = '__DESKEY__';
 
 // skin name: folder from skins/
-$config['skin'] = 'larry';
+$config['skin'] = 'elastic';
 
 // Enable YunoHost users search in the address book.
 $config['ldap_public']['yunohost'] = array(
