@@ -24,6 +24,7 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
 with_enigma=$YNH_APP_ARG_WITH_ENIGMA
+language=$YNH_APP_ARG_LANGUAGE
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -47,6 +48,7 @@ ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
+ynh_app_setting_set --app=$app --key=language --value=$language
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -127,6 +129,7 @@ ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_ra
 ynh_replace_string --match_string="__DBUSER__" --replace_string="$db_name" --target_file="$rc_conf"
 ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
 ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
+ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS

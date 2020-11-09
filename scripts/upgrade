@@ -23,6 +23,7 @@ db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
 with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+language=$(ynh_app_setting_get --app=$app --key=language)
 
 #=================================================
 # CHECK VERSION
@@ -129,7 +130,7 @@ ynh_system_user_create --username=$app
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --phpversion=$YNH_PHP_VERSION --package="$extra_php_dependencies"
+ynh_add_fpm_config --package="$extra_php_dependencies"
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -153,6 +154,7 @@ then
     db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
     ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
     ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER

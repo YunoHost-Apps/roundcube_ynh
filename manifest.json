@@ -44,6 +44,16 @@
                 "default": "/webmail"
             },
             {
+                "name": "language",
+                "type": "string",
+                "ask": {
+                    "en": "Choose the application language",
+                    "fr": "Choisissez la langue de l'application"
+                },
+                "choices": ["fr_FR", "en-GB"],
+                "default": "fr_FR"
+            },
+            {
                 "name": "with_carddav",
                 "type": "boolean",
                 "ask": {
