@@ -23,7 +23,14 @@ db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
 with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
-language=$(ynh_app_setting_get --app=$app --key=language)
+
+ # If language doesn't exist, create it 
+ if [ -z "$language" ]; then 
+ 	language=$YNH_APP_ARG_LANGUAGE
+ 	ynh_app_setting_set --app=$app --key=language --value=$language
+ else
+ 	language=$(ynh_app_setting_get --app=$app --key=language)
+ fi 
 
 #=================================================
 # CHECK VERSION
