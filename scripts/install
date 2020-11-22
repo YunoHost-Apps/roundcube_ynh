@@ -24,13 +24,14 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
 with_enigma=$YNH_APP_ARG_WITH_ENIGMA
+language=$YNH_APP_ARG_LANGUAGE
 
 app=$YNH_APP_INSTANCE_NAME
 
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
-ynh_script_progression --message="Validating installation parameters..."
+ynh_script_progression --message="Validating installation parameters..." --weight=1
 
 final_path=/var/www/$app
 test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
@@ -47,16 +48,10 @@ ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
+ynh_app_setting_set --app=$app --key=language --value=$language
 
 #=================================================
 # STANDARD MODIFICATIONS
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."
-
-ynh_install_app_dependencies "$pkg_dependencies"
-
 #=================================================
 # CREATE A MYSQL DATABASE
 #=================================================
@@ -78,9 +73,9 @@ ynh_setup_source --dest_dir="$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx web server..."
+ynh_script_progression --message="Configuring NGINX web server..." --weight=2
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -94,17 +89,18 @@ ynh_system_user_create --username=$app
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring php-fpm..." --weight=2
+ynh_script_progression --message="Configuring PHP-FPM..." --weight=2
 
-# Create a dedicated php-fpm config
-ynh_add_fpm_config
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config --package="$extra_php_dependencies"
+phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
 # SPECIFIC SETUP
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-ynh_script_progression --message="Installing roundcube with composer..." --weight=30
+ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
 
 # Install composer.json
 cp "$final_path/composer.json-dist" "$final_path/composer.json"
@@ -123,16 +119,17 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring roundcube..."
+ynh_script_progression --message="Configuring $app..."
 
 rc_conf="$final_path/config/config.inc.php"
 
 cp ../conf/config.inc.php "$rc_conf"
 
 ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
+ynh_replace_string --match_string="__DBUSER__" --replace_string="$db_name" --target_file="$rc_conf"
 ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DBNAME__" --replace_string=$db_name --target_file="$rc_conf"
+ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
+ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
@@ -163,7 +160,7 @@ then
     carddav_server=0
 
     # Look for installed and supported CardDAV servers
-    for carddav_app in "owncloud" "nextcloud" "baikal"
+    for carddav_app in "nextcloud" "baikal"
     do
         carddav_app_id=$(yunohost app list --installed -f $carddav_app \
             --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
@@ -183,7 +180,7 @@ then
     # Copy the plugin configuration file
     cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
 
-    # Do not actualy add the carddav plugin if there's no carddav server available...
+    # Do not actualy add the carddav plugin if there's no CardDAV server available...
     if [ $carddav_server -eq 1 ]
     then
         installed_plugins+=" 'carddav',"
@@ -205,7 +202,7 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Updating roundcube configuration..." --weight=3
+ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
 
 ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
 
@@ -230,7 +227,7 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading nginx web server..." --weight=2
+ynh_script_progression --message="Reloading NGINX web server..." --weight=2
 
 ynh_systemd_action --service_name=nginx --action=reload
 

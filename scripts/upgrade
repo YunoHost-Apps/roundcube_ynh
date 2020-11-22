@@ -22,6 +22,8 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
 with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
+phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+language=$(ynh_app_setting_get --app=$app --key=language)
 
 #=================================================
 # CHECK VERSION
@@ -68,10 +70,16 @@ if [ -z "$with_enigma" ]; then
 	ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 fi
 
+ # If language doesn't exist, create it 
+ if [ -z "$language" ]; then 
+    language="en_GB"
+    ynh_app_setting_set --app=$app --key=language --value=$language
+fi 
+
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=30
+ynh_script_progression --message="Backing up $app before upgrading (may take a while)..." --weight=30
 
 # Backup the current version of the app
 ynh_backup_before_upgrade
@@ -109,17 +117,10 @@ fi
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading nginx web server configuration..."
+ynh_script_progression --message="Upgrading NGINX web server configuration..."
 
-# Create a dedicated nginx config
+# Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=25
-
-ynh_install_app_dependencies "$pkg_dependencies"
 
 #=================================================
 # CREATE DEDICATED USER
@@ -132,10 +133,10 @@ ynh_system_user_create --username=$app
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading php-fpm configuration..." --weight=5
+ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
-# Create a dedicated php-fpm config
-ynh_add_fpm_config
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config --package="$extra_php_dependencies"
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -145,7 +146,7 @@ ynh_add_fpm_config
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-    ynh_script_progression --message="Reconfiguring roundcube..."
+    ynh_script_progression --message="Reconfiguring Roundcube..."
 
     rc_conf="$final_path/config/config.inc.php"
 
@@ -158,17 +159,18 @@ then
     ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
     db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
     ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBNAME__" --replace_string=$db_name --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
     #=================================================
-    ynh_script_progression --message="Updating dependencies with composer..." --weight=30
+    ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
 
     # Upgrade composer itself
     ynh_install_composer
 
-    # Check if dependencies need to be updated with composer
+    # Check if dependencies need to be updated with Composer
     if [ -f "$final_path/composer.json" ]
     then
         ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
@@ -205,7 +207,7 @@ then
         carddav_server=0
 
         # Look for installed and supported CardDAV servers
-        for carddav_app in "owncloud" "nextcloud" "baikal"
+        for carddav_app in "nextcloud" "baikal"
         do
             carddav_app_id=$(yunohost app list --installed -f $carddav_app \
                 --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
@@ -225,7 +227,7 @@ then
         # Copy the plugin configuration file
         cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
 
-        # Do not actually add the carddav plugin if there's no carddav server available...
+        # Do not actually add the cardDAV plugin if there's no carddav server available...
         if [ $carddav_server -eq 1 ]
         then
             installed_plugins+=" 'carddav',"
@@ -247,11 +249,11 @@ then
     #=================================================
     # UPDATE ROUNDCUBE CONFIGURATION
     #=================================================
-    ynh_script_progression --message="Updating roundcube configuration..." --weight=4
+    ynh_script_progression --message="Updating $app configuration..." --weight=4
 
     ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
 
-    # Update javascript dependencies
+    # Update JavaScript dependencies
     (cd "$final_path"
     /usr/bin/php -q ./bin/install-jsdeps.sh)
 
@@ -261,7 +263,7 @@ then
     #=================================================
     # UPDATE ROUNDCUBE CORE
     #=================================================
-    ynh_script_progression --message="Updating roundcube core..." --weight=4
+    ynh_script_progression --message="Updating $app core..." --weight=4
 
     ( cd "$final_path"
     ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
@@ -281,7 +283,7 @@ chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading nginx web server..."
+ynh_script_progression --message="Reloading NGINX web server..."
 
 ynh_systemd_action --service_name=nginx --action=reload
 
