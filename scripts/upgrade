@@ -209,8 +209,7 @@ then
         # Look for installed and supported CardDAV servers
         for carddav_app in "nextcloud" "baikal"
         do
-            carddav_app_id=$(yunohost app list --installed -f $carddav_app \
-                --output-as json | grep -Po '"id":[ ]?"\K.*?(?=")' | head -1)
+            carddav_app_id=$(yunohost app list | grep "id: $carddav_app" | grep -Po 'id: \K(.*)' | head -n 1)
             if [ -n "$carddav_app_id" ]
             then
                 carddav_server=1
