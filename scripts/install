@@ -159,27 +159,28 @@ then
     carddav_tmp_config="../conf/carddav.config.inc.php"
     carddav_server=0
 
+    # Copy the plugin configuration file
+    cp $final_path/plugins/carddav/config.inc.php{.dist,}
+
     # Look for installed and supported CardDAV servers
     for carddav_app in "nextcloud" "baikal"
     do
-        carddav_app_id=$(yunohost app list | grep "id: $carddav_app" | grep -Po 'id: \K(.*)' | head -n 1)
-        if [ -n "$carddav_app_id" ]
-        then
+        carddav_app_ids=$(yunohost app list | grep "id: $carddav_app" | grep -Po 'id: \K(.*)' || echo "")
+        for carddav_app_id in $carddav_app_ids
+        do
             carddav_server=1
+            # Append preset configuration to the config file
+            cat "../conf/${carddav_app}.inc.php" >> $final_path/plugins/carddav/config.inc.php
             # Retrieve app settings and enable relevant preset
             carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
             carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
             carddav_url="https://${carddav_domain}${carddav_path%/}"
-            ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$carddav_tmp_config"
-            ynh_replace_string --match_string="\/\* PRESET FOR: $carddav_app" --replace_string="" --target_file="$carddav_tmp_config"
-            ynh_replace_string --match_string="END: $carddav_app \*\/" --replace_string="" --target_file="$carddav_tmp_config"
-        fi
+            ynh_replace_string --match_string="{${carddav_app}_id}" --replace_string="$carddav_app_id" --target_file="$final_path/plugins/carddav/config.inc.php"
+            ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$final_path/plugins/carddav/config.inc.php"
+        done
     done
 
-    # Copy the plugin configuration file
-    cp "$carddav_tmp_config" ""$final_path/plugins/carddav/config.inc.php""
-
-    # Do not actualy add the carddav plugin if there's no CardDAV server available...
+    # Do not actualy add the carddav plugin if there's no carddav server available...
     if [ $carddav_server -eq 1 ]
     then
         installed_plugins+=" 'carddav',"
