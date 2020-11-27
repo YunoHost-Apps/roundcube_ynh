@@ -12,6 +12,7 @@
 		setup_private=0
 		setup_public=0
 		upgrade=1
+		upgrade=1 from_commit=337b120eb3b97ac6b616cbf400af3aa98e409a99
 		backup_restore=1
 		multi_instance=1
 		incorrect_path=1
@@ -23,3 +24,6 @@
 Email=
 Notification=none
 ;;; Upgrade options
+        ; commit=337b120eb3b97ac6b616cbf400af3aa98e409a99
+                name=Fix carddav
+                manifest_arg=domain=DOMAIN&path=PATH&with_carddav=1&with_enigma=1&
