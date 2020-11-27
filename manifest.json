@@ -6,7 +6,7 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "version": "1.4.9~ynh1",
+    "version": "1.4.9~ynh2",
     "url": "https://roundcube.net/",
     "license": "GPL-3.0-only",
     "maintainer": {
@@ -14,7 +14,7 @@
         "email": "apps@yunohost.org"
     },
     "requirements": {
-        "yunohost": ">= 3.5.0"
+        "yunohost": ">= 4.0.7"
     },
     "multi_instance": true,
     "services": [
@@ -42,6 +42,16 @@
                 },
                 "example": "/webmail",
                 "default": "/webmail"
+            },
+            {
+                "name": "language",
+                "type": "string",
+                "ask": {
+                    "en": "Choose the application language",
+                    "fr": "Choisissez la langue de l'application"
+                },
+                "choices": ["fr_FR", "en_GB", "de_DE"],
+                "default": "en_GB"
             },
             {
                 "name": "with_carddav",

@@ -67,30 +67,29 @@ Si, par exemple, vous voulez installer le plugin [html5_notifier](https://plugin
    $ ssh admin@1.2.3.4
    $ sudo -i
    ```
-
+   
 2. Connectez-vous en tant qu'utilisateur `roundcube` (qui possède le répertoire roundcube) et naviguez dedans :
    ```
    # su -s /bin/bash - roundcube
    $ cd /var/www/roundcube
    ```
 
-3. Installez le plugin que vous voulez en utilisant Composer - notez que vous devez spécifier
-   *kitist/html5_notifier* et pas seulement *html5_notifier* :
+3. Installez le plugin que vous voulez en utilisant Composer - notez que vous devez spécifier *kitist/html5_notifier* et pas seulement *html5_notifier* :
    ```
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
 
-4. Activez-le dans le fichier de configuration local `conf/local.inc.php` en utilisant un éditeur de texte en ajoutant :
+4. Activez-le dans le fichier de configuration local `conf/local.inc.php` en ajoutant :
    ```
    <?php
    $config['plugins'][] = 'html5_notifier';
    ```
+   
+Notez que vous devez également consulter la page d'accueil du plugin pour connaître les étapes d'installation supplémentaires si nécessaire.
 
-Notez que vous devriez également vérifier la page d'accueil du plugin pour une installation supplémentaire si besoin.
+##### Installation manual 
 
-##### Installation manuelle
-
-Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins/`. Dans ce cas, n'oubliez pas de changer l'*ownerships* de ce dossier à `roundcube`.
+Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins /`. Dans ce cas, n'oubliez pas de changer la propriété de ce dossier en `roundcube`.
 
 ## Liens
 
@@ -108,6 +107,7 @@ Merci de faire vos pull request sur la [branche testing](https://github.com/Yuno
 Pour essayer la branche testing, procédez comme suit.
 ```
 sudo yunohost app install https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
+or
 ou
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```

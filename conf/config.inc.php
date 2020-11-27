@@ -97,7 +97,22 @@ $config['product_name'] = 'YunoHost Webmail';
 $config['des_key'] = '__DESKEY__';
 
 // skin name: folder from skins/
-$config['skin'] = 'larry';
+$config['skin'] = 'elastic';
+
+// ----------------------------------
+// USER INTERFACE
+// ----------------------------------
+
+// the default locale setting (leave empty for auto-detection)
+// RFC1766 formatted language name like en_US, de_DE, de_CH, fr_FR, pt_BR
+$config['language'] = '__LANGUAGE__';
+
+// use this format for date display (date or strftime format)
+$config['date_format'] = 'd-m-Y';
+
+// Make use of the built-in spell checker. It is based on GoogieSpell.
+$config['enable_spellcheck'] = false;
+
 
 // Enable YunoHost users search in the address book.
 $config['ldap_public']['yunohost'] = array(
