@@ -23,4 +23,3 @@
 Email=
 Notification=none
 ;;; Upgrade options
-		manifest_arg=domain=DOMAIN&path=PATH&with_carddav=1&with_enigma=1&
