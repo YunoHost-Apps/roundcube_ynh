@@ -85,7 +85,7 @@ $config['smtp_conn_options'] = array(
 
 // provide an URL where a user can get support for this Roundcube installation
 // PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
-$config['support_url'] = 'https://dev.yunohost.org/projects/apps/issues?set_filter=1&f[]=category_id&op[category_id]=%3D&v[category_id][]=20';
+$config['support_url'] = 'https://forum.yunohost.org/t/roundcube-a-webmail/3965';
 
 // Name your service. This is displayed on the login screen and in the window title
 $config['product_name'] = 'YunoHost Webmail';
