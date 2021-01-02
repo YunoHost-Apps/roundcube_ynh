@@ -51,6 +51,30 @@ ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 ynh_app_setting_set --app=$app --key=language --value=$language
 
 #=================================================
+# ADD SWAP IF NEEDED
+#=================================================
+
+total_memory=$(ynh_get_ram --total)
+total_swap=$(ynh_get_ram --total --only_swap)
+swap_needed=0
+
+# https://docs.gitlab.com/ce/install/requirements.html#memory
+if [ $total_memory -lt 4096 ]; then
+    # Need a minimum of 8GB of memory
+    swap_needed=$((4096 - $total_memory))
+fi
+
+# Need at least 2GB of swap
+if [ $(($total_swap + $swap_needed)) -lt 2048 ]; then
+    swap_needed=$((2048 - $total_swap))
+fi
+
+if [ $swap_needed -gt 0 ]; then
+    ynh_script_progression --message="Adding $swap_needed Mo to swap..."
+    ynh_add_swap --size=$swap_needed
+fi
+
+#=================================================
 # STANDARD MODIFICATIONS
 #=================================================
 # CREATE A MYSQL DATABASE

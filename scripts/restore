@@ -40,6 +40,27 @@ test ! -d $final_path \
 	|| ynh_die --message="There is already a directory: $final_path "
 
 #=================================================
+# ADD SWAP IF NEEDED
+#=================================================
+
+total_memory=$(ynh_get_ram --total)
+total_swap=$(ynh_get_ram --total --only_swap)
+swap_needed=0
+
+if [ $total_memory -lt 4096 ]; then
+	# Need a minimum of 4GB of memory
+	swap_needed=$((4096 - $total_memory))
+fi
+
+# Need at least 2GB of swap
+if [ $(($total_swap + $swap_needed)) -lt 2048 ]; then
+	swap_needed=$((2048 - $total_swap))
+fi
+
+ynh_script_progression --message="Adding $swap_needed Mo to swap..." --weight=1
+ynh_add_swap --size=$swap_needed
+
+#=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
