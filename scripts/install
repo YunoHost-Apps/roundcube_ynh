@@ -58,7 +58,6 @@ total_memory=$(ynh_get_ram --total)
 total_swap=$(ynh_get_ram --total --only_swap)
 swap_needed=0
 
-# https://docs.gitlab.com/ce/install/requirements.html#memory
 if [ $total_memory -lt 4096 ]; then
     # Need a minimum of 8GB of memory
     swap_needed=$((4096 - $total_memory))
