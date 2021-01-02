@@ -73,6 +73,12 @@ ynh_script_progression --message="Removing the dedicated system user..." --weigh
 ynh_system_user_delete --username=$app
 
 #=================================================
+# REMOVE SWAP
+#=================================================
+
+ynh_del_swap
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 
