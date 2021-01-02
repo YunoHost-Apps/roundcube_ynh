@@ -116,7 +116,7 @@ total_swap=$(ynh_get_ram --total --only_swap)
 swap_needed=0
 
 if [ $total_memory -lt 4096 ]; then
-    # Need a minimum of 8GB of memory
+    # Need a minimum of 4GB of memory
     swap_needed=$((4096 - $total_memory))
 fi
 
