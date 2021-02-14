@@ -119,7 +119,7 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring $app..."
+ynh_script_progression --message="Configuring Roundcube..."
 
 rc_conf="$final_path/config/config.inc.php"
 
