@@ -171,6 +171,7 @@ then
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
     fi
+
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
@@ -259,7 +260,8 @@ then
     ynh_script_progression --message="Updating $app core..." --weight=4
 
     ( cd "$final_path"
-    ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
+    ynh_exec_warn ./bin/update.sh --version=$oldversion -y
+    php$phpversion composer.phar update --no-dev)
 fi
 
 #=================================================
