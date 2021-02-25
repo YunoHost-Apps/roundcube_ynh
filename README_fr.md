@@ -11,7 +11,7 @@ Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install
 ## Overview
 [Roundcube](https://roundcube.net/) est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
 
-**Shipped version:** 1.4.11
+**Shipped version:** 1.5.0
 
 ## Screenshots
 
