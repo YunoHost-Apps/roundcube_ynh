@@ -10,7 +10,7 @@ YNH_PHP_VERSION="7.3"
 extra_php_dependencies="php-pear php${YNH_PHP_VERSION}-ldap php${YNH_PHP_VERSION}-mysql php${YNH_PHP_VERSION}-cli php${YNH_PHP_VERSION}-intl php${YNH_PHP_VERSION}-json php${YNH_PHP_VERSION}-zip php${YNH_PHP_VERSION}-gd php${YNH_PHP_VERSION}-mbstring php${YNH_PHP_VERSION}-dom php${YNH_PHP_VERSION}-curl"
 
 # Composer version
-composer_version=1.10.17
+composer_version=2.0.11
 
 # Plugins version
 contextmenu_version=2.3
@@ -21,7 +21,7 @@ carddav_version=3.0.3
 # EXPERIMENTAL HELPERS
 #=================================================
 
-readonly YNH_DEFAULT_COMPOSER_VERSION=1.10.17
+readonly YNH_DEFAULT_COMPOSER_VERSION=2.0.11
 # Declare the actual composer version to use.
 # A packager willing to use another version of composer can override the variable into its _common.sh.
 YNH_COMPOSER_VERSION=${YNH_COMPOSER_VERSION:-$YNH_DEFAULT_COMPOSER_VERSION}
