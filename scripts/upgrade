@@ -260,8 +260,7 @@ then
     ynh_script_progression --message="Updating $app core..." --weight=4
 
     ( cd "$final_path"
-    ynh_exec_warn ./bin/update.sh --version=$oldversion -y
-    sudo -u $app php$phpversion composer.phar update --no-dev)
+    ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 fi
 
 #=================================================
