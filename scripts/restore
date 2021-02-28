@@ -67,9 +67,9 @@ ynh_system_user_create --username=$app
 #=================================================
 
 # Restore permissions on app files
-chown -R root: "$final_path"
-mkdir -p "$final_path/plugins/enigma/home"
-chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
+chown -R root: $final_path
+mkdir -p $final_path/plugins/enigma/home
+chown -R $app: $final_path/{temp,logs,plugins/enigma/home}
 
 #=================================================
 # RESTORE THE PHP-FPM CONFIGURATION

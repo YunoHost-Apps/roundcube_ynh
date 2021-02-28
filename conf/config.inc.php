@@ -28,7 +28,7 @@ $config = array();
 // For examples see http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php
 // NOTE: for SQLite use absolute path (Linux): 'sqlite:////full/path/to/sqlite.db?mode=0646'
 //       or (Windows): 'sqlite:///C:/full/path/to/sqlite.db'
-$config['db_dsnw'] = 'mysql://__DB_USER__:__DB_PWD__@localhost/__DB_NAME__';
+$config['db_dsnw'] = 'mysql://__DB_NAME__:__DB_PWD__@localhost/__DB_NAME__';
 
 // The IMAP host chosen to perform the log-in.
 // Leave blank to show a textbox at login, give a list of hosts
