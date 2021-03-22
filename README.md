@@ -28,7 +28,7 @@ You can extend - or even override - the Roundcube configuration which is coming 
 ## Documentation
 
  * Official documentation: https://github.com/roundcube/roundcubemail/wiki
- * YunoHost documentation: https://github.com/YunoHost/doc/blob/master/app_roundcube.md:
+ * YunoHost documentation: https://yunohost.org/en/app_roundcube
 
 ## YunoHost specific features
 

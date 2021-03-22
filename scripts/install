@@ -62,6 +62,14 @@ ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 ynh_mysql_setup_db --db_user=$db_name --db_name=$db_name
 
 #=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --weight=3
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$final_path"
+
+#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=7
@@ -77,14 +85,6 @@ ynh_script_progression --message="Configuring NGINX web server..." --weight=2
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --weight=3
-
-# Create a system user
-ynh_system_user_create --username=$app
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -121,15 +121,19 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 ynh_script_progression --message="Configuring Roundcube..."
 
-rc_conf="$final_path/config/config.inc.php"
+#rc_conf="$final_path/config/config.inc.php"
 
-cp ../conf/config.inc.php "$rc_conf"
+deskey=$(ynh_string_random --length=24)
 
-ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+# cp ../conf/config.inc.php "$rc_conf"
+
+# ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
+# ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_name" --target_file="$rc_conf"
+# ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
+# ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
+# ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+
+ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
@@ -204,14 +208,14 @@ fi
 #=================================================
 ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
 
-ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
+ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
 
 # Update javascript dependencies
 (cd "$final_path"
 /usr/bin/php -q ./bin/install-jsdeps.sh)
 
 # Store the config file checksum into the app settings
-ynh_store_file_checksum --file="$rc_conf"
+ynh_store_file_checksum --file="$final_path/config/config.inc.php"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -223,6 +227,9 @@ ynh_store_file_checksum --file="$rc_conf"
 chown -R root: "$final_path"
 mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
+
+chmod 600 "$final_path/config/config.inc.php"
+chown $app:$app "$final_path/some_config_file"
 
 #=================================================
 # RELOAD NGINX

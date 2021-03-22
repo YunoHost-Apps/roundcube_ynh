@@ -28,7 +28,7 @@ Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie 
 ## Documentation
 
  * Documentation officielle : https://github.com/roundcube/roundcubemail/wiki
- * Documentation YunoHost : https://github.com/YunoHost/doc/blob/master/app_roundcube.md:
+ * Documentation YunoHost : https://yunohost.org/fr/app_roundcube
 
 ## Caractéristiques spécifiques YunoHost
 
