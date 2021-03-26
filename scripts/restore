@@ -73,7 +73,7 @@ mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 chmod 600 "$final_path/config/config.inc.php"
-chown $app:$app "$final_path/some_config_file"
+chown $app:$app "$final_path/config/config.inc.php"
 
 #=================================================
 # RESTORE THE PHP-FPM CONFIGURATION
