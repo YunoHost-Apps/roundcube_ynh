@@ -44,8 +44,8 @@ In addition to Roundcube core features, the following are made available with th
 
 #### Supported architectures
 
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
+* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
 
 ## Limitations
 
