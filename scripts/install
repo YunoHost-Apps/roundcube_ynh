@@ -123,14 +123,9 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 ynh_script_progression --message="Configuring Roundcube..."
 
 rc_conf="$final_path/config/config.inc.php"
+deskey=$(ynh_string_random --length=24)
 
-cp ../conf/config.inc.php "$rc_conf"
-
-ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_USER__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+ynh_add_config --template="../conf/config.inc.php" --destination="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
@@ -181,7 +176,7 @@ then
         done
     done
 
-    # Do not actualy add the carddav plugin if there's no carddav server available...
+    # Do not actualy add the cardDAV plugin if there's no carddav server available...
     if [ $carddav_server -eq 1 ]
     then
         installed_plugins+=" 'carddav',"
@@ -225,7 +220,7 @@ chown -R root: "$final_path"
 mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
-chmod 600 "$final_path/config/config.inc.php"
+chmod 400 "$final_path/config/config.inc.php"
 chown $app:$app "$final_path/config/config.inc.php"
 
 #=================================================
