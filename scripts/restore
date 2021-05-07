@@ -68,7 +68,8 @@ ynh_restore_file --origin_path="$final_path"
 #=================================================
 
 # Restore permissions on app files
-chown -R root: "$final_path"
+chown -R root:$app "$final_path"
+chmod -R o-rwx "$final_path"
 mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
