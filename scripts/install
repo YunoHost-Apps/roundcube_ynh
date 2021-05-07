@@ -123,9 +123,13 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 ynh_script_progression --message="Configuring Roundcube..."
 
 rc_conf="$final_path/config/config.inc.php"
-deskey=$(ynh_string_random --length=24)
 
-ynh_add_config --template="../conf/config.inc.php" --destination="$rc_conf"
+cp ../conf/config.inc.php "$rc_conf"
+
+ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
+ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
+ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
+ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
