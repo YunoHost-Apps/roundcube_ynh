@@ -220,8 +220,7 @@ ynh_store_file_checksum --file="$final_path/config/config.inc.php"
 #=================================================
 
 # Set permissions to app files
-chown -R root:$app "$final_path"
-chmod -R o-rwx "$final_path"
+chown -R root: "$final_path"
 mkdir -p "$final_path/plugins/enigma/home"
 chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
