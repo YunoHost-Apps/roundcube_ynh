@@ -1,7 +1,7 @@
 ;; Test complet
 	; Manifest
-		domain="domain.tld"	(DOMAIN)
-		path="/path"	(PATH)
+		domain="domain.tld"
+		path="/path"
 		with_carddav=1
 		with_enigma=1
 	; Checks
