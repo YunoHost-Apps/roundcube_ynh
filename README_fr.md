@@ -1,34 +1,27 @@
 # Roundcube pour YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
+[![Niveau d'intégration](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
 [![Installer Roundcube avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
-*[Read this readme in english.](./README.md)* 
+*[Read this readme in english.](./README.md)*
+*[Lire ce readme en français.](./README_fr.md)*
 
-> *Ce package vous permet d'installer Roundcube rapidement et simplement sur un serveur YunoHost.  
-Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/install) pour apprendre comment l'installer.*
+> *This package allows you to install Roundcube quickly and simply on a YunoHost server.
+If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
 
-## Overview
-[Roundcube](https://roundcube.net/) est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
+## Vue d'ensemble
 
-**Shipped version:** 1.5.0
+Webmail Open Source
 
-## Screenshots
+**Version incluse:** 1.5.0~ynh1
 
-![](https://roundcube.net/screens/skins/elastic/desktop/screens/mailbox_widescreen.png)
+**Démo :** https://demo.yunohost.org/webmail/
 
-## Démo
-
-* [Démo YunoHost](https://demo.yunohost.org/webmail/)
+## Avertissements / informations importantes
 
 ## Configuration
 
 Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
-
-## Documentation
-
- * Documentation officielle : https://github.com/roundcube/roundcubemail/wiki
- * Documentation YunoHost : https://yunohost.org/fr/app_roundcube
 
 ## Caractéristiques spécifiques YunoHost
 
@@ -42,17 +35,6 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
 #### Support multi-utilisateur
 
 * Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, reconnaissance des autres utilisateurs de l'instance YunoHost.
-
-#### Supported architectures
-
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/roundcube.svg)](https://ci-apps-arm.yunohost.org/ci/apps/roundcube/)
-
-## Limitations
-
-* Aucune limitation connue.
-
-## Additional information
 
 #### Plugins
 
@@ -91,14 +73,14 @@ Notez que vous devez également consulter la page d'accueil du plugin pour conna
 
 Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins /`. Dans ce cas, n'oubliez pas de changer la propriété de ce dossier en `roundcube`.
 
-## Liens
+## Documentations et ressources
 
- * Signaler un bug : https://github.com/YunoHost-Apps/roundcube_ynh/issues
- * Site de l'application : https://roundcube.net/
- * Dépôt de l'application principale : https://github.com/roundcube/roundcubemail
- * Site web YunoHost : https://yunohost.org/
-
----
+* Site officiel de l'app : https://example.com
+* Documentation officielle utilisateur : https://yunohost.org/en/app_roundcube
+* Documentation officielle de l'admin : https://github.com/roundcube/roundcubemail/wiki
+* Dépôt de code officiel de l'app :  https://github.com/roundcube/roundcubemail
+* Documentation YunoHost pour cette app : https://yunohost.org/app_roundcube
+* Signaler un bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
 
 ## Informations pour les développeurs
 
@@ -107,6 +89,8 @@ Merci de faire vos pull request sur la [branche testing](https://github.com/Yuno
 Pour essayer la branche testing, procédez comme suit.
 ```
 sudo yunohost app install https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
-ou
+or
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```
+
+**Plus d'infos sur le packaging d'applications:** https://yunohost.org/packaging_apps
