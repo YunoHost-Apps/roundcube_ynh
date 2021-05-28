@@ -8,6 +8,14 @@
     },
     "version": "1.5.0~ynh1",
     "url": "https://roundcube.net/",
+    "upstream": {
+        "license": "GPL-3.0-only",
+        "website": "https://example.com",
+        "demo": "https://demo.yunohost.org/webmail/",
+        "admindoc": "https://github.com/roundcube/roundcubemail/wiki",
+        "userdoc": "https://yunohost.org/en/app_roundcube",
+        "code": "https://github.com/roundcube/roundcubemail"
+    },
     "license": "GPL-3.0-only",
     "maintainer": {
         "name": "",

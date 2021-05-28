@@ -226,8 +226,6 @@ chown $app:$app "$final_path/config/config.inc.php"
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-
-
 mkdir -p "$final_path/plugins/enigma/home"
 
 #=================================================
