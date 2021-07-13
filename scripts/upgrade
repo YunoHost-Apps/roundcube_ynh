@@ -20,10 +20,12 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+db_user=$db_name
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
 with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 language=$(ynh_app_setting_get --app=$app --key=language)
+db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
 
 #=================================================
 # CHECK VERSION
@@ -76,6 +78,13 @@ fi
     ynh_app_setting_set --app=$app --key=language --value=$language
 fi 
 
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+    ynh_legacy_permissions_delete_all
+
+    ynh_app_setting_delete --app=$app --key=is_public
+fi
+
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
@@ -89,6 +98,14 @@ ynh_clean_setup () {
 }
 # Exit if an error occurs during the execution of the script
 ynh_abort_if_errors
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..."
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # STANDARD UPGRADE STEPS
@@ -107,6 +124,10 @@ then
 	ynh_setup_source --dest_dir="$final_path"
 fi
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -114,14 +135,6 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..."
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..."
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -149,10 +162,8 @@ then
     cp ../conf/config.inc.php "$rc_conf"
 
     ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
-    db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
-    ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
+    ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
     ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
     #=================================================
@@ -171,6 +182,7 @@ then
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
     fi
+
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
@@ -244,14 +256,17 @@ then
     #=================================================
     ynh_script_progression --message="Updating $app configuration..." --weight=4
 
-    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
+    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
 
     # Update JavaScript dependencies
     (cd "$final_path"
-    /usr/bin/php -q ./bin/install-jsdeps.sh)
+    /usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
 
     # Store the config file checksum into the app settings
-    ynh_store_file_checksum --file="$rc_conf"
+    ynh_store_file_checksum --file="$final_path/config/config.inc.php"
+
+    chmod 400 "$final_path/config/config.inc.php"
+    chown $app:$app "$final_path/config/config.inc.php"
 
     #=================================================
     # UPDATE ROUNDCUBE CORE
@@ -261,17 +276,6 @@ then
     ( cd "$final_path"
     ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 fi
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions to app files
-chown -R root: "$final_path"
-mkdir -p "$final_path/plugins/enigma/home"
-chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
 
 #=================================================
 # RELOAD NGINX
