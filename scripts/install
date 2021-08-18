@@ -124,11 +124,16 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring Roundcube..." --weight=2
+ynh_script_progression --message="Configuring Roundcube..."
 
-file="__FILE__"
-deskey=$(ynh_string_random --length=24)
-ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
+rc_conf="$final_path/config/config.inc.php"
+
+cp ../conf/config.inc.php "$rc_conf"
+
+ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
+ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
+ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
+ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
@@ -208,6 +213,9 @@ ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&
 # Update javascript dependencies
 (cd "$final_path"
 /usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
+
+# Store the config file checksum into the app settings
+ynh_store_file_checksum --file="$final_path/config/config.inc.php"
 
 chmod 400 "$final_path/config/config.inc.php"
 chown $app:$app "$final_path/config/config.inc.php"
