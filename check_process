@@ -2,6 +2,7 @@
 	; Manifest
 		domain="domain.tld"
 		path="/path"
+		language="en_GB"
 		with_carddav=1
 		with_enigma=1
 	; Checks
@@ -22,5 +23,3 @@ Notification=none
 ;;; Upgrade options
 	; commit=67cb9813b18254b5f478d9a2974862d0a3af40e5
 		name=Merge pull request #108
-		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&language=fr&is_public=1&password=pass&port=666&
-
