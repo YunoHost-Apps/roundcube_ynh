@@ -1,7 +1,8 @@
 ;; Test complet
 	; Manifest
-		domain="domain.tld"	(DOMAIN)
-		path="/path"	(PATH)
+		domain="domain.tld"
+		path="/path"
+		language="en_GB"
 		with_carddav=1
 		with_enigma=1
 	; Checks
@@ -12,6 +13,7 @@
 		setup_private=0
 		setup_public=0
 		upgrade=1
+		upgrade=1	from_commit=67cb9813b18254b5f478d9a2974862d0a3af40e5
 		backup_restore=1
 		multi_instance=1
 		port_already_use=0
@@ -19,3 +21,6 @@
 ;;; Options
 Email=
 Notification=none
+;;; Upgrade options
+	; commit=67cb9813b18254b5f478d9a2974862d0a3af40e5
+		name=Merge pull request #108
