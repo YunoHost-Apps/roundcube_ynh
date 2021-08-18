@@ -13,7 +13,7 @@ extra_php_dependencies="php-pear php${YNH_PHP_VERSION}-ldap php${YNH_PHP_VERSION
 YNH_COMPOSER_VERSION=2.1.1
 
 # Plugins version
-contextmenu_version=2.3
+contextmenu_version=3.2.1
 automatic_addressbook_version=v0.4.3
 carddav_version=3.0.3
 
