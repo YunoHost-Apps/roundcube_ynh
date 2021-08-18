@@ -75,7 +75,7 @@ Vous pouvez également télécharger le plugin et le placer dans le répertoire 
 
 ## Documentations et ressources
 
-* Site officiel de l'app : https://example.com
+* Site officiel de l'app : https://roundcube.net/
 * Documentation officielle utilisateur : https://yunohost.org/en/app_roundcube
 * Documentation officielle de l'admin : https://github.com/roundcube/roundcubemail/wiki
 * Dépôt de code officiel de l'app : https://github.com/roundcube/roundcubemail
