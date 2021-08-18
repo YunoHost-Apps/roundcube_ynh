@@ -193,7 +193,7 @@ $config['ldapAliasSync'] = array(
 // LOCAL CONFIGURATION
 // ----------------------------------
 
-$local_config = dirname(__FILE__) . '/local.inc.php';
+$local_config = dirname(__FILE__) . 'local.inc.php';
 if (file_exists($local_config)) {
   include $local_config;
 }
