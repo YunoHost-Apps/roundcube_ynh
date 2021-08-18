@@ -10,7 +10,7 @@
     "url": "https://roundcube.net/",
     "upstream": {
         "license": "GPL-3.0-only",
-        "website": "https://example.com",
+        "website": "https://roundcube.net/",
         "demo": "https://demo.yunohost.org/webmail/",
         "admindoc": "https://github.com/roundcube/roundcubemail/wiki",
         "userdoc": "https://yunohost.org/en/app_roundcube",
