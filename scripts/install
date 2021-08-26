@@ -201,9 +201,6 @@ then
     cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
         && installed_plugins+=" 'enigma'," \
         || ynh_print_warn --message="Unable to install Enigma plugin"
-
-    mkdir -p "$final_path/plugins/enigma/home"
-    chown -R $app: "$final_path/plugins/enigma/home"
 fi
 
 #=================================================
@@ -221,7 +218,15 @@ ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&
 ynh_store_file_checksum --file="$final_path/config/config.inc.php"
 
 chmod 400 "$final_path/config/config.inc.php"
-chown $app: "$final_path/config/config.inc.php"
+chown $app:$app "$final_path/config/config.inc.php"
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+mkdir -p "$final_path/plugins/enigma/home"
 
 #=================================================
 # RELOAD NGINX

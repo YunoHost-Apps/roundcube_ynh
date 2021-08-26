@@ -249,9 +249,6 @@ then
         cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
             && installed_plugins+=" 'enigma'," \
             || ynh_print_warn --message="Unable to install Enigma plugin"
-            
-        mkdir -p "$final_path/plugins/enigma/home"
-        chown -R $app: "$final_path/plugins/enigma/home"
     fi
 
     #=================================================
