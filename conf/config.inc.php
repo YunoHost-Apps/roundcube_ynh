@@ -141,7 +141,6 @@ $config['plugins'] = array(
   'markasjunk',
   'new_user_dialog',
   'new_user_identity',
-  'carddav',
   'enigma',
   // installed plugins
 );
