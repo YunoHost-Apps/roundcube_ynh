@@ -227,6 +227,7 @@ chown $app:$app "$final_path/config/config.inc.php"
 #=================================================
 
 mkdir -p "$final_path/plugins/enigma/home"
+chown -R $app:$app "$final_path/plugins/enigma/home"
 
 #=================================================
 # RELOAD NGINX
