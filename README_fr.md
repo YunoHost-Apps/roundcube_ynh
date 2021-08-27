@@ -11,7 +11,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 ## Vue d'ensemble
 
-Webmail Open Source
+Roundcube est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
 
 **Version incluse :** 1.5.0~ynh1
 
