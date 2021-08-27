@@ -22,7 +22,6 @@ final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 db_user=$db_name
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
-with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 language=$(ynh_app_setting_get --app=$app --key=language)
 db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
@@ -73,17 +72,6 @@ if [ -z "$with_carddav" ]; then
 		with_carddav=0
 	fi
 	ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
-fi
-
-# If with_enigma doesn't exist, create it
-if [ -z "$with_enigma" ]; then
-	if [ -f "${final_path}/plugins/enigma/config.inc.php" ]
-	then
-		with_enigma=1
-	else
-		with_enigma=0
-	fi
-	ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 fi
 
  # If language doesn't exist, create it 
@@ -201,7 +189,11 @@ then
         johndoh/contextmenu $contextmenu_version \
         sblaisot/automatic_addressbook $automatic_addressbook_version"
 
-    installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+    installed_plugins+=" 'contextmenu', 'automatic_addressbook', 'enigma',"
+
+    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
+    mkdir -p "$final_path/plugins/enigma/home"
+    chown -R $app:$app "$final_path/plugins/enigma/home"
 
     # Update or install CardDAV plugin
     if [ $with_carddav -eq 1 ]
@@ -237,18 +229,6 @@ then
         then
             installed_plugins+=" 'carddav',"
         fi
-    fi
-
-    # Install Enigma plugin
-    if [ $with_enigma -eq 1 ]
-    then
-        enigma_tmp_config="../conf/enigma.config.inc.php"
-
-        ynh_replace_string --match_string="__DIR__" --replace_string="$final_path/plugins/enigma/home" --target_file="$enigma_tmp_config"
-
-        cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
-            && installed_plugins+=" 'enigma'," \
-            || ynh_print_warn --message="Unable to install Enigma plugin"
     fi
 
     #=================================================

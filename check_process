@@ -4,7 +4,6 @@
 		path="/path"
 		language="en_GB"
 		with_carddav=1
-		with_enigma=1
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1

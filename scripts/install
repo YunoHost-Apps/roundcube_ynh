@@ -23,7 +23,6 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
-with_enigma=$YNH_APP_ARG_WITH_ENIGMA
 language=$YNH_APP_ARG_LANGUAGE
 
 app=$YNH_APP_INSTANCE_NAME
@@ -47,7 +46,6 @@ ynh_script_progression --message="Storing installation settings..." --weight=2
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
-ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 ynh_app_setting_set --app=$app --key=language --value=$language
 
 #=================================================
@@ -153,7 +151,11 @@ ynh_composer_exec --commands="require \
     johndoh/contextmenu $contextmenu_version \
     sblaisot/automatic_addressbook $automatic_addressbook_version"
 
-installed_plugins=" 'contextmenu', 'automatic_addressbook',"
+installed_plugins+=" 'contextmenu', 'automatic_addressbook', 'enigma',"
+
+ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
+mkdir -p "$final_path/plugins/enigma/home"
+chown -R $app:$app "$final_path/plugins/enigma/home"
 
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
@@ -189,16 +191,6 @@ then
     then
         installed_plugins+=" 'carddav',"
     fi
-fi
-
-# Install Enigma plugin
-if [ $with_enigma -eq 1 ]
-then
-    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
-    installed_plugins+=" 'enigma'," || ynh_print_warn --message="Unable to install Enigma plugin"
-
-    mkdir -p "$final_path/plugins/enigma/home"
-    chown -R $app:$app "$final_path/plugins/enigma/home"
 fi
 
 #=================================================
