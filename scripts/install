@@ -221,19 +221,6 @@ chown $app:$app "$final_path/config/config.inc.php"
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-<<<<<<< Updated upstream
-mkdir -p "$final_path/plugins/enigma/home"
-#chown -R $app:$app "$final_path/plugins/enigma/home"
-chown -R $app:www-data "$final_path/plugins"
-=======
-#mkdir -p "$final_path/plugins/enigma/home"
-#chown -R $app:$app "$final_path/plugins/enigma/home"
->>>>>>> Stashed changes
-
-#=================================================
 # RELOAD NGINX
 #=================================================
 ynh_script_progression --message="Reloading NGINX web server..." --weight=2
