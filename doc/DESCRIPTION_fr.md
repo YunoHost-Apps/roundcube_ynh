@@ -1,0 +1,1 @@
+Roundcube est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
