@@ -153,7 +153,7 @@ ynh_composer_exec --commands="require \
     johndoh/contextmenu $contextmenu_version \
     sblaisot/automatic_addressbook $automatic_addressbook_version"
 
-installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+installed_plugins=" 'contextmenu', 'automatic_addressbook',"
 
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
