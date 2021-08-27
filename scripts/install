@@ -151,7 +151,7 @@ ynh_composer_exec --commands="require \
     johndoh/contextmenu $contextmenu_version \
     sblaisot/automatic_addressbook $automatic_addressbook_version"
 
-installed_plugins+=" 'contextmenu', 'automatic_addressbook', 'enigma',"
+installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
 mkdir -p "$final_path/plugins/enigma/home"
