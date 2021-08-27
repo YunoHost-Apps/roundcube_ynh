@@ -155,7 +155,7 @@ installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
 ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
 mkdir -p "$final_path/plugins/enigma/home"
-chown -R $app:$app "$final_path/plugins/enigma/home"
+chown -R $app:www-data "$final_path/plugins/enigma/home"
 
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
