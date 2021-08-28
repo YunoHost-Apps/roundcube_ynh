@@ -131,7 +131,7 @@ ynh_script_progression --message="Configuring Roundcube..." --weight=2
 #ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$final_path/config/config.inc.php"
 #ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$final_path/config/config.inc.php"
 
-desket=$(ynh_string_random --length=24)
+deskey=$(ynh_string_random --length=24)
 file="__FILE__"
 ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
 
