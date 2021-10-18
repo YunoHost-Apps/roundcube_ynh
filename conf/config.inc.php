@@ -53,7 +53,7 @@ $config['default_host'] = '%t';
 // %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
 // %z - IMAP domain (IMAP hostname without the first part)
 // For example %n = mail.domain.tld, %t = domain.tld
-// To specify differnt SMTP servers for different IMAP hosts provide an array
+// To specify different SMTP servers for different IMAP hosts provide an array
 // of IMAP host (no prefix or port) and SMTP server e.g. ['imap.example.com' => 'smtp.example.net']
 $config['smtp_server'] = 'tls://' . $main_domain;
 
@@ -133,16 +133,15 @@ $config['ldap_public']['yunohost'] = array(
 
 // List of active plugins (in plugins/ directory)
 $config['plugins'] = array(
-  'archive',
-  'zipdownload',
-  // additionnal plugins
-  'http_authentication',
-  'managesieve',
-  'markasjunk',
-  'new_user_dialog',
-  'new_user_identity',
-  'enigma',
-  // installed plugins
+    'archive',
+    'zipdownload',
+    // additionnal plugins
+    'http_authentication',
+    'managesieve',
+    'markasjunk',
+    'new_user_dialog',
+    'new_user_identity',
+    'enigma',
 );
 
 // ----------------------------------
@@ -190,11 +189,5 @@ $config['ldapAliasSync'] = array(
   ),
 );
 
-// ----------------------------------
-// LOCAL CONFIGURATION
-// ----------------------------------
-
-$local_config = dirname(__FILE__) . '/local.inc.php';
-if (file_exists($local_config)) {
-  include $local_config;
-}
+// skin name: folder from skins/
+$config['skin'] = 'elastic';
