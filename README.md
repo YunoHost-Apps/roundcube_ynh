@@ -86,7 +86,6 @@ You can also download the plugin and put it under the `plugins/` directory. In t
 ## Documentation and resources
 
 * Official app website: https://roundcube.net/
-* Official user documentation: https://yunohost.org/en/app_roundcube
 * Official admin documentation: https://github.com/roundcube/roundcubemail/wiki
 * Upstream app code repository: https://github.com/roundcube/roundcubemail
 * YunoHost documentation for this app: https://yunohost.org/app_roundcube
