@@ -142,17 +142,8 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
     ynh_script_progression --message="Reconfiguring Roundcube..." --weight=1
 
-    rc_conf="$final_path/config/config.inc.php"
-
-    # Verify the checksum and backup the file if it's different
-    ynh_backup_if_checksum_is_different "$rc_conf"
-
-    cp ../conf/config.inc.php "$rc_conf"
-
-    ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DB_PWD__" --replace_string="$db_pwd" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DB_NAME__" --replace_string="$db_name" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+    deskey=$(ynh_string_random --length=24)
+    ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
