@@ -112,6 +112,10 @@ then
 	ynh_setup_source --dest_dir="$final_path"
 fi
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -152,7 +156,7 @@ then
     # Check if dependencies need to be updated with Composer
     if [ -f "$final_path/composer.json" ]
     then
-        ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
+        ynh_exec_warn_less ynh_composer_exec --commands="update"
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
@@ -165,9 +169,6 @@ then
 
     # Create logs and temp directories
     mkdir -p "$final_path/"{logs,temp}
-
-    # Install Installer Update for Composer 2.0
-    ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
 
     # Install net_LDAP
     ynh_composer_exec --commands="require kolab/net_ldap3"
@@ -246,10 +247,6 @@ then
     ( cd "$final_path"
     ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 fi
-
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
 
 #=================================================
 # RELOAD NGINX
