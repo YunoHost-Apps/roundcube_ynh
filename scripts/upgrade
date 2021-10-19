@@ -152,7 +152,7 @@ then
     # Check if dependencies need to be updated with Composer
     if [ -f "$final_path/composer.json" ]
     then
-        ynh_exec_warn_less ynh_composer_exec --commands="update"
+        ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
@@ -170,7 +170,7 @@ then
     ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
 
     # Install net_LDAP
-    #ynh_composer_exec --commands="require kolab/net_ldap3"
+    ynh_composer_exec --commands="require kolab/net_ldap3"
 
     # Update or install contextmenu and automatic_addressbook plugins
     # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
