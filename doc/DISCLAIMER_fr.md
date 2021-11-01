@@ -2,16 +2,6 @@
 
 Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
 
-## Caractéristiques spécifiques YunoHost
-
-En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce paquet :
-
- * Synchronisez vos alias de messagerie en tant qu'identités dans Roundcube.
- * Installation des plugins [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu)
-   et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) par default.
- * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant.
-* Prise en charge du cryptage PGP avec le plugin Enigma installé par default.
-
 #### Support multi-utilisateur
 
 * Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, reconnaissance des autres utilisateurs de l'instance YunoHost.
