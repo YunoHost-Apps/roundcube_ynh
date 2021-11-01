@@ -14,7 +14,7 @@ $config['enigma_debug'] = false;
 
 // REQUIRED! Keys directory for all users.
 // Must be writeable by PHP process, and not in the web server document root
-$config['enigma_pgp_homedir'] = '__DIR__';
+$config['enigma_pgp_homedir'] = '__FINALPATH__/plugins/enigma/home';
 
 // Location of gpg binary. By default it will be auto-detected.
 // This is also a way to force gpg2 use if there are both 1.x and 2.x on the system.
