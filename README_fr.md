@@ -13,16 +13,6 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Roundcube est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
 
-**Version incluse :** 1.5.0~ynh1
-
-**Démo :** https://demo.yunohost.org/webmail/
-
-## Avertissements / informations importantes
-
-## Configuration
-
-Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
-
 ## Caractéristiques spécifiques YunoHost
 
 En plus des fonctionnalités principales de Roundcube, les éléments suivants sont disponibles avec ce paquet :
@@ -32,6 +22,17 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
    et [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) par default.
  * Permettre d'installer [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant.
 * Prise en charge du cryptage PGP avec le plugin Enigma installé par default.
+
+
+**Version incluse :** 1.5.0~ynh1
+
+**Démo :** https://demo.yunohost.org/webmail/
+
+## Avertissements / informations importantes
+
+## Configuration
+
+Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
 
 #### Support multi-utilisateur
 

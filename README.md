@@ -17,10 +17,14 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
 
-### Features
+## YunoHost specific features
 
-- CardDAV to connect with baïkal or Nextcloud
-- Support for PGP encryption with Enigma plugin
+In addition to Roundcube core features, the following are made available with this package:
+
+ * Synchronize your email aliases as identities in Roundcube
+ * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu) and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) plugins by default
+ * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
+* Support for PGP encryption with Enigma plugin by default.
 
 
 **Shipped version:** 1.5.0~ynh1
@@ -32,15 +36,6 @@ Roundcube is a browser-based multilingual IMAP client with an application-like u
 ## Configuration
 
 You can extend - or even override - the Roundcube configuration which is coming with this package in the file `conf/local.inc.php`. Do not edit the file `conf/config.inc.php` as future upgrades will overwrite it.
-
-## YunoHost specific features
-
-In addition to Roundcube core features, the following are made available with this package:
-
- * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu) and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) plugins by default
- * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
-* Support for PGP encryption with Enigma plugin by default.
 
 #### Multi-users support
 
