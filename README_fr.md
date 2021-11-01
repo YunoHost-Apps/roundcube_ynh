@@ -28,6 +28,10 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
 
 **Démo :** https://demo.yunohost.org/webmail/
 
+## Captures d'écran
+
+![](./doc/screenshots/screenshot.png)
+
 ## Avertissements / informations importantes
 
 ## Configuration

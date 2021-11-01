@@ -31,6 +31,10 @@ In addition to Roundcube core features, the following are made available with th
 
 **Demo:** https://demo.yunohost.org/webmail/
 
+## Screenshots
+
+![](./doc/screenshots/screenshot.png)
+
 ## Disclaimers / important information
 
 ## Configuration
