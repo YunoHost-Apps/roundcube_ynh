@@ -20,10 +20,11 @@ domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+db_user=$db_name
 with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
-with_enigma=$(ynh_app_setting_get --app=$app --key=with_enigma)
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 language=$(ynh_app_setting_get --app=$app --key=language)
+db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
 
 #=================================================
 # CHECK VERSION
@@ -32,9 +33,23 @@ language=$(ynh_app_setting_get --app=$app --key=language)
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up $app before upgrading (may take a while)..." --weight=5
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+    # restore it if the upgrade fails
+    ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..."
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
@@ -59,36 +74,26 @@ if [ -z "$with_carddav" ]; then
 	ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 fi
 
-# If with_enigma doesn't exist, create it
-if [ -z "$with_enigma" ]; then
-	if [ -f "${final_path}/plugins/enigma/config.inc.php" ]
-	then
-		with_enigma=1
-	else
-		with_enigma=0
-	fi
-	ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
-fi
-
  # If language doesn't exist, create it 
  if [ -z "$language" ]; then 
     language="en_GB"
     ynh_app_setting_set --app=$app --key=language --value=$language
 fi 
 
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up $app before upgrading (may take a while)..." --weight=30
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+    ynh_legacy_permissions_delete_all
 
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
+    ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # STANDARD UPGRADE STEPS
@@ -107,21 +112,24 @@ then
 	ynh_setup_source --dest_dir="$final_path"
 fi
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..."
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
-# CREATE DEDICATED USER
+# UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..."
+ynh_script_progression --message="Upgrading dependencies..." --weight=1
 
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
+ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -129,7 +137,7 @@ ynh_system_user_create --username=$app
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --package="$extra_php_dependencies"
+ynh_add_fpm_config
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -139,21 +147,10 @@ ynh_add_fpm_config --package="$extra_php_dependencies"
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-    ynh_script_progression --message="Reconfiguring Roundcube..."
+    ynh_script_progression --message="Reconfiguring Roundcube..." --weight=1
 
-    rc_conf="$final_path/config/config.inc.php"
-
-    # Verify the checksum and backup the file if it's different
-    ynh_backup_if_checksum_is_different "$rc_conf"
-
-    cp ../conf/config.inc.php "$rc_conf"
-
-    ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBUSER__" --replace_string=$db_name --target_file="$rc_conf"
-    db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
-    ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
-    ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+    deskey=$(ynh_string_random --length=24)
+    ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
@@ -166,11 +163,12 @@ then
     # Check if dependencies need to be updated with Composer
     if [ -f "$final_path/composer.json" ]
     then
-        ynh_exec_warn_less ynh_composer_exec --commands=\"update --no-dev --prefer-dist\"
+        ynh_exec_warn_less ynh_composer_exec --commands="update"
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
     fi
+
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
@@ -190,6 +188,10 @@ then
         sblaisot/automatic_addressbook $automatic_addressbook_version"
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+
+    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
+    mkdir -p "$final_path/plugins/enigma/home"
+    chown -R $app:$app "$final_path/plugins/enigma/home"
 
     # Update or install CardDAV plugin
     if [ $with_carddav -eq 1 ]
@@ -227,31 +229,22 @@ then
         fi
     fi
 
-    # Install Enigma plugin
-    if [ $with_enigma -eq 1 ]
-    then
-        enigma_tmp_config="../conf/enigma.config.inc.php"
-
-        ynh_replace_string --match_string="__DIR__" --replace_string="$final_path/plugins/enigma/home" --target_file="$enigma_tmp_config"
-
-        cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
-            && installed_plugins+=" 'enigma'," \
-            || ynh_print_warn --message="Unable to install Enigma plugin"
-    fi
-
     #=================================================
     # UPDATE ROUNDCUBE CONFIGURATION
     #=================================================
     ynh_script_progression --message="Updating $app configuration..." --weight=4
 
-    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
+    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
 
     # Update JavaScript dependencies
     (cd "$final_path"
-    /usr/bin/php -q ./bin/install-jsdeps.sh)
+    /usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
 
     # Store the config file checksum into the app settings
-    ynh_store_file_checksum --file="$rc_conf"
+    ynh_store_file_checksum --file="$final_path/config/config.inc.php"
+
+    chmod 400 "$final_path/config/config.inc.php"
+    chown $app:$app "$final_path/config/config.inc.php"
 
     #=================================================
     # UPDATE ROUNDCUBE CORE
@@ -263,20 +256,9 @@ then
 fi
 
 #=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions to app files
-chown -R root: "$final_path"
-mkdir -p "$final_path/plugins/enigma/home"
-chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
-
-#=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
+ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
 

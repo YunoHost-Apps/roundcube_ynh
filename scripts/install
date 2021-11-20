@@ -23,7 +23,6 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 with_carddav=$YNH_APP_ARG_WITH_CARDDAV
-with_enigma=$YNH_APP_ARG_WITH_ENIGMA
 language=$YNH_APP_ARG_LANGUAGE
 
 app=$YNH_APP_INSTANCE_NAME
@@ -47,7 +46,6 @@ ynh_script_progression --message="Storing installation settings..." --weight=2
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
-ynh_app_setting_set --app=$app --key=with_enigma --value=$with_enigma
 ynh_app_setting_set --app=$app --key=language --value=$language
 
 #=================================================
@@ -55,11 +53,27 @@ ynh_app_setting_set --app=$app --key=language --value=$language
 #=================================================
 # CREATE A MYSQL DATABASE
 #=================================================
-ynh_script_progression --message="Creating a MySQL database..."
+ynh_script_progression --message="Creating a MySQL database..." --weight=2
 
 db_name=$(ynh_sanitize_dbid --db_name=$app)
+db_user=$db_name
 ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 ynh_mysql_setup_db --db_user=$db_name --db_name=$db_name
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing dependencies..." --weight=1
+
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --weight=3
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -70,6 +84,10 @@ ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$final_path"
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R $app:www-data "$final_path"
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -79,20 +97,12 @@ ynh_script_progression --message="Configuring NGINX web server..." --weight=2
 ynh_add_nginx_config
 
 #=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --weight=3
-
-# Create a system user
-ynh_system_user_create --username=$app
-
-#=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
 ynh_script_progression --message="Configuring PHP-FPM..." --weight=2
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --package="$extra_php_dependencies"
+ynh_add_fpm_config
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
@@ -119,17 +129,10 @@ ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring Roundcube..."
+ynh_script_progression --message="Configuring Roundcube..." --weight=2
 
-rc_conf="$final_path/config/config.inc.php"
-
-cp ../conf/config.inc.php "$rc_conf"
-
-ynh_replace_string --match_string="__DESKEY__" --replace_string="$(ynh_string_random --length=24)" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DBUSER__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DBPASS__" --replace_string="$db_pwd" --target_file="$rc_conf"
-ynh_replace_string --match_string="__DBNAME__" --replace_string="$db_name" --target_file="$rc_conf"
-ynh_replace_string --match_string="__LANGUAGE__" --replace_string="$language" --target_file="$rc_conf"
+deskey=$(ynh_string_random --length=24)
+ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
@@ -150,6 +153,10 @@ ynh_composer_exec --commands="require \
     sblaisot/automatic_addressbook $automatic_addressbook_version"
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+
+ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
+mkdir -p "$final_path/plugins/enigma/home"
+chown -R $app:www-data "$final_path/plugins/enigma/home"
 
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
@@ -180,23 +187,11 @@ then
         done
     done
 
-    # Do not actualy add the carddav plugin if there's no carddav server available...
+    # Do not actualy add the cardDAV plugin if there's no cardDAV server available...
     if [ $carddav_server -eq 1 ]
     then
         installed_plugins+=" 'carddav',"
     fi
-fi
-
-# Install Enigma plugin
-if [ $with_enigma -eq 1 ]
-then
-    enigma_tmp_config="../conf/enigma.config.inc.php"
-
-    ynh_replace_string --match_string="__DIR__" --replace_string="$final_path/plugins/enigma/home" --target_file="$enigma_tmp_config"
-
-    cp "$enigma_tmp_config" "$final_path/plugins/enigma/config.inc.php" \
-        && installed_plugins+=" 'enigma'," \
-        || ynh_print_warn --message="Unable to install Enigma plugin"
 fi
 
 #=================================================
@@ -204,26 +199,20 @@ fi
 #=================================================
 ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
 
-ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$rc_conf"
+ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
 
 # Update javascript dependencies
 (cd "$final_path"
-/usr/bin/php -q ./bin/install-jsdeps.sh)
+/usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
 
 # Store the config file checksum into the app settings
-ynh_store_file_checksum --file="$rc_conf"
+ynh_store_file_checksum --file="$final_path/config/config.inc.php"
+
+chmod 400 "$final_path/config/config.inc.php"
+chown $app:$app "$final_path/config/config.inc.php"
 
 #=================================================
 # GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions to app files
-chown -R root: "$final_path"
-mkdir -p "$final_path/plugins/enigma/home"
-chown -R $app: "$final_path/"{temp,logs,plugins/enigma/home}
-
 #=================================================
 # RELOAD NGINX
 #=================================================

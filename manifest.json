@@ -6,40 +6,38 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "version": "1.4.11~ynh2",
+    "version": "1.5.0~ynh1",
     "url": "https://roundcube.net/",
+    "upstream": {
+        "license": "GPL-3.0-only",
+        "website": "https://roundcube.net/",
+        "demo": "https://demo.yunohost.org/webmail/",
+        "admindoc": "https://github.com/roundcube/roundcubemail/wiki",
+        "code": "https://github.com/roundcube/roundcubemail"
+    },
     "license": "GPL-3.0-only",
     "maintainer": {
         "name": "",
         "email": ""
     },
     "requirements": {
-        "yunohost": ">= 4.0.7"
+        "yunohost": ">= 4.3.2"
     },
     "multi_instance": true,
     "services": [
         "nginx",
-        "php7.0-fpm",
+        "php7.3-fpm",
         "mysql"
     ],
     "arguments": {
         "install" : [
             {
                 "name": "domain",
-                "type": "domain",
-                "ask": {
-                    "en": "Choose a domain for Roundcube",
-                    "fr": "Choisissez un domaine pour Roundcube"
-                },
-                "example": "domain.org"
+                "type": "domain"
             },
             {
                 "name": "path",
                 "type": "path",
-                "ask": {
-                    "en": "Choose a path for Roundcube",
-                    "fr": "Choisissez un chemin pour Roundcube"
-                },
                 "example": "/webmail",
                 "default": "/webmail"
             },
@@ -50,7 +48,7 @@
                     "en": "Choose the application language",
                     "fr": "Choisissez la langue de l'application"
                 },
-                "choices": ["fr_FR", "en_GB", "de_DE"],
+                "choices": ["de_DE", "en_GB", "fr_FR", "it_IT"],
                 "default": "en_GB"
             },
             {
@@ -59,15 +57,6 @@
                 "ask": {
                     "en": "Install CardDAV synchronization plugin?",
                     "fr": "Installer le plugin de synchronisation CardDAV ?"
-                },
-                "default": false
-            },
-            {
-                "name": "with_enigma",
-                "type": "boolean",
-                "ask": {
-                    "en": "Install Enigma messages encryption plugin?",
-                    "fr": "Installer le plugin de chiffrement des messages Enigma ?"
                 },
                 "default": false
             }
