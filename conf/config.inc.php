@@ -41,7 +41,7 @@ $config['db_dsnw'] = 'mysql://__DB_NAME__:__DB_PWD__@localhost/__DB_NAME__';
 // %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
 // %s - domain name after the '@' from e-mail address provided at login screen
 // For example %n = mail.domain.tld, %t = domain.tld
-$config['default_host'] = '%t';
+$config['default_host'] = 'localhost';
 
 // SMTP server host (for sending mails).
 // Enter hostname with prefix ssl:// to use Implicit TLS, or use
