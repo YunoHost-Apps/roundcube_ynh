@@ -94,8 +94,6 @@ $config['product_name'] = 'YunoHost Webmail';
 // YOUR KEY MUST BE DIFFERENT THAN THE SAMPLE VALUE FOR SECURITY REASONS
 $config['des_key'] = '__DESKEY__';
 
-// skin name: folder from skins/
-$config['skin'] = 'elastic';
 
 // ----------------------------------
 // USER INTERFACE
