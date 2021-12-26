@@ -140,6 +140,7 @@ $config['plugins'] = array(
     'new_user_dialog',
     'new_user_identity',
     'enigma',
+    // installed plugins
 );
 
 // ----------------------------------
