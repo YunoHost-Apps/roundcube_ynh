@@ -12,7 +12,7 @@
 		setup_private=0
 		setup_public=0
 		upgrade=1
-		upgrade=1	from_commit=67cb9813b18254b5f478d9a2974862d0a3af40e5
+		upgrade=1	from_commit=f470adac1152482928c90a9c657b968f0907cf8a
 		backup_restore=1
 		multi_instance=1
 		change_url=1
@@ -20,5 +20,5 @@
 Email=
 Notification=none
 ;;; Upgrade options
-	; commit=67cb9813b18254b5f478d9a2974862d0a3af40e5
-		name=Merge pull request #108
+	; commit=f470adac1152482928c90a9c657b968f0907cf8a
+		name=Merge pull request #119

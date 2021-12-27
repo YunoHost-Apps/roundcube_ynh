@@ -26,6 +26,9 @@ phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 language=$(ynh_app_setting_get --app=$app --key=language)
 db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
 
+fpm_footprint=$(ynh_app_setting_get --app=$app --key=fpm_footprint)
+fpm_usage=$(ynh_app_setting_get --app=$app --key=fpm_usage)
+
 #=================================================
 # CHECK VERSION
 #=================================================
@@ -79,6 +82,18 @@ fi
     language="en_GB"
     ynh_app_setting_set --app=$app --key=language --value=$language
 fi 
+
+# If fpm_footprint doesn't exist, create it
+if [ -z "$fpm_footprint" ]; then
+    fpm_footprint=low
+    ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
+fi
+
+# If fpm_usage doesn't exist, create it
+if [ -z "$fpm_usage" ]; then
+    fpm_usage=low
+    ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
+fi
 
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
@@ -137,7 +152,7 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config
+ynh_add_fpm_config --phpversion=$phpversion --usage=$fpm_usage --footprint=$fpm_footprint
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -164,6 +179,8 @@ then
     if [ -f "$final_path/composer.json" ]
     then
         ynh_exec_warn_less ynh_composer_exec --commands="update"
+        # Update plugin-installer for Composer version 2.0
+        ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
