@@ -139,6 +139,7 @@ $config['plugins'] = array(
     'markasjunk',
     'new_user_dialog',
     'new_user_identity',
+    'newmail_notifier',
     'enigma',
     // installed plugins
 );
