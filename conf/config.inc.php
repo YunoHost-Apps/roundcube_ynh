@@ -55,7 +55,7 @@ $config['imap_host'] = 'localhost:143';
 // For example %n = mail.domain.tld, %t = domain.tld
 // To specify different SMTP servers for different IMAP hosts provide an array
 // of IMAP host (no prefix or port) and SMTP server e.g. ['imap.example.com' => 'smtp.example.net']
-$config['smtp_host'] = 'tls://' . $main_domain:587;
+$config['smtp_host'] = 'tls://' . $main_domain;
 
 // SMTP username (if required) if you use %u as the username Roundcube
 // will use the current username for login
