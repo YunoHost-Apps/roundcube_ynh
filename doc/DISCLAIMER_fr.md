@@ -12,7 +12,7 @@ Vous pouvez également installer d'autres plugins (qui ne seront pas supprimés 
 
 ##### Depuis le dépôt de plugins
 
-Si, par exemple, vous voulez installer le plugin [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier).
+Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packagist.org/packages/kitist/html5_notifier).
 
 1. Connectez-vous en SSH à votre serveur en tant que root :
    ```
