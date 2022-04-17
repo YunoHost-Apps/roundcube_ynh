@@ -186,6 +186,10 @@ then
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
     fi
 
+    # Remove collected_contacts TEMPORARY FIX
+    ynh_mysql_execute_as_root --sql="create table collected_contacts_bkp as (select * from collected_contacts);" --database=$db_name
+    ynh_mysql_execute_as_root --sql="drop table collected_contacts;" --database=$db_name
+
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
@@ -203,6 +207,10 @@ then
     ynh_composer_exec --commands="update --no-dev --prefer-dist \
         johndoh/contextmenu $contextmenu_version \
         sblaisot/automatic_addressbook $automatic_addressbook_version"
+
+    # Restaure collected_contacts TEMPORARY FIX
+    ynh_mysql_execute_as_root --sql="insert into collected_contacts (select * from collected_contacts_bkp);" --database=$db_name
+
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
