@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # Roundcube for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Working status](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
 [![Install Roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -33,7 +33,7 @@ In addition to Roundcube core features, the following are made available with th
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot.png)
+![Screenshot of Roundcube](./doc/screenshots/screenshot.png)
 
 ## Disclaimers / important information
 
@@ -84,21 +84,22 @@ You can also download the plugin and put it under the `plugins/` directory. In t
 
 ## Documentation and resources
 
-* Official app website: https://roundcube.net/
-* Official admin documentation: https://github.com/roundcube/roundcubemail/wiki
-* Upstream app code repository: https://github.com/roundcube/roundcubemail
-* YunoHost documentation for this app: https://yunohost.org/app_roundcube
-* Report a bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
+* Official app website: <https://roundcube.net/>
+* Official admin documentation: <https://github.com/roundcube/roundcubemail/wiki>
+* Upstream app code repository: <https://github.com/roundcube/roundcubemail>
+* YunoHost documentation for this app: <https://yunohost.org/app_roundcube>
+* Report a bug: <https://github.com/YunoHost-Apps/roundcube_ynh/issues>
 
 ## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
-```
+
+``` bash
 sudo yunohost app install https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```
 
-**More info regarding app packaging:** https://yunohost.org/packaging_apps
+**More info regarding app packaging:** <https://yunohost.org/packaging_apps>
