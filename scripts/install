@@ -145,9 +145,10 @@ mkdir -p "$final_path/"{logs,temp}
 # Install net_LDAP
 ynh_composer_exec --commands="require kolab/net_ldap3"
 
-# Install contextmenu and automatic_addressbook plugins
-# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
-# https://plugins.roundcube.net/packages/johndoh/contextmenu
+# Install contextmenu, automatic_addressbook and calendar plugins
+# https://plugins.roundcube.net/#/packages/johndoh/contextmenu
+# https://plugins.roundcube.net/#/packages/projectmyst/automatic_addressbook
+# https://plugins.roundcube.net/#/packages/kolab/calendar
 ynh_composer_exec --commands="require \
     johndoh/contextmenu $contextmenu_version \
     sblaisot/automatic_addressbook $automatic_addressbook_version \
