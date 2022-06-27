@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # Roundcube for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
+[![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Working status](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
 [![Install Roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
 *[Lire ce readme en français.](./README_fr.md)*
@@ -22,18 +22,18 @@ Roundcube is a browser-based multilingual IMAP client with an application-like u
 In addition to Roundcube core features, the following are made available with this package:
 
  * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://plugins.roundcube.net/packages/johndoh/contextmenu) and [automatic addressbook](https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook) plugins by default
- * Allow to install the [CardDAV](https://plugins.roundcube.net/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
+ * Install the [contextmenu](https://packagist.org/packages/johndoh/contextmenu) and [automatic addressbook](https://packagist.org/packages/projectmyst/automatic_addressbook) plugins by default
+ * Allow to install the [CardDAV](https://packagist.org/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
 * Support for PGP encryption with Enigma plugin by default.
 
 
-**Shipped version:** 1.5.2~ynh1
+**Shipped version:** 1.5.3~ynh1
 
 **Demo:** https://demo.yunohost.org/webmail/
 
 ## Screenshots
 
-![](./doc/screenshots/screenshot.png)
+![Screenshot of Roundcube](./doc/screenshots/screenshot.png)
 
 ## Disclaimers / important information
 
@@ -51,7 +51,7 @@ You can also install other plugins - which will not be removed with upgrades. To
 
 ##### From the Plugin Repository
 
-Let's say for example that we want to install the [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier) plugin.
+Let's say for example that we want to install the [html5_notifier](https://packagist.org/packages/kitist/html5_notifier) plugin.
 
 1. Connect to your server as root using SSH:
    ```
@@ -84,21 +84,22 @@ You can also download the plugin and put it under the `plugins/` directory. In t
 
 ## Documentation and resources
 
-* Official app website: https://roundcube.net/
-* Official admin documentation: https://github.com/roundcube/roundcubemail/wiki
-* Upstream app code repository: https://github.com/roundcube/roundcubemail
-* YunoHost documentation for this app: https://yunohost.org/app_roundcube
-* Report a bug: https://github.com/YunoHost-Apps/roundcube_ynh/issues
+* Official app website: <https://roundcube.net/>
+* Official admin documentation: <https://github.com/roundcube/roundcubemail/wiki>
+* Upstream app code repository: <https://github.com/roundcube/roundcubemail>
+* YunoHost documentation for this app: <https://yunohost.org/app_roundcube>
+* Report a bug: <https://github.com/YunoHost-Apps/roundcube_ynh/issues>
 
 ## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing).
 
 To try the testing branch, please proceed like that.
-```
+
+``` bash
 sudo yunohost app install https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 or
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```
 
-**More info regarding app packaging:** https://yunohost.org/packaging_apps
+**More info regarding app packaging:** <https://yunohost.org/packaging_apps>
