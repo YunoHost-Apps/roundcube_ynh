@@ -58,7 +58,7 @@ ynh_script_progression --message="Creating a MySQL database..." --weight=2
 db_name=$(ynh_sanitize_dbid --db_name=$app)
 db_user=$db_name
 ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-ynh_mysql_setup_db --db_user=$db_name --db_name=$db_name
+ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -123,7 +123,7 @@ ynh_install_composer
 #=================================================
 ynh_script_progression --message="Initializing database..." --weight=3
 
-ynh_mysql_connect_as --user="$db_name" --password="$db_pwd" --database="$db_name" \
+ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name" \
     < "$final_path/SQL/mysql.initial.sql"
 
 #=================================================
@@ -150,7 +150,8 @@ ynh_composer_exec --commands="require kolab/net_ldap3"
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
 ynh_composer_exec --commands="require \
     johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version"
+    sblaisot/automatic_addressbook $automatic_addressbook_version \
+    kolab/calendar $calendar_version"
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
