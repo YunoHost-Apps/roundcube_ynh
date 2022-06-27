@@ -202,7 +202,8 @@ then
     # https://plugins.roundcube.net/packages/johndoh/contextmenu
     ynh_composer_exec --commands="update --no-dev --prefer-dist \
         johndoh/contextmenu $contextmenu_version \
-        sblaisot/automatic_addressbook $automatic_addressbook_version"
+        sblaisot/automatic_addressbook $automatic_addressbook_version \
+        kolab/calendar $calendar_version"
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
