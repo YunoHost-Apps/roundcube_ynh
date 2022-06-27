@@ -194,8 +194,10 @@ then
     # Create logs and temp directories
     mkdir -p "$final_path/"{logs,temp}
 
-    # Install net_LDAP
-    ynh_composer_exec --commands="require kolab/net_ldap3"
+    # Install net_LDAP and calendar
+    ynh_composer_exec --commands="require \
+    kolab/net_ldap3 \
+    kolab/calendar $calendar_version"
 
     # Update or install contextmenu, automatic_addressbook and calendar plugins
     # https://plugins.roundcube.net/#/packages/johndoh/contextmenu
@@ -203,8 +205,7 @@ then
     # https://plugins.roundcube.net/#/packages/kolab/calendar
     ynh_composer_exec --commands="update --no-dev --prefer-dist \
         johndoh/contextmenu $contextmenu_version \
-        sblaisot/automatic_addressbook $automatic_addressbook_version \
-        kolab/calendar $calendar_version"
+        sblaisot/automatic_addressbook $automatic_addressbook_version"
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook', 'calendar',"
 
