@@ -12,7 +12,7 @@ You can also install other plugins - which will not be removed with upgrades. To
 
 ##### From the Plugin Repository
 
-Let's say for example that we want to install the [html5_notifier](https://plugins.roundcube.net/packages/kitist/html5_notifier) plugin.
+Let's say for example that we want to install the [html5_notifier](https://packagist.org/packages/kitist/html5_notifier) plugin.
 
 1. Connect to your server as root using SSH:
    ```
