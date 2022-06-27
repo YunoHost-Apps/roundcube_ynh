@@ -141,7 +141,6 @@ $config['plugins'] = array(
     'new_user_identity',
     'newmail_notifier',
     'enigma',
-    'calendar',
     // installed plugins
 );
 
