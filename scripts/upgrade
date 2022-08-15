@@ -173,7 +173,7 @@ then
     ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
 
     # Install composer.json
-    cp "$final_path/composer.json-dist" "$final_path/composer.json"
+    #cp "$final_path/composer.json-dist" "$final_path/composer.json"
 
 
     # Upgrade composer itself
