@@ -205,7 +205,7 @@ ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&
 
 # Update javascript dependencies
 (cd "$final_path"
-/usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
+/usr/bin/php$phpversion -q ./bin/update.sh -v ?)
 
 # Store the config file checksum into the app settings
 ynh_store_file_checksum --file="$final_path/config/config.inc.php"

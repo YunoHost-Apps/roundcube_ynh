@@ -41,7 +41,7 @@ $config['db_dsnw'] = 'mysql://__DB_NAME__:__DB_PWD__@localhost/__DB_NAME__';
 // %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
 // %s - domain name after the '@' from e-mail address provided at login screen
 // For example %n = mail.domain.tld, %t = domain.tld
-$config['default_host'] = 'localhost';
+$config['imap_host'] = 'localhost:143';
 
 // SMTP server host (for sending mails).
 // Enter hostname with prefix ssl:// to use Implicit TLS, or use
@@ -55,10 +55,7 @@ $config['default_host'] = 'localhost';
 // For example %n = mail.domain.tld, %t = domain.tld
 // To specify different SMTP servers for different IMAP hosts provide an array
 // of IMAP host (no prefix or port) and SMTP server e.g. ['imap.example.com' => 'smtp.example.net']
-$config['smtp_server'] = 'tls://' . $main_domain;
-
-// SMTP port. Use 25 for cleartext, 465 for Implicit TLS, or 587 for STARTTLS (default)
-$config['smtp_port'] = 587;
+$config['smtp_host'] = 'tls://' . $main_domain;
 
 // SMTP username (if required) if you use %u as the username Roundcube
 // will use the current username for login
@@ -113,8 +110,7 @@ $config['enable_spellcheck'] = false;
 // Enable YunoHost users search in the address book.
 $config['ldap_public']['yunohost'] = array(
   'name' => 'YunoHost Users',
-  'hosts' => array('localhost'),
-  'port' => 389,
+  'hosts' => array('localhost:389'),
   'user_specific' => false,
   'base_dn' => 'ou=users,dc=yunohost,dc=org',
   'scope' => 'list',

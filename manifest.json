@@ -6,14 +6,15 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "version": "1.5.3~ynh1",
+    "version": "1.6.0~ynh1",
     "url": "https://roundcube.net/",
     "upstream": {
         "license": "GPL-3.0-only",
         "website": "https://roundcube.net/",
         "demo": "https://demo.yunohost.org/webmail/",
         "admindoc": "https://github.com/roundcube/roundcubemail/wiki",
-        "code": "https://github.com/roundcube/roundcubemail"
+        "code": "https://github.com/roundcube/roundcubemail",
+        "cpe": "cpe:2.3:a:roundcube:webmail"
     },
     "license": "GPL-3.0-only",
     "maintainer": {
@@ -21,12 +22,12 @@
         "email": ""
     },
     "requirements": {
-        "yunohost": ">= 4.3.2"
+        "yunohost": ">= 11.0.9"
     },
     "multi_instance": true,
     "services": [
         "nginx",
-        "php7.3-fpm",
+        "php7.4-fpm",
         "mysql"
     ],
     "arguments": {
