@@ -13,7 +13,8 @@
         "website": "https://roundcube.net/",
         "demo": "https://demo.yunohost.org/webmail/",
         "admindoc": "https://github.com/roundcube/roundcubemail/wiki",
-        "code": "https://github.com/roundcube/roundcubemail"
+        "code": "https://github.com/roundcube/roundcubemail",
+        "cpe": "cpe:2.3:a:roundcube:webmail"
     },
     "license": "GPL-3.0-only",
     "maintainer": {
