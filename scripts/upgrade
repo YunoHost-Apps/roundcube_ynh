@@ -132,14 +132,6 @@ chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
 #=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=1
@@ -153,6 +145,14 @@ ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
 # Create a dedicated PHP-FPM config
 ynh_add_fpm_config --phpversion=$phpversion --usage=$fpm_usage --footprint=$fpm_footprint
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -255,7 +255,7 @@ then
 
     # Update JavaScript dependencies
     (cd "$final_path"
-    /usr/bin/php$phpversion -q ./bin/install-jsdeps.sh)
+    /usr/bin/php$phpversion -q ./bin/update.sh -v ?)
 
     # Store the config file checksum into the app settings
     ynh_store_file_checksum --file="$final_path/config/config.inc.php"
