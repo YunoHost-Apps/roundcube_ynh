@@ -195,12 +195,6 @@ then
 fi
 
 #=================================================
-# INSTALL JS DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing js dependencies..." --weight=1
-ynh_composer_exec --commands="bin/install-jsdeps.sh"
-
-#=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
 ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
@@ -209,7 +203,7 @@ ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&
 
 # Update javascript dependencies
 (cd "$final_path"
-/usr/bin/php$phpversion -q ./bin/update.sh -v ?)
+/usr/bin/php$phpversion -q ./bin/install-jsdeps.sh -v ?)
 
 # Store the config file checksum into the app settings
 ynh_store_file_checksum --file="$final_path/config/config.inc.php"
