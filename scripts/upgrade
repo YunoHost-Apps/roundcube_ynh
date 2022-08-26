@@ -179,8 +179,8 @@ then
     if [ -f "$final_path/composer.json" ]
     then
         ynh_exec_warn_less ynh_composer_exec --commands="update"
-        # Update plugin-installer for Composer version 2.0
-        ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.3.2"
+        ## Update plugin-installer for Composer version 2.0
+        #ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.3.2"
     else
         # Install composer.json
         cp "$final_path/composer.json-dist" "$final_path/composer.json"
