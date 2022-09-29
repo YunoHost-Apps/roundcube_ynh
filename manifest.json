@@ -6,7 +6,7 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "version": "1.6.0~ynh2",
+    "version": "1.6.0~ynh3",
     "url": "https://roundcube.net/",
     "upstream": {
         "license": "GPL-3.0-only",
