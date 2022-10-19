@@ -15,7 +15,7 @@ YNH_COMPOSER_VERSION=2.3.7
 # Plugins version
 contextmenu_version=3.3.1
 automatic_addressbook_version=v0.4.3
-carddav_version=4.4.1
+carddav_version=4.4.3
 calendar_version=3.5.7
 
 #=================================================

@@ -27,6 +27,10 @@ language=$YNH_APP_ARG_LANGUAGE
 
 app=$YNH_APP_INSTANCE_NAME
 
+fpm_footprint="low"
+fpm_free_footprint=0
+fpm_usage="low"
+
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
@@ -47,6 +51,9 @@ ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 ynh_app_setting_set --app=$app --key=language --value=$language
+ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
+ynh_app_setting_set --app=$app --key=fpm_free_footprint --value=$fpm_free_footprint
+ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -101,8 +108,8 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Configuring PHP-FPM..." --weight=2
 
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=low --footprint=low
+# Create a dedicated php-fpm config
+ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
 phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 
 #=================================================
