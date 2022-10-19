@@ -29,7 +29,6 @@ In addition to Roundcube core features, the following are made available with th
 
 **Shipped version:** 1.6.0~ynh3
 
-
 **Demo:** https://demo.yunohost.org/webmail/
 
 ## Screenshots
