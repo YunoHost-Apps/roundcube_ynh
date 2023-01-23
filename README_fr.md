@@ -5,15 +5,15 @@ It shall NOT be edited by hand.
 
 # Roundcube pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
 [![Installer Roundcube avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer Roundcube rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer Roundcube rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Roundcube est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
 
@@ -28,13 +28,13 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
 * Prise en charge du chiffrement PGP avec le plugin Enigma installé par default.
 
 
-**Version incluse :** 1.6.0~ynh3
+**Version incluse :** 1.6.1~ynh1
 
 **Démo :** https://demo.yunohost.org/webmail/
 
-## Captures d'écran
+## Captures d’écran
 
-![Capture d'écran de Roundcube](./doc/screenshots/screenshot.png)
+![Capture d’écran de Roundcube](./doc/screenshots/screenshot.png)
 
 ## Avertissements / informations importantes
 
@@ -85,9 +85,9 @@ Vous pouvez également télécharger le plugin et le placer dans le répertoire 
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://roundcube.net/>
-* Documentation officielle de l'admin : <https://github.com/roundcube/roundcubemail/wiki>
-* Dépôt de code officiel de l'app : <https://github.com/roundcube/roundcubemail>
+* Site officiel de l’app : <https://roundcube.net/>
+* Documentation officielle de l’admin : <https://github.com/roundcube/roundcubemail/wiki>
+* Dépôt de code officiel de l’app : <https://github.com/roundcube/roundcubemail>
 * Documentation YunoHost pour cette app : <https://yunohost.org/app_roundcube>
 * Signaler un bug : <https://github.com/YunoHost-Apps/roundcube_ynh/issues>
 
@@ -103,4 +103,4 @@ ou
 sudo yunohost app upgrade roundcube -u https://github.com/YunoHost-Apps/roundcube_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
