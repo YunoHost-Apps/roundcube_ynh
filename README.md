@@ -6,6 +6,7 @@ It shall NOT be edited by hand.
 # Roundcube for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Working status](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+
 [![Install Roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
 *[Lire ce readme en français.](./README_fr.md)*
