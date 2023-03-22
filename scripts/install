@@ -22,8 +22,6 @@ fpm_usage="low"
 #=================================================
 ynh_script_progression --message="Storing installation settings..." --weight=2
 
-ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
-ynh_app_setting_set --app=$app --key=language --value=$language
 ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
 ynh_app_setting_set --app=$app --key=fpm_free_footprint --value=$fpm_free_footprint
 ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
