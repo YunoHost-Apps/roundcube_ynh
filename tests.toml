@@ -1,0 +1,14 @@
+test_format = 1.0
+
+[default]
+
+    # ------------
+    # Tests to run
+    # ------------
+
+    args.with_carddav=1
+
+    # -------------------------------
+    # Commits to test upgrade from
+    # -------------------------------
+    test_upgrade_from.f470adac.name = "Upgrade from #119"

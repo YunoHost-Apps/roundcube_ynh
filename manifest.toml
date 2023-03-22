@@ -15,11 +15,9 @@ website = "https://roundcube.net/"
 demo = "https://demo.yunohost.org/webmail/"
 admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
-cpe = "???" # FIXME: optional but recommended if relevant, this is meant to contain the Common Platform Enumeration, which is sort of a standard id for applications defined by the NIST. In particular, Yunohost may use this is in the future to easily track CVE (=security reports) related to apps. The CPE may be obtained by searching here: https://nvd.nist.gov/products/cpe/search. For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
-fund = "???" # FIXME: optional but recommended (or remove if irrelevant / not applicable). This is meant to be an URL where people can financially support this app, especially when its development is based on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
 
 [integration]
-yunohost = ">= 11.0.9"
+yunohost = ">= 11.1.15"
 architectures = "all" # FIXME: can be replaced by a list of supported archs using the dpkg --print-architecture nomenclature (amd64/i386/armhf/arm64), for example: ["amd64", "i386"]
 multi_instance = true
 ldap = "?" # FIXME: replace with true, false, or "not_relevant". Not to confuse with the "sso" key : the "ldap" key corresponds to wether or not a user *can* login on the app using its YunoHost credentials.
@@ -30,11 +28,9 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
 
 [install]
     [install.domain]
-    # this is a generic question - ask strings are automatically handled by Yunohost's core
     type = "domain"
 
     [install.path]
-    # this is a generic question - ask strings are automatically handled by Yunohost's core
     type = "path"
     default = "/webmail"
 
@@ -56,13 +52,15 @@ ram.runtime = "50M" # FIXME: replace with an **estimate** minimum ram requiremen
         url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.1/roundcubemail-1.6.1.tar.gz.asc"
         sha256 = "6c4700ab539f7e47f1ae1974d5ba851ded1e5c1e35efde957547283e5a765929"
 
-
     [resources.system_user]
 
     [resources.install_dir]
 
     [resources.permissions]
     main.url = "/"
+
+    [resources.apt]
+    packages = "php-pear php8.0-ldap php8.0-mysql php8.0-json php8.0-cli php8.0-intl php8.0-zip php8.0-gd php8.0-mbstring php8.0-dom php8.0-curl"
 
     [resources.database]
     type = "mysql"
