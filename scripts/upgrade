@@ -107,7 +107,7 @@ then
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
     #=================================================
-#REMOVEME?     ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
+    ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
 
     # Upgrade composer itself
     ynh_install_composer
