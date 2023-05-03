@@ -12,23 +12,23 @@ source /usr/share/yunohost/helpers
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=2
+#REMOVEME? ynh_script_progression --message="Loading installation settings..." --weight=2
 
-app=$YNH_APP_INSTANCE_NAME
+#REMOVEME? app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
-db_user=$db_name
-with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
-language=$(ynh_app_setting_get --app=$app --key=language)
-db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
+#REMOVEME? domain=$(ynh_app_setting_get --app=$app --key=domain)
+#REMOVEME? path=$(ynh_app_setting_get --app=$app --key=path)
+#REMOVEME? #REMOVEME? install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+#REMOVEME? db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+#REMOVEME? db_user=$db_name
+#REMOVEME? with_carddav=$(ynh_app_setting_get --app=$app --key=with_carddav)
+#REMOVEME? phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
+#REMOVEME? language=$(ynh_app_setting_get --app=$app --key=language)
+#REMOVEME? db_pwd=$(ynh_app_setting_get --app=$app --key=mysqlpwd)
 
-fpm_footprint=$(ynh_app_setting_get --app=$app --key=fpm_footprint)
-fpm_free_footprint=$(ynh_app_setting_get --app=$app --key=fpm_free_footprint)
-fpm_usage=$(ynh_app_setting_get --app=$app --key=fpm_usage)
+#REMOVEME? fpm_footprint=$(ynh_app_setting_get --app=$app --key=fpm_footprint)
+#REMOVEME? fpm_free_footprint=$(ynh_app_setting_get --app=$app --key=fpm_free_footprint)
+#REMOVEME? fpm_usage=$(ynh_app_setting_get --app=$app --key=fpm_usage)
 
 #=================================================
 # CHECK VERSION
@@ -42,13 +42,13 @@ upgrade_type=$(ynh_check_app_version_changed)
 ynh_script_progression --message="Backing up $app before upgrading (may take a while)..." --weight=5
 
 # Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
+#REMOVEME? ynh_backup_before_upgrade
+#REMOVEME? ynh_clean_setup () {
     # restore it if the upgrade fails
-    ynh_restore_upgradebackup
+#REMOVEME?     ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
+#REMOVEME? ynh_abort_if_errors
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
@@ -58,18 +58,18 @@ ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 # If db_name doesn't exist, create it
 if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid --db_name=$app)
-	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
+#REMOVEME? 	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 fi
 
-# If final_path doesn't exist, create it
-if [ -z "$final_path" ]; then
-	final_path=/var/www/$app
-	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+# If install_dir doesn't exist, create it
+if [ -z "$install_dir" ]; then
+#REMOVEME? 	install_dir=/var/www/$app
+#REMOVEME? 	ynh_app_setting_set --app=$app --key=install_dir --value=$install_dir
 fi
 
 # If with_carddav doesn't exist, create it
 if [ -z "$with_carddav" ]; then
-	if [ -f "$final_path/plugins/carddav/config.inc.php" ]
+	if [ -f "$install_dir/plugins/carddav/config.inc.php" ]
 	then
 		with_carddav=1
 	else
@@ -103,8 +103,8 @@ if [ -z "$fpm_usage" ]; then
 fi
 
 # Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-    ynh_legacy_permissions_delete_all
+#REMOVEME? if ynh_legacy_permissions_exists; then
+#REMOVEME?     ynh_legacy_permissions_delete_all
 
     ynh_app_setting_delete --app=$app --key=is_public
 fi
@@ -112,10 +112,10 @@ fi
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
+#REMOVEME? ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
 
 # Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir="$final_path"
+#REMOVEME? ynh_system_user_create --username=$app --home_dir="$install_dir"
 
 #=================================================
 # STANDARD UPGRADE STEPS
@@ -124,26 +124,26 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 #=================================================
 
 # Get the current version of roundcube
-oldversion=$(grep RCMAIL_VERSION "$final_path/program/include/iniset.php" | cut -d\' -f4)
+oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut -d\' -f4)
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading source files..." --weight=3
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path"
+	ynh_setup_source --dest_dir="$install_dir"
 fi
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
 
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=1
+#REMOVEME? ynh_script_progression --message="Upgrading dependencies..." --weight=1
 
-ynh_install_app_dependencies $pkg_dependencies
+#REMOVEME? ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # PHP-FPM CONFIGURATION
@@ -172,25 +172,25 @@ then
     ynh_script_progression --message="Reconfiguring Roundcube..." --weight=1
 
     deskey=$(ynh_string_random --length=24)
-    ynh_add_config --template="../conf/config.inc.php" --destination="$final_path/config/config.inc.php"
+    ynh_add_config --template="../conf/config.inc.php" --destination="$install_dir/config/config.inc.php"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
     #=================================================
-    ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
+#REMOVEME?     ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
 
     # Upgrade composer itself
     ynh_install_composer
 
     # Check if dependencies need to be updated with Composer
-    if [ -f "$final_path/composer.json" ]
+    if [ -f "$install_dir/composer.json" ]
     then
         ynh_exec_warn_less ynh_composer_exec --commands="update"
         # Update plugin-installer for Composer version 2.0
         ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
     else
         # Install composer.json
-        cp "$final_path/composer.json-dist" "$final_path/composer.json"
+        cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
     fi
 
     #=================================================
@@ -199,7 +199,7 @@ then
     ynh_script_progression --message="Upgrading additional plugins..." --weight=30
 
     # Create logs and temp directories
-    mkdir -p "$final_path/"{logs,temp}
+    mkdir -p "$install_dir/"{logs,temp}
 
     # Install net_LDAP
     ynh_composer_exec --commands="require kolab/net_ldap3"
@@ -213,9 +213,9 @@ then
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
-    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$final_path/plugins/enigma/config.inc.php"
-    mkdir -p "$final_path/plugins/enigma/home"
-    chown -R $app:$app "$final_path/plugins/enigma/home"
+    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
+    mkdir -p "$install_dir/plugins/enigma/home"
+    chown -R $app:$app "$install_dir/plugins/enigma/home"
 
     # Update or install CardDAV plugin
     if [ $with_carddav -eq 1 ]
@@ -226,7 +226,7 @@ then
         carddav_server=0
 
         # Copy the plugin configuration file
-        cp $final_path/plugins/carddav/config.inc.php{.dist,}
+        cp $install_dir/plugins/carddav/config.inc.php{.dist,}
 
         # Look for installed and supported CardDAV servers
         for carddav_app in "nextcloud" "baikal"
@@ -236,13 +236,13 @@ then
             do
                 carddav_server=1
                 # Append preset configuration to the config file
-                cat "../conf/${carddav_app}.inc.php" >> $final_path/plugins/carddav/config.inc.php
+                cat "../conf/${carddav_app}.inc.php" >> $install_dir/plugins/carddav/config.inc.php
                 # Retrieve app settings and enable relevant preset
-                carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
-                carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
+#REMOVEME?                 carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
+#REMOVEME?                 carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
                 carddav_url="https://${carddav_domain}${carddav_path%/}"
-                ynh_replace_string --match_string="{${carddav_app}_id}" --replace_string="$carddav_app_id" --target_file="$final_path/plugins/carddav/config.inc.php"
-                ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$final_path/plugins/carddav/config.inc.php"
+                ynh_replace_string --match_string="{${carddav_app}_id}" --replace_string="$carddav_app_id" --target_file="$install_dir/plugins/carddav/config.inc.php"
+                ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$install_dir/plugins/carddav/config.inc.php"
             done
         done
 
@@ -258,33 +258,33 @@ then
     #=================================================
     ynh_script_progression --message="Updating $app configuration..." --weight=4
 
-    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
+    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$install_dir/config/config.inc.php"
 
     # Update JavaScript dependencies
-    (cd "$final_path"
+    (cd "$install_dir"
     /usr/bin/php$phpversion -q ./bin/update.sh -v ?)
 
     # Store the config file checksum into the app settings
-    ynh_store_file_checksum --file="$final_path/config/config.inc.php"
+    ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
 
-    chmod 400 "$final_path/config/config.inc.php"
-    chown $app:$app "$final_path/config/config.inc.php"
+    chmod 400 "$install_dir/config/config.inc.php"
+    chown $app:$app "$install_dir/config/config.inc.php"
 
     #=================================================
     # UPDATE ROUNDCUBE CORE
     #=================================================
     ynh_script_progression --message="Updating $app core..." --weight=4
 
-    ( cd "$final_path"
+    ( cd "$install_dir"
     ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
 fi
 
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=1
+#REMOVEME? ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
-ynh_systemd_action --service_name=nginx --action=reload
+#REMOVEME? ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
