@@ -114,7 +114,7 @@ then
     carddav_server=0
 
     # Copy the plugin configuration file
-    cp $install_dir/plugins/carddav/config.inc.php{.dist,}
+    #cp $install_dir/plugins/carddav/config.inc.php{.dist,}
 
     # Look for installed and supported CardDAV servers
     for carddav_app in "nextcloud" "baikal"
