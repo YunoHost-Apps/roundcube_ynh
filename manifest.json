@@ -6,7 +6,7 @@
         "en": "Open Source Webmail software",
         "fr": "Webmail Open Source"
     },
-    "version": "1.6.0~ynh3",
+    "version": "1.6.1~ynh1",
     "url": "https://roundcube.net/",
     "upstream": {
         "license": "GPL-3.0-only",
@@ -31,7 +31,7 @@
         "mysql"
     ],
     "arguments": {
-        "install" : [
+        "install": [
             {
                 "name": "domain",
                 "type": "domain"
@@ -49,7 +49,12 @@
                     "en": "Choose the application language",
                     "fr": "Choisissez la langue de l'application"
                 },
-                "choices": ["de_DE", "en_GB", "fr_FR", "it_IT"],
+                "choices": [
+                    "de_DE",
+                    "en_GB",
+                    "fr_FR",
+                    "it_IT"
+                ],
                 "default": "en_GB"
             },
             {
