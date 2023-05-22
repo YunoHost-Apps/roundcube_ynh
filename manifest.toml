@@ -16,7 +16,7 @@ admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
 
 [integration]
-yunohost = ">= 11.1.18"
+yunohost = ">= 11.1.19"
 architectures = "all"
 multi_instance = true
 ldap = true
@@ -60,7 +60,7 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "php-pear php7.4-ldap php7.4-mysql php7.4-json php7.4-cli php7.4-intl php7.4-zip php7.4-gd php7.4-mbstring php7.4-dom php7.4-curl"
+    packages = "mariadb-server php-pear php8.1-ldap php8.1-mysql php8.1-json php8.1-cli php8.1-intl php8.1-zip php8.1-gd php8.1-mbstring php8.1-dom php8.1-curl"
 
     [resources.database]
     type = "mysql"
