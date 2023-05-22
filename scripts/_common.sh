@@ -5,7 +5,7 @@
 #=================================================
 
 # Composer version
-YNH_COMPOSER_VERSION=2.3.7
+YNH_COMPOSER_VERSION=2.5.5
 
 # Plugins version
 contextmenu_version=3.3.1
