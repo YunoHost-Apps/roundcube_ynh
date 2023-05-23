@@ -28,7 +28,7 @@ In addition to Roundcube core features, the following are made available with th
 * Support for PGP encryption with Enigma plugin by default.
 
 
-**Shipped version:** 1.6.0~ynh4
+**Shipped version:** 1.6.1~ynh1
 
 **Demo:** https://demo.yunohost.org/webmail/
 
