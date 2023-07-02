@@ -220,7 +220,7 @@ then
     # Update or install CardDAV plugin
     if [ $with_carddav -eq 1 ]
     then
-        ynh_composer_exec --commands="require roundcube/carddav $carddav_version"
+        ynh_composer_exec --commands="require roundcube/carddav $carddav_version --with-all-dependencies"
 
         carddav_tmp_config="../conf/carddav.config.inc.php"
         carddav_server=0
