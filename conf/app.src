@@ -1,5 +1,5 @@
-SOURCE_URL=https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0.tar.gz
-SOURCE_SUM=1224eaf628888e503c49d0e8a69aa4997e566c3605738d0303d9c7a09722f363
+SOURCE_URL=https://github.com/roundcube/roundcubemail/releases/download/1.6.2/roundcubemail-1.6.2.tar.gz
+SOURCE_SUM=5c0b0d798c3074c7bb141ae3f79d2ae1136b9e047b014351b69522656162388b
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
