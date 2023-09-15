@@ -72,7 +72,6 @@ then
 	ynh_setup_source --dest_dir="$install_dir"
 fi
 
-chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
@@ -82,12 +81,7 @@ chown -R $app:www-data "$install_dir"
 ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --phpversion=$phpversion --usage=$fpm_usage --footprint=$fpm_footprint
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
+ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config

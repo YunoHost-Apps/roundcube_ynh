@@ -22,8 +22,6 @@ fpm_usage="low"
 #=================================================
 ynh_script_progression --message="Storing installation settings..." --weight=2
 
-ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
-ynh_app_setting_set --app=$app --key=language --value=$language
 ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
 ynh_app_setting_set --app=$app --key=fpm_free_footprint --value=$fpm_free_footprint
 ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
@@ -36,7 +34,6 @@ ynh_script_progression --message="Setting up source files..." --weight=7
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir"
 
-chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
@@ -47,11 +44,6 @@ ynh_script_progression --message="Configuring NGINX web server..." --weight=2
 
 # Create a dedicated NGINX config
 ynh_add_nginx_config
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring PHP-FPM..." --weight=2
 
 # Create a dedicated php-fpm config
 ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
@@ -74,8 +66,7 @@ ynh_install_composer
 #=================================================
 ynh_script_progression --message="Initializing database..." --weight=3
 
-ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name" \
-    < "$install_dir/SQL/mysql.initial.sql"
+ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name" < "$install_dir/SQL/mysql.initial.sql"
 
 #=================================================
 # CONFIGURE ROUNDCUBE
