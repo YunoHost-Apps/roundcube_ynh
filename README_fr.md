@@ -29,7 +29,7 @@ En plus des fonctionnalités principales de Roundcube, les éléments suivants s
 * Prise en charge du chiffrement PGP avec le plugin Enigma installé par default.
 
 
-**Version incluse :** 1.6.2~ynh1
+**Version incluse :** 1.6.3~ynh1
 
 **Démo :** https://demo.yunohost.org/webmail/
 
