@@ -33,6 +33,10 @@ ram.runtime = "50M"
     type = "path"
     default = "/webmail"
 
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
     [install.language]
     ask.en = "Choose the application language"
     ask.fr = "Choisissez la langue de l'application"
