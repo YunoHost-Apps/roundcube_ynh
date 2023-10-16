@@ -3,11 +3,11 @@
 		domain="domain.tld"
 		path="/path"
 		language="en_GB"
-		with_carddav=0
+		with_carddav=1
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1
-		setup_root=1
+		setup_root=0
 		setup_nourl=0
 		setup_private=0
 		setup_public=0
