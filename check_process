@@ -7,9 +7,9 @@
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1
-		;;; setup_root=1
-		;;; setup_nourl=0
-		;;; setup_private=0
+		setup_root=1
+		setup_nourl=0
+		setup_private=0
 		setup_public=0
 		upgrade=1
 		;;; upgrade=1	from_commit=f470adac1152482928c90a9c657b968f0907cf8a
