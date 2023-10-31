@@ -89,7 +89,7 @@ Vous pouvez également télécharger le plugin et le placer dans le répertoire 
 * Site officiel de l’app : <https://roundcube.net/>
 * Documentation officielle de l’admin : <https://github.com/roundcube/roundcubemail/wiki>
 * Dépôt de code officiel de l’app : <https://github.com/roundcube/roundcubemail>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_roundcube>
+* YunoHost Store: <https://apps.yunohost.org/app/roundcube>
 * Signaler un bug : <https://github.com/YunoHost-Apps/roundcube_ynh/issues>
 
 ## Informations pour les développeurs
