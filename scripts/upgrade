@@ -261,8 +261,8 @@ then
     ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$final_path/config/config.inc.php"
 
     # Update JavaScript dependencies
-    (cd "$final_path"
-    ./bin/update.sh --version="?" -y)
+    pushd "$final_path"
+    ./bin/update.sh --version="?" -y
 
     # Store the config file checksum into the app settings
     ynh_store_file_checksum --file="$final_path/config/config.inc.php"
@@ -275,8 +275,8 @@ then
     #=================================================
     ynh_script_progression --message="Updating $app core..." --weight=4
 
-    ( cd "$final_path"
-    ynh_exec_warn ./bin/update.sh --version=$oldversion -y)
+    ynh_exec_warn ./bin/update.sh --version=$oldversion -y
+    popd
 fi
 
 #=================================================
