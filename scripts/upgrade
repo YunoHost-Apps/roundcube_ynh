@@ -262,7 +262,7 @@ then
 
     # Update JavaScript dependencies
     pushd "$final_path"
-    ./bin/update.sh --version="?" -y
+    ./bin/update.sh --version="?" -y < ""
 
     # Store the config file checksum into the app settings
     ynh_store_file_checksum --file="$final_path/config/config.inc.php"
