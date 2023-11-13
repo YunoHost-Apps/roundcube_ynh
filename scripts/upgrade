@@ -189,16 +189,16 @@ then
     pushd "$final_path"
     COMPOSER_ALLOW_SUPERUSER=1 ./bin/update.sh --version="?" -y <<< ""
 
-    # Store the config file checksum into the app settings
-    ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
+        # Store the config file checksum into the app settings
+        ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
 
-    chmod 400 "$install_dir/config/config.inc.php"
-    chown $app:$app "$install_dir/config/config.inc.php"
+        chmod 400 "$install_dir/config/config.inc.php"
+        chown $app:$app "$install_dir/config/config.inc.php"
 
-    #=================================================
-    # UPDATE ROUNDCUBE CORE
-    #=================================================
-    ynh_script_progression --message="Updating $app core..." --weight=4
+        #=================================================
+        # UPDATE ROUNDCUBE CORE
+        #=================================================
+        ynh_script_progression --message="Updating $app core..." --weight=4
 
     COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn ./bin/update.sh --version=$oldversion -y
     popd
