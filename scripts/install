@@ -85,6 +85,7 @@ ynh_script_progression --message="Installing additional plugins..." --weight=60
 mkdir -p "$install_dir/"{logs,temp}
 
 # Install net_LDAP
+export COMPOSER_ALLOW_SUPERUSER=1
 ynh_composer_exec --commands="require kolab/net_ldap3"
 
 # Install contextmenu and automatic_addressbook plugins
