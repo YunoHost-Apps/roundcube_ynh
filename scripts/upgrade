@@ -78,11 +78,11 @@ if [ -z "$with_carddav" ]; then
 	ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
 fi
 
- # If language doesn't exist, create it 
- if [ -z "$language" ]; then 
+ # If language doesn't exist, create it
+ if [ -z "$language" ]; then
     language="en_GB"
     ynh_app_setting_set --app=$app --key=language --value=$language
-fi 
+fi
 
 # If fpm_footprint doesn't exist, create it
 if [ -z "$fpm_footprint" ]; then
@@ -262,7 +262,7 @@ then
 
     # Update JavaScript dependencies
     pushd "$final_path"
-    ./bin/update.sh --version="?" -y <<< ""
+    COMPOSER_ALLOW_SUPERUSER=1 ./bin/update.sh --version="?" -y <<< ""
 
     # Store the config file checksum into the app settings
     ynh_store_file_checksum --file="$final_path/config/config.inc.php"
@@ -275,7 +275,7 @@ then
     #=================================================
     ynh_script_progression --message="Updating $app core..." --weight=4
 
-    ynh_exec_warn ./bin/update.sh --version=$oldversion -y
+    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn ./bin/update.sh --version=$oldversion -y
     popd
 fi
 
