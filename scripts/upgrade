@@ -186,7 +186,7 @@ then
     ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$install_dir/config/config.inc.php"
 
     # Update JavaScript dependencies
-    pushd "$final_path"
+    pushd "$install_dir"
     COMPOSER_ALLOW_SUPERUSER=1 ./bin/update.sh --version="?" -y <<< ""
 
         # Store the config file checksum into the app settings
