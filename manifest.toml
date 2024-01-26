@@ -1,0 +1,84 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "roundcube"
+name = "Roundcube"
+description.en = "Open Source Webmail software"
+description.fr = "Webmail Open Source"
+
+version = "1.6.6~ynh1"
+maintainers = []
+
+[upstream]
+license = "GPL-3.0-only"
+website = "https://roundcube.net/"
+demo = "https://demo.yunohost.org/webmail/"
+admindoc = "https://github.com/roundcube/roundcubemail/wiki"
+code = "https://github.com/roundcube/roundcubemail"
+
+[integration]
+yunohost = ">= 11.2"
+architectures = "all"
+multi_instance = true
+ldap = true
+sso = true
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    type = "domain"
+
+    [install.path]
+    type = "path"
+    default = "/webmail"
+
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
+    [install.language]
+    ask.en = "Choose the application language"
+    ask.fr = "Choisissez la langue de l'application"
+    type = "select"
+    choices = ["de_DE", "en_GB", "fr_FR", "it_IT"]
+    default = "en_GB"
+
+    [install.with_carddav]
+    ask.en = "Install CardDAV synchronization plugin?"
+    ask.fr = "Installer le plugin de synchronisation CardDAV ?"
+    type = "boolean"
+    default = false
+
+[resources]
+    [resources.sources.main]
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roundcubemail-1.6.6.tar.gz"
+    sha256 = "40e4d7505b01f401e757f7439930ed96b1245ffc3863dd326fcf21e0e5847c74"
+    autoupdate.strategy = "latest_github_release"
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.apt]
+    packages = [
+        "mariadb-server",
+        "php-pear",
+        "php8.1-ldap",
+        "php8.1-mysql",
+        "php8.1-cli",
+        "php8.1-intl",
+        "php8.1-zip",
+        "php8.1-gd",
+        "php8.1-mbstring",
+        "php8.1-dom",
+        "php8.1-curl",
+    ]
+
+    [resources.database]
+    type = "mysql"
