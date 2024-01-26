@@ -1,3 +1,5 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
 packaging_format = 2
 
 id = "roundcube"
@@ -51,10 +53,10 @@ ram.runtime = "50M"
     default = false
 
 [resources]
-        [resources.sources.main]
-        url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roundcubemail-1.6.6.tar.gz"
-        sha256 = "40e4d7505b01f401e757f7439930ed96b1245ffc3863dd326fcf21e0e5847c74"
-        autoupdate.strategy = "latest_github_tag"
+    [resources.sources.main]
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.6/roundcubemail-1.6.6.tar.gz"
+    sha256 = "40e4d7505b01f401e757f7439930ed96b1245ffc3863dd326fcf21e0e5847c74"
+    autoupdate.strategy = "latest_github_release"
 
     [resources.system_user]
 
@@ -64,7 +66,19 @@ ram.runtime = "50M"
     main.url = "/"
 
     [resources.apt]
-    packages = "mariadb-server, php-pear, php8.1-ldap, php8.1-mysql, php8.1-cli, php8.1-intl, php8.1-zip, php8.1-gd, php8.1-mbstring, php8.1-dom, php8.1-curl"
+    packages = [
+        "mariadb-server",
+        "php-pear",
+        "php8.1-ldap",
+        "php8.1-mysql",
+        "php8.1-cli",
+        "php8.1-intl",
+        "php8.1-zip",
+        "php8.1-gd",
+        "php8.1-mbstring",
+        "php8.1-dom",
+        "php8.1-curl",
+    ]
 
     [resources.database]
     type = "mysql"
