@@ -187,7 +187,7 @@ then
 
     # Update JavaScript dependencies
     pushd "$install_dir"
-    COMPOSER_ALLOW_SUPERUSER=1 ./bin/update.sh --version="?" -y <<< ""
+    COMPOSER_ALLOW_SUPERUSER=1 "php$phpversion" ./bin/update.sh --version="?" -y <<< ""
 
         # Store the config file checksum into the app settings
         ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
@@ -200,7 +200,7 @@ then
         #=================================================
         ynh_script_progression --message="Updating $app core..." --weight=4
 
-    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn ./bin/update.sh --version=$oldversion -y
+    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn "php$phpversion" ./bin/update.sh --version=$oldversion -y
     popd
 fi
 
