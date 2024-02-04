@@ -84,6 +84,8 @@ ynh_add_nginx_config
 #=================================================
 install_roundcube_with_plugins
 
+ynh_composer_exec --commands="update --no-dev"
+
 # Migrate roundcube database
 pushd "$install_dir"
 COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn "php$phpversion" ./bin/update.sh --version=$oldversion -y
