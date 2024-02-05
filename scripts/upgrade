@@ -82,9 +82,7 @@ ynh_add_nginx_config
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
 setup_composer_deps
-ynh_composer_exec --commands="update --no-dev"
 
 ynh_script_progression --message="Configuring Roundcube..." --weight=2
 configure_roundcube
@@ -97,6 +95,9 @@ then
         ynh_script_progression --message="Installing carddav plugin..." --weight=30
 	install_carddav_plugin
 fi
+
+ynh_script_progression --message="Updating Roundcube dependencies with Composer..." --weight=30
+ynh_composer_exec --commands="update --no-dev"
 
 ynh_script_progression --message="Install javascript dependencies..." --weight=10
 update_javascript_deps
