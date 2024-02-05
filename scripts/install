@@ -59,7 +59,8 @@ ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name
 # INSTALL DEPENDENCIES AND PLUGINS
 #=================================================
 ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
-install_composer
+setup_composer_deps
+ynh_install_composer
 
 ynh_script_progression --message="Configuring Roundcube..." --weight=2
 configure_roundcube

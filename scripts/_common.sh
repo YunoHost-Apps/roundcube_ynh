@@ -16,9 +16,8 @@ carddav_version=5.0.1
 # DEFINE ALL COMMON FONCTIONS
 #=================================================
 
-install_composer() {
+setup_composer_deps() {
 	cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
-	ynh_install_composer
 }
 
 configure_roundcube() {

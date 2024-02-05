@@ -83,7 +83,7 @@ ynh_add_nginx_config
 # CONFIGURE ROUNDCUBE
 #=================================================
 ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
-install_composer
+setup_composer_deps
 ynh_composer_exec --commands="update --no-dev"
 
 ynh_script_progression --message="Configuring Roundcube..." --weight=2
