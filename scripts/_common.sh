@@ -31,14 +31,15 @@ install_ldap_addressbook_contextmenu_plugins() {
 
 	# Install net_LDAP
 	export COMPOSER_ALLOW_SUPERUSER=1
-	ynh_composer_exec --commands="require kolab/net_ldap3"
+	ynh_composer_exec --commands="require kolab/net_ldap3 --update-with-all-dependencies"
 
 	# Install contextmenu and automatic_addressbook plugins
 	# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 	# https://plugins.roundcube.net/packages/johndoh/contextmenu
 	ynh_composer_exec --commands="require \
 	    johndoh/contextmenu $contextmenu_version \
-	    sblaisot/automatic_addressbook $automatic_addressbook_version"
+	    sblaisot/automatic_addressbook $automatic_addressbook_version \
+	    --update-with-all-dependencies"
 
 	installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
@@ -48,7 +49,7 @@ install_ldap_addressbook_contextmenu_plugins() {
 }
 
 install_carddav_plugin(){
-	ynh_composer_exec --commands="require roundcube/carddav $carddav_version --with-all-dependencies"
+	ynh_composer_exec --commands="require roundcube/carddav $carddav_version --update-with-all-dependencies"
 
 	carddav_tmp_config="../conf/carddav.config.inc.php"
 	carddav_server=0
