@@ -58,6 +58,25 @@ ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name
 #=================================================
 # INSTALL DEPENDENCIES AND PLUGINS
 #=================================================
-install_roundcube_with_plugins
+ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
+install_composer
+
+ynh_script_progression --message="Configuring Roundcube..." --weight=2
+configure_roundcube
+
+ynh_script_progression --message="Installing ldap, automatic addressbook and contextmenu plugins..." --weight=60
+install_ldap_addressbook_contextmenu_plugins
+	
+if [ $with_carddav -eq 1 ]
+then
+        ynh_script_progression --message="Installing carddav plugin..." --weight=30
+	install_carddav_plugin
+fi
+
+ynh_script_progression --message="Install javascript dependencies..." --weight=10
+update_javascript_deps
+
+ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
+enable_plugins_in_config
 
 ynh_script_progression --message="Installation of $app completed" --last
