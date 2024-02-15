@@ -16,6 +16,12 @@ source /usr/share/yunohost/helpers
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
+# MOVE COMPOSER LOCK TO BACK IT UP
+#=================================================
+
+mv /var/www/roundcube/composer.lock /var/www/roundcube/composer.lock.bak
+
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
