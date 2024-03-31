@@ -107,6 +107,9 @@ then
     # Upgrade composer itself
     ynh_install_composer
 
+    # Add git permission for net_ldap3
+    git config --add safe.directory '$install_dir/vendor/kolab/net_ldap3' --global
+
     # Check if dependencies need to be updated with Composer
     if [ -f "$install_dir/composer.json" ]
     then
