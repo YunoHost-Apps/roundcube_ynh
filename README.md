@@ -9,7 +9,7 @@ It shall NOT be edited by hand.
 
 [![Install Roundcube with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
-*[Read this README is other languages.](./ALL_README.md)*
+*[Read this README in other languages.](./ALL_README.md)*
 
 > *This package allows you to install Roundcube quickly and simply on a YunoHost server.*  
 > *If you don't have YunoHost, please consult [the guide](https://yunohost.org/install) to learn how to install it.*
@@ -28,7 +28,7 @@ In addition to Roundcube core features, the following are made available with th
 * Support for PGP encryption with Enigma plugin by default.
 
 
-**Shipped version:** 1.6.6~ynh1
+**Shipped version:** 1.6.6~ynh2
 
 **Demo:** <https://demo.yunohost.org/webmail/>
 
