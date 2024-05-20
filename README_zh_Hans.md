@@ -3,7 +3,7 @@
 请勿手动编辑。
 -->
 
-# YunoHost 的 Roundcube
+# YunoHost 上的 Roundcube
 
 [![集成程度](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![工作状态](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
 
@@ -28,7 +28,7 @@ In addition to Roundcube core features, the following are made available with th
 * Support for PGP encryption with Enigma plugin by default.
 
 
-**分发版本：** 1.6.6~ynh2
+**分发版本：** 1.6.7~ynh1
 
 **演示：** <https://demo.yunohost.org/webmail/>
 
