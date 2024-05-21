@@ -9,7 +9,5 @@ test_format = 1.0
     # -------------------------------
 
     args.language = "en_GB"
-    args.with_carddav = 1
-
 
     test_upgrade_from.255335f9e9a001d5abec7192f07d168e30b3c3fb.name = "1.6.0~ynh3"
