@@ -47,7 +47,7 @@ ram.runtime = "50M"
     ask.fr = "Choisissez la langue de l'application"
     type = "select"
     choices = ["de_DE", "en_GB", "fr_FR", "it_IT"]
-    default = "en_GB"
+    default = "fr_FR"
 
     [install.with_carddav]
     ask.en = "Install CardDAV synchronization plugin?"
