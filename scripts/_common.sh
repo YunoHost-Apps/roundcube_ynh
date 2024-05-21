@@ -5,12 +5,12 @@
 #=================================================
 
 # Composer version
-YNH_COMPOSER_VERSION=2.5.5
+YNH_COMPOSER_VERSION=2.7.6
 
 # Plugins version
 contextmenu_version=3.3.1
 automatic_addressbook_version=v0.4.3
-carddav_version=5.0.1
+carddav_version=5.1.0
 
 #=================================================
 # EXPERIMENTAL HELPERS

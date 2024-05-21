@@ -74,7 +74,7 @@ ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name
 ynh_script_progression --message="Configuring Roundcube..." --weight=2
 
 deskey=$(ynh_string_random --length=24)
-ynh_add_config --template="../conf/config.inc.php" --destination="$install_dir/config/config.inc.php"
+ynh_add_config --template="config.inc.php" --destination="$install_dir/config/config.inc.php"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
