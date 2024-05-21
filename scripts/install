@@ -53,13 +53,13 @@ ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-#ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
+ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
 
 # Install composer.json
-#cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+ynh_add_config --template="composer.json" --destination="$install_dir/composer.json"
 
 # Install composer
-#ynh_install_composer
+ynh_install_composer
 
 #=================================================
 # INITIALIZE DATABASE
