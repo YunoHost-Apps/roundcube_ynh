@@ -1,6 +1,6 @@
 ## Configuration
 
-You can extend - or even override - the Roundcube configuration which is coming with this package in the file `conf/local.inc.php`. Do not edit the file `conf/config.inc.php` as future upgrades will overwrite it.
+You can extend - or even override - the Roundcube configuration which is coming with this package in the file `config/<ROUNDCUBE_DOMAIN>.inc.php`. Do not edit the file `config/config.inc.php` as future upgrades will overwrite it.
 
 #### Multi-users support
 
@@ -31,11 +31,12 @@ Let's say for example that we want to install the [html5_notifier](https://packa
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
 
-4. Enable it in the local configuration file `conf/local.inc.php` using your favorite text editor by adding:
+4. Enable it in the local configuration file `config/<ROUNDCUBE_DOMAIN>.inc.php` using your favorite text editor by adding:
    ```
    <?php
-   $config['plugins'][] = 'html5_notifier';
+   array_push($this->prop['plugins'], 'html5_notifier');
    ```
+   See https://github.com/roundcube/roundcubemail/issues/9458#issuecomment-2121753923.
 
 Note that you should also check the plugin homepage for additional installation steps as needed.
 
