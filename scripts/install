@@ -4,23 +4,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-#REMOVEME? fpm_footprint="low"
-#REMOVEME? fpm_free_footprint=0
-#REMOVEME? fpm_usage="low"
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression "Storing installation settings..."
-
-ynh_app_setting_set --key=fpm_footprint --value=$fpm_footprint
-ynh_app_setting_set --key=fpm_free_footprint --value=$fpm_free_footprint
-ynh_app_setting_set --key=fpm_usage --value=$fpm_usage
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression "Setting up source files..."

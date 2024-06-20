@@ -25,24 +25,6 @@ fi
     ynh_app_setting_set --key=language --value=$language
 fi
 
-# If fpm_footprint doesn't exist, create it
-if [ -z "${fpm_footprint:-}" ]; then
-    #REMOVEME? fpm_footprint=low
-    ynh_app_setting_set --key=fpm_footprint --value=$fpm_footprint
-fi
-
-# If fpm_free_footprint doesn't exist, create it
-if [ -z "${fpm_free_footprint:-}" ]; then
-    #REMOVEME? fpm_free_footprint=0
-    ynh_app_setting_set --key=fpm_free_footprint --value=$fpm_free_footprint
-fi
-
-# If fpm_usage doesn't exist, create it
-if [ -z "${fpm_usage:-}" ]; then
-    #REMOVEME? fpm_usage=low
-    ynh_app_setting_set --key=fpm_usage --value=$fpm_usage
-fi
-
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
