@@ -50,7 +50,7 @@ ynh_config_add_phpfpm
 ynh_script_progression "Installing Roundcube with Composer..."
 
 # Install composer.json
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+cp -a "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
 # Install composer
 ynh_composer_install
