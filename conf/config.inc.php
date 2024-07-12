@@ -186,4 +186,4 @@ $config['ldapAliasSync'] = array(
 );
 
 // skin name: folder from skins/
-$config['skin'] = 'elastic';
+$config['skin'] = 'larry';
