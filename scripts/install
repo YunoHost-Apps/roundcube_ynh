@@ -84,6 +84,11 @@ ynh_script_progression --message="Installing additional plugins..." --weight=60
 # Create logs and temp directories
 mkdir -p "$install_dir/"{logs,temp}
 
+# Elastic2022 theme git clone + install
+mkdir -p "$install_dir/skins/Elastic2022"
+git clone https://github.com/seb1k/Elastic2022.git "$install_dir/skins/Elastic2022"
+chown -R $app:www-data "$install_dir/skins/Elastic2022" 
+
 # Install net_LDAP
 export COMPOSER_ALLOW_SUPERUSER=1
 ynh_composer_exec --commands="require kolab/net_ldap3"
