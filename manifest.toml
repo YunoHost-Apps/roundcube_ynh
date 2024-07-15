@@ -54,8 +54,8 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/roundcube/roundcubemail/archive/refs/tags/1.6.7.tar.gz"
-    sha256 = "fe56c37485862b738e03ea3f91288178e36b4793a50dd6b832052d0b2b0e3fcd"
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.7/roundcubemail-1.6.7.tar.gz"
+    sha256 = "b12c4f9f84890830ce10e470ac0d698b7de00d29f432a9326b4cf8c590e558de"
     autoupdate.strategy = "latest_github_release"
 
     [resources.system_user]
