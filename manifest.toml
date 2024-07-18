@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Open Source Webmail software"
 description.fr = "Webmail Open Source"
 
-version = "1.6.7~ynh1"
+version = "1.6.7~ynh2"
 maintainers = []
 
 [upstream]
