@@ -50,7 +50,6 @@ ynh_config_add --template="config.inc.php" --destination="$install_dir/config/co
 ynh_script_progression "Installing additional plugins..."
 
 # Install net_LDAP
-export COMPOSER_ALLOW_SUPERUSER=1
 ynh_composer_exec require kolab/net_ldap3
 
 # Install contextmenu and automatic_addressbook plugins
@@ -108,13 +107,6 @@ fi
 ynh_script_progression "Updating Roundcube configuration..."
 
 ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins" --file="$install_dir/config/config.inc.php"
-
-# Update javascript dependencies
-# (REMOVEME? -> already done in the -complete.tar.gz archive)
-#(cd "$install_dir"
-#/usr/bin/php$php_version -q ./bin/install-jsdeps.sh -v ?)
-
-# Store the config file checksum into the app settings
 ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
 #=================================================

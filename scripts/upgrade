@@ -123,18 +123,15 @@ ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins
 
 # Update JavaScript dependencies
 pushd "$install_dir"
-    COMPOSER_ALLOW_SUPERUSER=1 "php$php_version" ./bin/update.sh --version="?" -y <<< ""
+    export COMPOSER_HOME="$install_dir/.composer"
+    ynh_exec_as_app "php$php_version" ./bin/update.sh --version="?" -y <<< ""
 
-    # Store the config file checksum into the app settings
-    ynh_store_file_checksum "$install_dir/config/config.inc.php"
-
-    #=================================================
-    # UPDATE ROUNDCUBE CORE
-    #=================================================
     ynh_script_progression "Updating $app core..."
-
-    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn "php$php_version" ./bin/update.sh --version=$oldversion -y
+    ynh_exec_as_app "php$php_version" ./bin/update.sh --version=$oldversion -y
 popd
+
+# Store the config file checksum into the app settings
+ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
 #=================================================
 # END OF SCRIPT
