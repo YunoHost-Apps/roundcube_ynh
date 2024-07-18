@@ -5,7 +5,7 @@ No se debe editar a mano.
 
 # Roundcube para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/roundcube.svg)](https://dash.yunohost.org/appci/app/roundcube) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
 
 [![Instalar Roundcube con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
@@ -16,16 +16,14 @@ No se debe editar a mano.
 
 ## Descripción general
 
-Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
+Roundcube is a web-based e-mail client. It offers all the features you'd expect from a mail client, including multilingual support, address book management, folder manipulation, message search and spell checking.
 
-## YunoHost specific features
+### YunoHost specific features
 
-In addition to Roundcube core features, the following are made available with this package:
-
- * Synchronize your email aliases as identities in Roundcube
- * Install the [contextmenu](https://packagist.org/packages/johndoh/contextmenu) and [automatic addressbook](https://packagist.org/packages/projectmyst/automatic_addressbook) plugins by default
- * Allow to install the [CardDAV](https://packagist.org/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
-* Support for PGP encryption with Enigma plugin by default.
+- Synchronize your email aliases as identities in Roundcube
+- Install the [contextmenu](https://packagist.org/packages/johndoh/contextmenu) and [automatic addressbook](https://packagist.org/packages/projectmyst/automatic_addressbook) plugins by default
+- Allow to install the [CardDAV](https://packagist.org/packages/roundcube/carddav) (address book) synchronization plugin at the installation - note that if you have installed Nextcloud or Baïkal, it will automatically add the corresponding and existing address book.
+- Support for PGP encryption with Enigma plugin by default.
 
 
 **Versión actual:** 1.6.7~ynh1
