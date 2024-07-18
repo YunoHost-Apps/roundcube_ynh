@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Open Source Webmail software"
 description.fr = "Webmail Open Source"
 
-version = "1.6.7~ynh1"
+version = "1.6.7~ynh2"
 maintainers = []
 
 [upstream]
@@ -54,9 +54,10 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/roundcube/roundcubemail/archive/refs/tags/1.6.7.tar.gz"
-    sha256 = "fe56c37485862b738e03ea3f91288178e36b4793a50dd6b832052d0b2b0e3fcd"
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.7/roundcubemail-1.6.7.tar.gz"
+    sha256 = "b12c4f9f84890830ce10e470ac0d698b7de00d29f432a9326b4cf8c590e558de"
     autoupdate.strategy = "latest_github_release"
+    autoupdate.asset = "roundcubemail-.*.tar.gz"
 
     [resources.system_user]
 
@@ -69,15 +70,15 @@ ram.runtime = "50M"
     packages = [
         "mariadb-server",
         "php-pear",
-        "php8.1-ldap",
-        "php8.1-mysql",
-        "php8.1-cli",
-        "php8.1-intl",
-        "php8.1-zip",
-        "php8.1-gd",
-        "php8.1-mbstring",
-        "php8.1-dom",
-        "php8.1-curl",
+        "php8.2-ldap",
+        "php8.2-mysql",
+        "php8.2-cli",
+        "php8.2-intl",
+        "php8.2-zip",
+        "php8.2-gd",
+        "php8.2-mbstring",
+        "php8.2-dom",
+        "php8.2-curl",
     ]
 
     [resources.database]
