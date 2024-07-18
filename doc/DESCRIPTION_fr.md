@@ -1,4 +1,4 @@
-Roundcube est un client IMAP multilingue basé sur un navigateur avec une interface utilisateur semblable à une application.
+Roundcube est un client mail sous forme d'application web. Il offre toutes les fonctionnalités que vous attendez d'un client de messagerie, y compris le support multilingue, la gestion du carnet d'adresses, la manipulation de dossiers, la recherche dans les messages et la vérification orthographique.
 
 ### Caractéristiques spécifiques YunoHost
 
