@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Open Source Webmail software"
 description.fr = "Webmail Open Source"
 
-version = "1.6.7~ynh1"
+version = "1.6.7~ynh2"
 maintainers = []
 
 [upstream]
@@ -72,15 +72,15 @@ ram.runtime = "50M"
     packages = [
         "mariadb-server",
         "php-pear",
-        "php8.2-ldap",
-        "php8.2-mysql",
-        "php8.2-cli",
-        "php8.2-intl",
-        "php8.2-zip",
-        "php8.2-gd",
-        "php8.2-mbstring",
-        "php8.2-dom",
-        "php8.2-curl",
+        "php8.3-ldap",
+        "php8.3-mysql",
+        "php8.3-cli",
+        "php8.3-intl",
+        "php8.3-zip",
+        "php8.3-gd",
+        "php8.3-mbstring",
+        "php8.3-dom",
+        "php8.3-curl",
     ]
 
     [resources.database]
