@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Open Source Webmail software"
 description.fr = "Webmail Open Source"
 
-version = "1.6.7~ynh2"
+version = "1.6.7~ynh3"
 maintainers = []
 
 [upstream]
@@ -18,7 +18,7 @@ admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
 
 [integration]
-yunohost = ">= 11.2.18"
+yunohost = ">= 11.2.21"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
