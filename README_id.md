@@ -38,7 +38,7 @@ Roundcube is a web-based e-mail client. It offers all the features you'd expect 
 
 - Website aplikasi resmi: <https://roundcube.net/>
 - Dokumentasi admin resmi: <https://github.com/roundcube/roundcubemail/wiki>
-- Repositori kode aplikasi hulu: <https://github.com/roundcube/roundcubemail>
+- Depot kode aplikasi hulu: <https://github.com/roundcube/roundcubemail>
 - Gudang YunoHost: <https://apps.yunohost.org/app/roundcube>
 - Laporkan bug: <https://github.com/YunoHost-Apps/roundcube_ynh/issues>
 
