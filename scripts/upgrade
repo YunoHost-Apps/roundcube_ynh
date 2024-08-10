@@ -69,7 +69,7 @@ then
 	ynh_script_progression --message="Upgrading source files..." --weight=3
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$install_dir"
+	ynh_setup_source --dest_dir="$install_dir" --full_replace=1 --keep="config/*.inc.php logs/ plugins/"
 fi
 
 chmod -R o-rwx "$install_dir"
@@ -95,9 +95,6 @@ ynh_add_nginx_config
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
     ynh_script_progression --message="Reconfiguring Roundcube..." --weight=1
-
-    deskey=$(ynh_string_random --length=24)
-    ynh_add_config --template="../conf/config.inc.php" --destination="$install_dir/config/config.inc.php"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
