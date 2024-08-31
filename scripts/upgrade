@@ -29,21 +29,17 @@ oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-
 ynh_script_progression "Upgrading source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir"
 
 #=================================================
-# PHP-FPM CONFIGURATION
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression "Upgrading PHP-FPM configuration..."
+ynh_script_progression "Upgrading system configurations related to $app..."
 
-# Create a dedicated PHP-FPM config
 ynh_config_add_phpfpm
 
-# Create a dedicated NGINX config
 ynh_config_add_nginx
 
 ynh_composer_install
@@ -51,7 +47,6 @@ ynh_composer_install
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-
 ynh_script_progression "Reconfiguring Roundcube..."
 
 deskey=$(ynh_string_random --length=24)

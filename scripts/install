@@ -10,21 +10,17 @@ ynh_app_setting_set --key=php_upload_max_filesize --value=256M
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-# Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir"
 
 #=================================================
-# NGINX CONFIGURATION
+# APP INITIAL CONFIGURATION
 #=================================================
-ynh_script_progression "Configuring NGINX web server..."
+ynh_script_progression "Adding $app's configuration files..."
 
-# Create a dedicated NGINX config
 ynh_config_add_nginx
 
-# Create a dedicated php-fpm config
 ynh_config_add_phpfpm
 
-# Install composer
 ynh_composer_install
 
 #=================================================
