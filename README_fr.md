@@ -25,6 +25,7 @@ Roundcube est un client mail sous forme d'application web. Il offre toutes les f
 - Permettre d'installer [CardDAV](https://packagist.org/packages/roundcube/carddav) (carnet d'adresses) de synchronisation à l'installation - notez que si vous avez installé Nextcloud ou Baïkal, il ajoutera automatiquement le carnet d'adresses correspondant.
 - Prise en charge du chiffrement PGP avec le plugin Enigma installé par default.
 
+
 **Version incluse :** 1.6.9~ynh1
 
 **Démo :** <https://demo.yunohost.org/webmail/>
