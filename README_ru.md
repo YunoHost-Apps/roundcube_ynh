@@ -26,7 +26,7 @@ Roundcube is a web-based e-mail client. It offers all the features you'd expect 
 - Support for PGP encryption with Enigma plugin by default.
 
 
-**Поставляемая версия:** 1.6.8~ynh1
+**Поставляемая версия:** 1.6.9~ynh1
 
 **Демо-версия:** <https://demo.yunohost.org/webmail/>
 

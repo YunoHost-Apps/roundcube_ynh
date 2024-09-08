@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Open Source Webmail software"
 description.fr = "Webmail Open Source"
 
-version = "1.6.8~ynh1"
+version = "1.6.9~ynh1"
 maintainers = []
 
 [upstream]
@@ -18,7 +18,7 @@ admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
 
 [integration]
-yunohost = ">= 11.2.29"
+yunohost = ">= 11.2.30"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
@@ -55,8 +55,8 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.8/roundcubemail-1.6.8.tar.gz"
-    sha256 = "939c9cd46281bf5bfb2dd932680b18ee1706035a5806dc08d8b414971cea91f7"
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.9/roundcubemail-1.6.9.tar.gz"
+    sha256 = "5adaecacc7203ae844a4f452d6cc5eae94799f248825d5978ca48cb7a9d7a51c"
     autoupdate.strategy = "latest_github_release"
     autoupdate.asset = "roundcubemail-\\d+\\.\\d+\\.\\d+\\.tar\\.gz$"
 
