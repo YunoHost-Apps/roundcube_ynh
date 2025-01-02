@@ -5,7 +5,9 @@
 
 # Roundcube для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/roundcube)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+![Состояние работы](https://apps.yunohost.org/badge/state/roundcube)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/roundcube)
 
 [![Установите Roundcube с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
