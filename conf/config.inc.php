@@ -116,7 +116,6 @@ $config['ldap_public']['yunohost'] = array(
   'scope' => 'list',
   'filter' => '(objectClass=mailAccount)',
   'hidden' => false,
-  'searchonly' => true,
   'search_fields' => array(
     'uid',
     'mail',
