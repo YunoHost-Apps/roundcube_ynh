@@ -25,7 +25,7 @@ Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packag
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
 
-4. Activez-le dans le fichier de configuration local `conf/local.inc.php` en ajoutant :
+4. Activez-le dans le fichier de configuration local `config/config.inc.php` en ajoutant :
    ```
    <?php
    $config['plugins'][] = 'html5_notifier';
