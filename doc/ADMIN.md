@@ -25,7 +25,7 @@ Let's say for example that we want to install the [html5_notifier](https://packa
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
 
-4. Enable it in the local configuration file `conf/local.inc.php` using your favorite text editor by adding:
+4. Enable it in the local configuration file `config/config.inc.php` using your favorite text editor by adding:
    ```
    <?php
    $config['plugins'][] = 'html5_notifier';
