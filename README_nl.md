@@ -5,7 +5,9 @@ Hij mag NIET handmatig aangepast worden.
 
 # Roundcube voor Yunohost
 
-[![Integratieniveau](https://dash.yunohost.org/integration/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/) ![Mate van functioneren](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Onderhoudsstatus](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+[![Integratieniveau](https://apps.yunohost.org/badge/integration/roundcube)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+![Mate van functioneren](https://apps.yunohost.org/badge/state/roundcube)
+![Onderhoudsstatus](https://apps.yunohost.org/badge/maintained/roundcube)
 
 [![Roundcube met Yunohost installeren](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 

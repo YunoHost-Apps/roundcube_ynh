@@ -5,7 +5,9 @@ EZ editatu eskuz.
 
 # Roundcube YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+[![Integrazio maila](https://apps.yunohost.org/badge/integration/roundcube)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+![Funtzionamendu egoera](https://apps.yunohost.org/badge/state/roundcube)
+![Mantentze egoera](https://apps.yunohost.org/badge/maintained/roundcube)
 
 [![Instalatu Roundcube YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
