@@ -5,7 +5,7 @@
 #=================================================
 
 # Composer version
-composer_version=2.5.5
+composer_version=2.8.5
 
 # Plugins version
 contextmenu_version=3.3.1

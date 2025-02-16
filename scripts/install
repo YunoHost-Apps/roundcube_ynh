@@ -102,7 +102,7 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
-ynh_script_progression "Updating Roundcube configuration..."
+ynh_script_progression "Updating $app configuration..."
 
 ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins" --file="$install_dir/config/config.inc.php"
 ynh_store_file_checksum "$install_dir/config/config.inc.php"
