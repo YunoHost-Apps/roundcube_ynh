@@ -5,7 +5,9 @@ No se debe editar a mano.
 
 # Roundcube para Yunohost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/roundcube.svg)](https://ci-apps.yunohost.org/ci/apps/roundcube/) ![Estado funcional](https://ci-apps.yunohost.org/ci/badges/roundcube.status.svg) ![Estado En Mantención](https://ci-apps.yunohost.org/ci/badges/roundcube.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/roundcube)](https://ci-apps.yunohost.org/ci/apps/roundcube/)
+![Estado funcional](https://apps.yunohost.org/badge/state/roundcube)
+![Estado En Mantención](https://apps.yunohost.org/badge/maintained/roundcube)
 
 [![Instalar Roundcube con Yunhost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=roundcube)
 
@@ -26,7 +28,7 @@ Roundcube is a web-based e-mail client. It offers all the features you'd expect 
 - Support for PGP encryption with Enigma plugin by default.
 
 
-**Versión actual:** 1.6.9~ynh1
+**Versión actual:** 1.6.10~ynh1
 
 **Demo:** <https://demo.yunohost.org/webmail/>
 
