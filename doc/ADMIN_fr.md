@@ -1,16 +1,10 @@
-## Configuration
+Vous pouvez manuellement étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `__INSTALL_DIR__/conf/local.inc.php`. Ne modifiez pas le fichier `__INSTALL_DIR__/conf/config.inc.php` car les futures mises à jour le remplaceront.
 
-Vous pouvez étendre (ou même remplacer) la configuration de Roundcube fournie avec ce paquet dans le fichier `conf/local.inc.php`. Ne modifiez pas le fichier `conf/config.inc.php` car les futures mises à jour le remplaceront.
-
-#### Support multi-utilisateur
-
-* Intégration avec les utilisateurs YunoHost et SSO - c'est-à-dire le bouton de déconnexion, reconnaissance des autres utilisateurs de l'instance YunoHost.
-
-#### Plugins
+### Plugins
 
 Vous pouvez également installer d'autres plugins (qui ne seront pas supprimés avec les mises à niveau). Pour cela, vous pouvez utiliser le [Plugin Repository](https://plugins.roundcube.net/) officiel.
 
-##### Depuis le dépôt de plugins
+#### Depuis le dépôt de plugins
 
 Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packagist.org/packages/kitist/html5_notifier).
 
@@ -31,7 +25,7 @@ Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packag
    $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
    ```
 
-4. Activez-le dans le fichier de configuration local `conf/local.inc.php` en ajoutant :
+4. Activez-le dans le fichier de configuration local `config/config.inc.php` en ajoutant :
    ```
    <?php
    $config['plugins'][] = 'html5_notifier';
@@ -39,6 +33,6 @@ Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packag
    
 Notez que vous devez également consulter la page d'accueil du plugin pour connaître les étapes d'installation supplémentaires si nécessaire.
 
-##### Installation manual 
+#### Installation manuelle
 
-Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins /`. Dans ce cas, n'oubliez pas de changer la propriété de ce dossier en `roundcube`.
+Vous pouvez également télécharger le plugin et le placer dans le répertoire `plugins/`. Dans ce cas, n'oubliez pas de changer la propriété de ce dossier en `roundcube`.
