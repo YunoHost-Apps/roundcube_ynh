@@ -22,10 +22,7 @@ ynh_config_add_nginx
 ynh_config_add_phpfpm
 
 cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
-ynh_composer_install
 
-#=================================================
-# SPECIFIC SETUP
 #=================================================
 # INITIALIZE DATABASE
 #=================================================
