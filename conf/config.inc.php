@@ -194,3 +194,7 @@ $config['ldapAliasSync'] = array(
 
 // skin name: folder from skins/
 $config['skin'] = 'elastic';
+
+// -- config
+// Allow custom config
+$config['include_host_config'] = true;

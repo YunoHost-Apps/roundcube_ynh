@@ -4,10 +4,10 @@ packaging_format = 2
 
 id = "roundcube"
 name = "Roundcube"
-description.en = "Open Source Webmail software"
-description.fr = "Webmail Open Source"
+description.en = "Web interface to check your mailbox"
+description.fr = "Interface web pour consulter votre boîte mail"
 
-version = "1.6.10~ynh1"
+version = "1.6.11~ynh1"
 maintainers = []
 
 [upstream]
@@ -57,8 +57,8 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.10/roundcubemail-1.6.10.tar.gz"
-    sha256 = "63f47ded363063c59a47031c1e3aca7e1df89254e7ce9dced699cdbfadd9d39f"
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.6.11/roundcubemail-1.6.11.tar.gz"
+    sha256 = "199e2713f55da2e91af0e2382b2abf7dab6e1bf1f773317c8a4e64dadc0fae8f"
     autoupdate.strategy = "latest_github_release"
     autoupdate.asset = "roundcubemail-\\d+\\.\\d+\\.\\d+\\.tar\\.gz$"
 
