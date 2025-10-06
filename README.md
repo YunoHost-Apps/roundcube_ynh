@@ -19,6 +19,7 @@ Web interface to check your mailbox
 <a href="https://github.com/YunoHost-Apps/roundcube_ynh/issues"><img height="100px" src="https://github.com/YunoHost/yunohost-artwork/raw/refs/heads/main/badges/neopossum-badges/badge_report_an_issue.svg"/></a>
 </div>
 
+
 ## Screenshots
 ![Screenshot of Roundcube](./doc/screenshots/screenshot.png)
 
