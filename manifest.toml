@@ -4,8 +4,8 @@ packaging_format = 2
 
 id = "roundcube"
 name = "Roundcube"
-description.en = "Open Source Webmail software"
-description.fr = "Webmail Open Source"
+description.en = "Web interface to check your mailbox"
+description.fr = "Interface web pour consulter votre boîte mail"
 
 version = "1.6.11~ynh1"
 maintainers = []
