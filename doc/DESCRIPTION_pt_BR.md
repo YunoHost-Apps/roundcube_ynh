@@ -1,6 +1,6 @@
 O Roundcube é um cliente de e-mail baseado na web. Ele oferece todos os recursos que você espera de um cliente de e-mail, incluindo suporte multilíngue, gerenciamento de catálogo de endereços, manipulação de pastas, busca de mensagens e verificação ortográfica.
 
-### YunoHost specific features
+### Recursos específicos do YunoHost
 
 - Sincronize seus aliases de e-mail como identidades no Roundcube.
 - Instale os plug-ins [contextmenu](https://packagist.org/packages/johndoh/contextmenu) e [automatic addressbook](https://packagist.org/packages/projectmyst/automatic_addressbook) por padrão.
