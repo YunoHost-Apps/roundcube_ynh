@@ -1,30 +1,41 @@
 version = "1.0"
 
 [main]
-name = "Roundcube configuration"
+name.en = "Roundcube configuration"
+name.pt_BR = "Configuração do Roundcube"
 
     [main.php_fpm_config]
-    name = "PHP-FPM configuration"
+    name.en = "PHP-FPM configuration"
+    name.pt_BR = "Configuração do PHP-FPM"
 
         [main.php_fpm_config.fpm_footprint]
-        ask = "Memory footprint"
+        ask.en = "Memory footprint"
+        ask.pt_BR = "Footprint de memória"
         type = "select"
-        choices.low = "Low, <= 20Mb per pool"
-        choices.medium = "Medium, between 20Mb and 40Mb per pool"
-        choices.high = "High, > 40Mb per pool"
-        choices.specific = "Use specific value"
+        choices.low.en = "Low, <= 20Mb per pool"
+        choices.low.pt_BR = "Baixo, <= 20Mb por pool"
+        choices.medium.en = "Medium, between 20Mb and 40Mb per pool"
+        choices.medium.pt_BR = "Médio, entre 20Mb e 40Mb por pool"
+        choices.high.en = "High, > 40Mb per pool"
+        choices.high.pt_BR = "Alto, > 40Mb por pool"
+        choices.specific.en = "Use specific value"
+        choices.specific.pt_BR = "Usar valor específico"
         default = "low"
 
         [main.php_fpm_config.fpm_free_footprint]
         visible = "fpm_footprint == 'specific'"
-        ask = "Memory footprint of the service?"
+        ask.en = "Memory footprint of the service?"
+        ask.pt_BR = "Footprint de memória do serviço?"
         type = "number"
         default = "0"
-        help = "Free field to specify exactly the footprint in Mb if you don't want to use one of the three previous values."
+        help.en = "Free field to specify exactly the footprint in Mb if you don't want to use one of the three previous values."
+        help.pt_BR = "Campo livre para especificar exatamente o footprint em Mb se você não quiser usar um dos três valores anteriores."
 
         [main.php_fpm_config.fpm_usage]
-        ask = "Expected usage"
+        ask.en = "Expected usage"
+        ask.pt_BR = "Uso esperado"
         type = "select"
         choices = ["low", "medium", "high"]
         default = "low"
-        help = "low: Personal usage, behind the SSO. No RAM footprint when not used, but the impact on the processor can be high if many users are using the service.<br>medium: Low usage, few people or/and publicly accessible. Low RAM footprint, medium processor footprint when used.<br>high: High usage, frequently visited website. High RAM footprint, but lower on processor usage and quickly responding."
+        help.en = "low: Personal usage, behind the SSO. No RAM footprint when not used, but the impact on the processor can be high if many users are using the service.<br>medium: Low usage, few people or/and publicly accessible. Low RAM footprint, medium processor footprint when used.<br>high: High usage, frequently visited website. High RAM footprint, but lower on processor usage and quickly responding."
+        help.pt_BR = "low: Uso pessoal, protegido por SSO. Sem consumo de RAM quando não está em uso, o impacto no processador pode ser alto se muitos usuários estiverem utilizando o serviço.<br>medium: Baixo uso, poucas pessoas e/ou acesso público. Baixo consumo de RAM, consumo médio do processador quando em uso.<br>high: Alto uso, site visitado frequentemente. Alto consumo de RAM, mas menor uso do processador e resposta rápida."
