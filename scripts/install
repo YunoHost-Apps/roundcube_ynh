@@ -59,7 +59,7 @@ ynh_script_progression --message="Installing Roundcube with Composer..." --weigh
 cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
 # Install composer
-ynh_install_composer
+#REMOVEME? ynh_install_composer
 
 #=================================================
 # INITIALIZE DATABASE
