@@ -18,11 +18,14 @@ admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
 
 [integration]
-yunohost = ">= 11.2.29"
+yunohost = ">= 12.1.17"
+helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
+
 ldap = true
 sso = true
+
 disk = "50M"
 ram.build = "50M"
 ram.runtime = "50M"
@@ -44,7 +47,7 @@ ram.runtime = "50M"
     ask.fr = "Choisissez la langue de l'application"
     type = "select"
     choices = ["de_DE", "en_GB", "fr_FR", "it_IT"]
-    default = "en_GB"
+    default = "fr_FR"
 
     [install.with_carddav]
     ask.en = "Install CardDAV synchronization plugin?"
@@ -62,6 +65,7 @@ ram.runtime = "50M"
     [resources.system_user]
 
     [resources.install_dir]
+    group = "www-data:r-x"
 
     [resources.permissions]
     main.url = "/"
@@ -83,3 +87,7 @@ ram.runtime = "50M"
 
     [resources.database]
     type = "mysql"
+
+    [resources.composer]
+    version = "2.9.2"
+    
