@@ -44,11 +44,11 @@ ynh_script_progression "Installing additional plugins..."
 # Create logs and temp directories
 mkdir -p "$install_dir/"{logs,temp}
 
+# For some reason there's no composer.json but it's required to run composer
+cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+chown $app:$app "$install_dir/composer.json"
+
 # Install net_LDAP
-ls -l $install_dir/
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
-ls -l $install_dir/
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 ynh_composer_exec require kolab/net_ldap3
 
 # Install contextmenu and automatic_addressbook plugins
