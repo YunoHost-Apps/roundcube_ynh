@@ -18,7 +18,7 @@ admindoc = "https://github.com/roundcube/roundcubemail/wiki"
 code = "https://github.com/roundcube/roundcubemail"
 
 [integration]
-yunohost = ">= 11.2.29"
+yunohost = ">= 12.1.38"
 architectures = "all"
 multi_instance = true
 ldap = true
