@@ -56,7 +56,7 @@ ynh_config_add --template="config.inc.php" --destination="$install_dir/config/co
 ynh_script_progression "Upgrading additional plugins..."
 
 # Install net_LDAP
-ynh_composer_exec require kolab/net_ldap3
+ynh_composer_exec "require kolab/net_ldap3"
 
 # Update or install contextmenu and automatic_addressbook plugins
 # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
