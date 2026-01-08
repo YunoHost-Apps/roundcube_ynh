@@ -61,9 +61,9 @@ ynh_composer_exec "require kolab/net_ldap3"
 # Update or install contextmenu and automatic_addressbook plugins
 # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
-ynh_composer_exec update --no-dev --prefer-dist \
+ynh_composer_exec "update --no-dev --prefer-dist \
     johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version
+    sblaisot/automatic_addressbook $automatic_addressbook_version"
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
@@ -74,7 +74,7 @@ chown -R $app:$app "$install_dir/plugins/enigma/home"
 # Update or install CardDAV plugin
 if [ $with_carddav -eq 1 ]
 then
-    ynh_composer_exec require roundcube/carddav $carddav_version --with-all-dependencies
+    ynh_composer_exec "require roundcube/carddav $carddav_version --with-all-dependencies"
 
     carddav_tmp_config="../conf/carddav.config.inc.php"
     carddav_server=0
