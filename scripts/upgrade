@@ -96,7 +96,7 @@ then
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
-    ynh_script_progression --message="Upgrading additional plugins..." --weight=30
+    ynh_script_progression "Upgrading additional plugins..."
 
     # Create logs and temp directories
     mkdir -p "$install_dir/"{logs,temp}
