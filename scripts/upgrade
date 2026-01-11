@@ -82,11 +82,54 @@ then
     # Copy the plugin configuration file
     cp $install_dir/plugins/carddav/config.inc.php{.dist,}
 
-    # Look for installed and supported CardDAV servers
-    for carddav_app in "nextcloud" "baikal"
-    do
-        carddav_app_ids=$(yunohost app list | grep "id: $carddav_app" | grep -Po 'id: \K(.*)' || echo "")
-        for carddav_app_id in $carddav_app_ids
+    # Check if dependencies need to be updated with Composer
+    if [ -f "$install_dir/composer.json" ]
+    then
+        ynh_exec_warn_less ynh_composer_exec --commands="update"
+        # Update plugin-installer for Composer version 2.0
+        ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
+    else
+        # Install composer.json
+        cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+    fi
+
+    #=================================================
+    # UPGRADE ADDITIONAL PLUGINS
+    #=================================================
+    ynh_script_progression --message="Upgrading additional plugins..." --weight=30
+
+    # Create logs and temp directories
+    mkdir -p "$install_dir/"{logs,temp}
+
+    # Install net_LDAP
+    ynh_composer_exec --commands="require kolab/net_ldap3"
+
+    # Update or install contextmenu and automatic_addressbook plugins
+    # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
+    # https://plugins.roundcube.net/packages/johndoh/contextmenu
+    ynh_composer_exec --commands="update --no-dev --prefer-dist \
+        johndoh/contextmenu $contextmenu_version \
+        sblaisot/automatic_addressbook $automatic_addressbook_version"
+
+    installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
+
+    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
+    mkdir -p "$install_dir/plugins/enigma/home"
+    chown -R $app:$app "$install_dir/plugins/enigma/home"
+
+    # Update or install CardDAV plugin
+    if [ $with_carddav -eq 1 ]
+    then
+        ynh_composer_exec --commands="require roundcube/carddav $carddav_version --with-all-dependencies"
+
+        carddav_tmp_config="../conf/carddav.config.inc.php"
+        carddav_server=0
+
+        # Copy the plugin configuration file
+        cp $install_dir/plugins/carddav/config.inc.php{.dist,}
+
+        # Look for installed and supported CardDAV servers
+        for carddav_app in "nextcloud" "baikal"
         do
             carddav_server=1
             # Append preset configuration to the config file
