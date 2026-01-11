@@ -105,7 +105,7 @@ then
     ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
 
     # Upgrade composer itself
-    ynh_install_composer
+    #REMOVEME? ynh_install_composer
 
     # Check if dependencies need to be updated with Composer
     if [ -f "$install_dir/composer.json" ]
