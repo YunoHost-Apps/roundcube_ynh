@@ -131,6 +131,9 @@ then
         # Look for installed and supported CardDAV servers
         for carddav_app in "nextcloud" "baikal"
         do
+            carddav_app_ids=$(yunohost app list | grep "id: $carddav_app" | grep -Po 'id: \K(.*)' || echo "")
+            for carddav_app_id in $carddav_app_ids
+            do
             carddav_server=1
             # Append preset configuration to the config file
             cat "../conf/${carddav_app}.inc.php" >> $install_dir/plugins/carddav/config.inc.php
@@ -141,7 +144,7 @@ then
             ynh_replace --match="{${carddav_app}_id}" --replace="$carddav_app_id" --file="$install_dir/plugins/carddav/config.inc.php"
             ynh_replace --match="{${carddav_app}_url}" --replace="$carddav_url" --file="$install_dir/plugins/carddav/config.inc.php"
         done
-    fi
+    done
 
     # Do not actually add the carddav plugin if there's no carddav server available...
     if [ $carddav_server -eq 1 ]
