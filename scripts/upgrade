@@ -141,7 +141,7 @@ then
             ynh_replace --match="{${carddav_app}_id}" --replace="$carddav_app_id" --file="$install_dir/plugins/carddav/config.inc.php"
             ynh_replace --match="{${carddav_app}_url}" --replace="$carddav_url" --file="$install_dir/plugins/carddav/config.inc.php"
         done
-    done
+    fi
 
     # Do not actually add the carddav plugin if there's no carddav server available...
     if [ $carddav_server -eq 1 ]
