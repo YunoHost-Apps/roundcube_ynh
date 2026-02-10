@@ -3,7 +3,7 @@
 #=================================================
 # COMMON VARIABLES
 #=================================================
-
+php_version=8.3
 # Composer version
 YNH_COMPOSER_VERSION=2.5.5
 
