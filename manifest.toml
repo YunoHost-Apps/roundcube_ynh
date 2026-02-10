@@ -80,8 +80,7 @@ ram.runtime = "50M"
         "php8.3-gd",
         "php8.3-mbstring",
         "php8.3-dom",
-        "php8.3-curl",
-        "php-pear"
+        "php8.3-curl"
     ]
 
     [resources.database]
