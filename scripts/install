@@ -13,8 +13,6 @@ ynh_script_progression "Setting up source files..."
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir"
 
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
-#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -27,8 +25,6 @@ ynh_config_add_nginx
 ynh_config_add_phpfpm
 
 #=================================================
-# SPECIFIC SETUP
-#=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
 ynh_script_progression "Installing Roundcube with Composer..."
@@ -37,7 +33,6 @@ ynh_script_progression "Installing Roundcube with Composer..."
 cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
 # Install composer
-#REMOVEME? ynh_composer_install
 ynh_composer_exec install --no-dev
 
 #=================================================
