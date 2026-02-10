@@ -8,6 +8,7 @@ description.en = "Web interface to check your mailbox"
 description.fr = "Interface web pour consulter votre boîte mail"
 
 version = "1.6.13~ynh1"
+
 maintainers = []
 
 [upstream]
