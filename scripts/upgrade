@@ -150,8 +150,8 @@ COMPOSER_ALLOW_SUPERUSER=1 "php$php_version" ./bin/update.sh --version="?" -y <<
     # Store the config file checksum into the app settings
     ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
-    #REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 400 "$install_dir/config/config.inc.php"
-    #REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown $app:$app "$install_dir/config/config.inc.php"
+    chmod 400 "$install_dir/config/config.inc.php"
+    chown $app:$app "$install_dir/config/config.inc.php"
 
     #=================================================
     # UPDATE ROUNDCUBE CORE
