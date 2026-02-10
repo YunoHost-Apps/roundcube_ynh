@@ -92,6 +92,7 @@ then
         # Install composer.json
         cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
     fi
+fi
 
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
