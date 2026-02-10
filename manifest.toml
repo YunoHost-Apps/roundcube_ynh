@@ -72,6 +72,7 @@ ram.runtime = "50M"
     packages = [
         "mariadb-server",
         "php-pear",
+        "php8.3",
         "php8.3-ldap",
         "php8.3-mysql",
         "php8.3-cli",
