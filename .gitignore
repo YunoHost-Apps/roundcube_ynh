@@ -1,2 +1,4 @@
 *.swp
 *~
+*.sw[op]
+.DS_Store

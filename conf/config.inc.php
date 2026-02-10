@@ -116,9 +116,14 @@ $config['ldap_public']['yunohost'] = array(
   'scope' => 'list',
   'filter' => '(objectClass=mailAccount)',
   'hidden' => false,
-  'searchonly' => true,
+  'search_fields' => array(
+    'uid',
+    'mail',
+    'cn'
+  ),
   'fieldmap' => array(
-    'name'      => 'uid',
+    'uid'       => 'uid',
+    'name'      => 'cn',
     'surname'   => 'sn',
     'firstname' => 'givenName',
     'email'     => 'mail:*',
@@ -148,6 +153,8 @@ $config['plugins'] = array(
 // The id of the address book to use to automatically set a
 // user's full name in their new identity.
 $config['new_user_identity_addressbook'] = 'yunohost';
+$config['new_user_identity_match'] = 'uid';
+$config['new_user_identity_onlogin'] = true;
 
 // -- http_authentication
 // Redirect the client to this URL after logout.
@@ -187,3 +194,7 @@ $config['ldapAliasSync'] = array(
 
 // skin name: folder from skins/
 $config['skin'] = 'elastic';
+
+// -- config
+// Allow custom config
+$config['include_host_config'] = true;
