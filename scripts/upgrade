@@ -162,11 +162,7 @@ COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh -
     chmod 400 "$install_dir/config/config.inc.php"
     chown $app:$app "$install_dir/config/config.inc.php"
 
-    #=================================================
-    # UPDATE ROUNDCUBE CORE
-    #=================================================
-    ynh_script_progression "Updating $app core..."
-
+    # Updating core
     COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh --version=$oldversion -y
 popd
 
