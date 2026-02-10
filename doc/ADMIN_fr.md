@@ -17,12 +17,12 @@ Si, par exemple, vous voulez installer le plugin [html5_notifier](https://packag
 2. Connectez-vous en tant qu'utilisateur `roundcube` (qui possède le répertoire roundcube) et naviguez dedans :
    ```
    # su -s /bin/bash - roundcube
-   $ cd /var/www/roundcube
+   $ cd __INSTALL_DIR__
    ```
 
 3. Installez le plugin que vous voulez en utilisant Composer - notez que vous devez spécifier *kitist/html5_notifier* et pas seulement *html5_notifier* :
    ```
-   $ COMPOSER_HOME=./.composer php composer.phar require "kitist/html5_notifier"
+   $ COMPOSER_HOME=./.composer php__PHP_VERSION__ composer.phar require "kitist/html5_notifier"
    ```
 
 4. Activez-le dans le fichier de configuration local `config/config.inc.php` en ajoutant :

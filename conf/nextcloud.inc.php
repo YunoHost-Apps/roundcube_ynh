@@ -1,10 +1,11 @@
 
 $prefs['{nextcloud_id}'] = array(
         // required attributes
-        'name'         =>  '{nextcloud_id}',
+        'accountname'         =>  '{nextcloud_id} addressbooks',
         'username'     =>  '%u',
         'password'     =>  '%p',
-        'url'          =>  '{nextcloud_url}/remote.php/dav/addressbooks/users/%u/contacts/',
+        'discovery_url'          =>  '{nextcloud_url}/remote.php/dav/addressbooks/users/%u/',
+        'rediscover_time' => '12:09:00',
 
         // optional attributes
         'active'       =>  true,
