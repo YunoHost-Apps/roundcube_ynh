@@ -154,7 +154,7 @@ ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins
 
 # Update JavaScript dependencies
 pushd "$install_dir"
-COMPOSER_ALLOW_SUPERUSER=1 "php$php_version" ./bin/update.sh --version="?" -y <<< ""
+COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh --version="?" -y <<< ""
 
     # Store the config file checksum into the app settings
     ynh_store_file_checksum "$install_dir/config/config.inc.php"
