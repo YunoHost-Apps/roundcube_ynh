@@ -1,24 +1,14 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# CHECK VERSION
-#=================================================
-
-upgrade_type=$(ynh_check_app_version_changed)
+ynh_app_setting_set_default --key=php_upload_max_filesize --value=256M
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+ynh_script_progression "Ensuring downward compatibility..."
 
 # If with_carddav doesn't exist, create it
 if [ -z "${with_carddav:-}" ]; then
@@ -28,35 +18,34 @@ if [ -z "${with_carddav:-}" ]; then
 	else
 		with_carddav=0
 	fi
-	ynh_app_setting_set --app=$app --key=with_carddav --value=$with_carddav
+	ynh_app_setting_set --key=with_carddav --value=$with_carddav
 fi
 
  # If language doesn't exist, create it
+# FIXMEhelpers2.1: maybe replace with: ynh_app_setting_set_default --key=language --value="en_GB"
  if [ -z "${language:-}" ]; then
     language="en_GB"
-    ynh_app_setting_set --app=$app --key=language --value=$language
+    ynh_app_setting_set --key=language --value=$language
 fi
 
 # If fpm_footprint doesn't exist, create it
 if [ -z "${fpm_footprint:-}" ]; then
     fpm_footprint=low
-    ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
+#REMOVEME? Everything about fpm_footprint is removed in helpers2.1... |     ynh_app_setting_set --key=fpm_footprint --value=$fpm_footprint
 fi
 
 # If fpm_free_footprint doesn't exist, create it
 if [ -z "${fpm_free_footprint:-}" ]; then
     fpm_free_footprint=0
-    ynh_app_setting_set --app=$app --key=fpm_free_footprint --value=$fpm_free_footprint
+#REMOVEME? Everything about fpm_free_footprint is removed in helpers2.1... |     ynh_app_setting_set --key=fpm_free_footprint --value=$fpm_free_footprint
 fi
 
 # If fpm_usage doesn't exist, create it
 if [ -z "${fpm_usage:-}" ]; then
     fpm_usage=low
-    ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
+#REMOVEME? Everything about fpm_usage is removed in helpers2.1... |     ynh_app_setting_set --key=fpm_usage --value=$fpm_usage
 fi
 
-#=================================================
-# STANDARD UPGRADE STEPS
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -64,55 +53,55 @@ fi
 # Get the current version of roundcube
 oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut -d\' -f4)
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
+# FIXME: this is still supported but the recommendation is now to *always* re-setup the app sources wether or not the upstream sources changed
+if ynh_app_upstream_version_changed
 then
-	ynh_script_progression --message="Upgrading source files..." --weight=3
+	ynh_script_progression "Upgrading source files..."
 
 	# Download, check integrity, uncompress and patch the source from app.src
 	ynh_setup_source --dest_dir="$install_dir"
 fi
 
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
 #=================================================
 # PHP-FPM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Upgrading PHP-FPM configuration..." --weight=5
+ynh_script_progression "Upgrading PHP-FPM configuration..."
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
+ynh_config_add_phpfpm
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-#=================================================
-# SPECIFIC UPGRADE
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
+# FIXME: this is still supported but the recommendation is now to *always* re-setup the app sources wether or not the upstream sources changed
+if ynh_app_upstream_version_changed
 then
-    ynh_script_progression --message="Reconfiguring Roundcube..." --weight=1
+    ynh_script_progression "Reconfiguring Roundcube..."
 
     deskey=$(ynh_string_random --length=24)
-    ynh_add_config --template="../conf/config.inc.php" --destination="$install_dir/config/config.inc.php"
+    ynh_config_add --template="config.inc.php" --destination="$install_dir/config/config.inc.php"
 
     #=================================================
     # UPDATE DEPENDENCIES WITH COMPOSER
     #=================================================
-    ynh_script_progression --message="Updating dependencies with Composer..." --weight=30
+    ynh_script_progression "Updating dependencies with Composer..."
 
     # Upgrade composer itself
-    #REMOVEME? ynh_install_composer
+    #REMOVEME? ynh_composer_install
+ynh_composer_exec install --no-dev
 
     # Check if dependencies need to be updated with Composer
     if [ -f "$install_dir/composer.json" ]
     then
-        ynh_exec_warn_less ynh_composer_exec --commands="update"
+        ynh_composer_exec update
         # Update plugin-installer for Composer version 2.0
-        ynh_exec_warn_less ynh_composer_exec --commands="require roundcube/plugin-installer:>=0.2.0"
+        ynh_composer_exec require roundcube/plugin-installer:>=0.2.0
     else
         # Install composer.json
         cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
@@ -121,31 +110,31 @@ then
     #=================================================
     # UPGRADE ADDITIONAL PLUGINS
     #=================================================
-    ynh_script_progression --message="Upgrading additional plugins..." --weight=30
+    ynh_script_progression "Upgrading additional plugins..."
 
     # Create logs and temp directories
     mkdir -p "$install_dir/"{logs,temp}
 
     # Install net_LDAP
-    ynh_composer_exec --commands="require kolab/net_ldap3"
+    ynh_composer_exec require kolab/net_ldap3
 
     # Update or install contextmenu and automatic_addressbook plugins
     # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
     # https://plugins.roundcube.net/packages/johndoh/contextmenu
-    ynh_composer_exec --commands="update --no-dev --prefer-dist \
+    ynh_composer_exec update --no-dev --prefer-dist \
         johndoh/contextmenu $contextmenu_version \
-        sblaisot/automatic_addressbook $automatic_addressbook_version"
+        sblaisot/automatic_addressbook $automatic_addressbook_version
 
     installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
-    ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
+    ynh_config_add --template="enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
     mkdir -p "$install_dir/plugins/enigma/home"
     chown -R $app:$app "$install_dir/plugins/enigma/home"
 
     # Update or install CardDAV plugin
     if [ $with_carddav -eq 1 ]
     then
-        ynh_composer_exec --commands="require roundcube/carddav $carddav_version --with-all-dependencies"
+        ynh_composer_exec require roundcube/carddav $carddav_version --with-all-dependencies
 
         carddav_tmp_config="../conf/carddav.config.inc.php"
         carddav_server=0
@@ -166,8 +155,8 @@ then
                 carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
                 carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
                 carddav_url="https://${carddav_domain}${carddav_path%/}"
-                ynh_replace_string --match_string="{${carddav_app}_id}" --replace_string="$carddav_app_id" --target_file="$install_dir/plugins/carddav/config.inc.php"
-                ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$install_dir/plugins/carddav/config.inc.php"
+                ynh_replace --match="{${carddav_app}_id}" --replace="$carddav_app_id" --file="$install_dir/plugins/carddav/config.inc.php"
+                ynh_replace --match="{${carddav_app}_url}" --replace="$carddav_url" --file="$install_dir/plugins/carddav/config.inc.php"
             done
         done
 
@@ -181,26 +170,26 @@ then
     #=================================================
     # UPDATE ROUNDCUBE CONFIGURATION
     #=================================================
-    ynh_script_progression --message="Updating $app configuration..." --weight=4
+    ynh_script_progression "Updating $app configuration..."
 
-    ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$install_dir/config/config.inc.php"
+    ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins" --file="$install_dir/config/config.inc.php"
 
     # Update JavaScript dependencies
     pushd "$install_dir"
-    COMPOSER_ALLOW_SUPERUSER=1 "php$phpversion" ./bin/update.sh --version="?" -y <<< ""
+    COMPOSER_ALLOW_SUPERUSER=1 "php$php_version" ./bin/update.sh --version="?" -y <<< ""
 
         # Store the config file checksum into the app settings
-        ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
+        ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
-        chmod 400 "$install_dir/config/config.inc.php"
-        chown $app:$app "$install_dir/config/config.inc.php"
+        #REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 400 "$install_dir/config/config.inc.php"
+        #REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown $app:$app "$install_dir/config/config.inc.php"
 
         #=================================================
         # UPDATE ROUNDCUBE CORE
         #=================================================
-        ynh_script_progression --message="Updating $app core..." --weight=4
+        ynh_script_progression "Updating $app core..."
 
-    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn "php$phpversion" ./bin/update.sh --version=$oldversion -y
+    COMPOSER_ALLOW_SUPERUSER=1 ynh_exec_warn "php$php_version" ./bin/update.sh --version=$oldversion -y
     popd
 fi
 
@@ -208,4 +197,4 @@ fi
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed"

@@ -1,110 +1,106 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
+
+ynh_app_setting_set --key=php_upload_max_filesize --value=256M
 
 #=================================================
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-fpm_footprint="low"
-fpm_free_footprint=0
-fpm_usage="low"
+#REMOVEME? Everything about fpm_footprint is removed in helpers2.1... | fpm_footprint="low"
+#REMOVEME? Everything about fpm_free_footprint is removed in helpers2.1... | fpm_free_footprint=0
+#REMOVEME? Everything about fpm_usage is removed in helpers2.1... | fpm_usage="low"
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
-ynh_script_progression --message="Storing installation settings..." --weight=2
+ynh_script_progression "Storing installation settings..."
 
-ynh_app_setting_set --app=$app --key=fpm_footprint --value=$fpm_footprint
-ynh_app_setting_set --app=$app --key=fpm_free_footprint --value=$fpm_free_footprint
-ynh_app_setting_set --app=$app --key=fpm_usage --value=$fpm_usage
+#REMOVEME? Everything about fpm_footprint is removed in helpers2.1... | ynh_app_setting_set --key=fpm_footprint --value=$fpm_footprint
+#REMOVEME? Everything about fpm_free_footprint is removed in helpers2.1... | ynh_app_setting_set --key=fpm_free_footprint --value=$fpm_free_footprint
+#REMOVEME? Everything about fpm_usage is removed in helpers2.1... | ynh_app_setting_set --key=fpm_usage --value=$fpm_usage
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression --message="Setting up source files..." --weight=7
+ynh_script_progression "Setting up source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$install_dir"
 
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "$install_dir"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --weight=2
+ynh_script_progression "Configuring NGINX web server..."
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 # Create a dedicated php-fpm config
-ynh_add_fpm_config --usage=$fpm_usage --footprint=$fpm_footprint
+ynh_config_add_phpfpm
 
 #=================================================
 # SPECIFIC SETUP
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Roundcube with Composer..." --weight=30
+ynh_script_progression "Installing Roundcube with Composer..."
 
 # Install composer.json
 cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
 # Install composer
-#REMOVEME? ynh_install_composer
+#REMOVEME? ynh_composer_install
+ynh_composer_exec install --no-dev
 
 #=================================================
 # INITIALIZE DATABASE
 #=================================================
-ynh_script_progression --message="Initializing database..." --weight=3
+ynh_script_progression "Initializing database..."
 
-ynh_mysql_connect_as --user="$db_user" --password="$db_pwd" --database="$db_name" < "$install_dir/SQL/mysql.initial.sql"
+ynh_mysql_db_shell < "$install_dir/SQL/mysql.initial.sql"
 
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression --message="Configuring Roundcube..." --weight=2
+ynh_script_progression "Configuring Roundcube..."
 
 deskey=$(ynh_string_random --length=24)
-ynh_add_config --template="../conf/config.inc.php" --destination="$install_dir/config/config.inc.php"
+ynh_config_add --template="config.inc.php" --destination="$install_dir/config/config.inc.php"
 
 #=================================================
 # INSTALL ADDITIONAL PLUGINS
 #=================================================
-ynh_script_progression --message="Installing additional plugins..." --weight=60
+ynh_script_progression "Installing additional plugins..."
 
 # Create logs and temp directories
 mkdir -p "$install_dir/"{logs,temp}
 
 # Install net_LDAP
 export COMPOSER_ALLOW_SUPERUSER=1
-ynh_composer_exec --commands="require kolab/net_ldap3"
+ynh_composer_exec require kolab/net_ldap3
 
 # Install contextmenu and automatic_addressbook plugins
 # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
-ynh_composer_exec --commands="require \
+ynh_composer_exec require \
     johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version"
+    sblaisot/automatic_addressbook $automatic_addressbook_version
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
-ynh_add_config --template="../conf/enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
+ynh_config_add --template="enigma.config.inc.php" --destination="$install_dir/plugins/enigma/config.inc.php"
 mkdir -p "$install_dir/plugins/enigma/home"
 chown -R $app:www-data "$install_dir/plugins/enigma/home"
 
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
 then
-    ynh_composer_exec --commands="require roundcube/carddav $carddav_version --with-all-dependencies"
+    ynh_composer_exec require roundcube/carddav $carddav_version --with-all-dependencies
 
     carddav_tmp_config="../conf/carddav.config.inc.php"
     carddav_server=0
@@ -125,8 +121,8 @@ then
             carddav_domain=$(ynh_app_setting_get --app=$carddav_app_id --key=domain)
             carddav_path=$(ynh_app_setting_get --app=$carddav_app_id --key=path)
             carddav_url="https://${carddav_domain}${carddav_path%/}"
-            ynh_replace_string --match_string="{${carddav_app}_id}" --replace_string="$carddav_app_id" --target_file="$install_dir/plugins/carddav/config.inc.php"
-            ynh_replace_string --match_string="{${carddav_app}_url}" --replace_string="$carddav_url" --target_file="$install_dir/plugins/carddav/config.inc.php"
+            ynh_replace --match="{${carddav_app}_id}" --replace="$carddav_app_id" --file="$install_dir/plugins/carddav/config.inc.php"
+            ynh_replace --match="{${carddav_app}_url}" --replace="$carddav_url" --file="$install_dir/plugins/carddav/config.inc.php"
         done
     done
 
@@ -140,22 +136,22 @@ fi
 #=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Updating Roundcube configuration..." --weight=3
+ynh_script_progression "Updating Roundcube configuration..."
 
-ynh_replace_string --match_string="^\s*// installed plugins" --replace_string="&\n $installed_plugins" --target_file="$install_dir/config/config.inc.php"
+ynh_replace --match="^\s*// installed plugins" --replace="&\n $installed_plugins" --file="$install_dir/config/config.inc.php"
 
 # Update javascript dependencies
 (cd "$install_dir"
-/usr/bin/php$phpversion -q ./bin/install-jsdeps.sh -v ?)
+/usr/bin/php$php_version -q ./bin/install-jsdeps.sh -v ?)
 
 # Store the config file checksum into the app settings
-ynh_store_file_checksum --file="$install_dir/config/config.inc.php"
+ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
-chmod 400 "$install_dir/config/config.inc.php"
-chown $app:$app "$install_dir/config/config.inc.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 400 "$install_dir/config/config.inc.php"
+#REMOVEME? Assuming the file is setup using ynh_config_add, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown $app:$app "$install_dir/config/config.inc.php"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression "Installation of $app completed"
