@@ -47,7 +47,7 @@ ram.runtime = "50M"
     ask.en = "Choose the application language"
     ask.fr = "Choisissez la langue de l'application"
     type = "select"
-    choices = ["de_DE", "en_GB", "fr_FR", "it_IT"]
+    choices = ["de_DE", "en_GB", "es_ES", "fr_FR", "it_IT", "pt_BR", "pt_PT"]
     default = "fr_FR"
 
     [install.with_carddav]
