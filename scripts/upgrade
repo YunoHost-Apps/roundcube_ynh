@@ -24,13 +24,12 @@ fi
  # If language doesn't exist, create it
 ynh_app_setting_set_default --key=language --value="en_GB"
 
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-
 # Get the current version of roundcube
 oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut -d\' -f4)
 
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
 ynh_script_progression "Upgrading source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
@@ -89,7 +88,6 @@ mkdir -p "$install_dir/"{logs,temp}
 ynh_composer_exec require kolab/net_ldap3
 
 # Update or install contextmenu and automatic_addressbook plugins
-# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
 ynh_composer_exec update --no-dev --prefer-dist \
     johndoh/contextmenu $contextmenu_version
