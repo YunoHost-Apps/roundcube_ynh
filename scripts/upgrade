@@ -69,9 +69,6 @@ ynh_script_progression "Updating dependencies with Composer..."
 #chmod -R o-rwx "$install_dir"
 #chown -R $app:www-data "$install_dir"
 
-# Upgrade composer itself
-ynh_composer_exec install --no-dev
-
 # Check if dependencies need to be updated with Composer
 if [ -f "$install_dir/composer.json" ]
 then
@@ -84,6 +81,9 @@ else
     chmod -R o-rwx "$install_dir"
     chown -R $app:www-data "$install_dir"
 fi
+
+# Upgrade composer itself
+ynh_composer_exec install --no-dev
 
 #=================================================
 # UPGRADE ADDITIONAL PLUGINS
