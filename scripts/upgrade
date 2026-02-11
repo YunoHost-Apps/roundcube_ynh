@@ -64,26 +64,26 @@ ynh_config_add --template="config.inc.php" --destination="$install_dir/config/co
 ynh_script_progression "Updating dependencies with Composer..."
 
 # Install composer.json
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+#cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir"
+#chmod -R o-rwx "$install_dir"
+#chown -R $app:www-data "$install_dir"
 
 # Upgrade composer itself
 ynh_composer_exec install --no-dev
 
 # Check if dependencies need to be updated with Composer
-#if [ -f "$install_dir/composer.json" ]
-#then
-#    ynh_composer_exec update
-#    # Update plugin-installer for Composer version 2.0
-#    ynh_composer_exec require roundcube/plugin-installer:>=0.2.0
-#else
-#    # Install composer.json
-#    cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
-#    chmod -R o-rwx "$install_dir"
-#    chown -R $app:www-data "$install_dir"
-#fi
+if [ -f "$install_dir/composer.json" ]
+then
+    ynh_composer_exec update
+    # Update plugin-installer for Composer version 2.0
+    ynh_composer_exec require roundcube/plugin-installer:>=0.2.0
+else
+    # Install composer.json
+    cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+    chmod -R o-rwx "$install_dir"
+    chown -R $app:www-data "$install_dir"
+fi
 
 #=================================================
 # UPGRADE ADDITIONAL PLUGINS
