@@ -69,7 +69,7 @@ if [ -f "$install_dir/composer.json" ]
 then
     ynh_composer_exec update
     # Update plugin-installer for Composer version 2.0
-    ynh_composer_exec require roundcube/plugin-installer:>=0.2.0
+    # ynh_composer_exec require roundcube/plugin-installer:>=0.2.0
 else
     # Install composer.json
     cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
