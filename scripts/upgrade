@@ -34,7 +34,7 @@ oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut
 ynh_script_progression "Upgrading source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$install_dir" --full_replace=1 --keep="composer.json composer.lock config/config.inc.php logs/ plugins/"
+ynh_setup_source --dest_dir="$install_dir" --full_replace=1 --keep="composer.json composer.lock config/config.inc.php logs/ plugins/ vendor/"
 
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
