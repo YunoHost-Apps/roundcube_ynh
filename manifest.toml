@@ -47,7 +47,7 @@ ram.runtime = "50M"
     ask.en = "Choose the application language"
     ask.fr = "Choisissez la langue de l'application"
     type = "select"
-    choices = ["de_DE", "en_GB", "fr_FR", "it_IT"]
+    choices = ["de_DE", "en_GB", "es_ES", "fr_FR", "it_IT", "pt_BR", "pt_PT"]
     default = "fr_FR"
 
     [install.with_carddav]
@@ -74,16 +74,15 @@ ram.runtime = "50M"
     [resources.apt]
     packages = [
         "mariadb-server",
-        "php8.4",
-        "php8.4-ldap",
-        "php8.4-mysql",
-        "php8.4-cli",
-        "php8.4-intl",
-        "php8.4-zip",
-        "php8.4-gd",
-        "php8.4-mbstring",
-        "php8.4-dom",
-        "php8.4-curl"
+        "php8.3-ldap",
+        "php8.3-mysql",
+        "php8.3-cli",
+        "php8.3-intl",
+        "php8.3-zip",
+        "php8.3-gd",
+        "php8.3-mbstring",
+        "php8.3-dom",
+        "php8.3-curl"
     ]
 
     [resources.database]
