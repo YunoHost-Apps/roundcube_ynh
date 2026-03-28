@@ -50,9 +50,25 @@ ynh_config_add_phpfpm
 ynh_config_add_nginx
 
 #=================================================
+# CONFIGURE ROUNDCUBE
+#=================================================
+ynh_script_progression "Reconfiguring Roundcube..."
+
+timezone=$(cat /etc/timezone)
+ynh_app_setting_set_default --key="timezone" --value="$timezone"
+
+deskey=$(ynh_string_random --length=24)
+ynh_config_add --template="config.inc.php" --destination="$install_dir/config/config.inc.php"
+
+#=================================================
 # UPDATE DEPENDENCIES WITH COMPOSER
 #=================================================
 ynh_script_progression "Updating dependencies with Composer..."
+
+# remove composer.lock file which is likely to create error messages about outdated dependencies
+if [ -f "$install_dir/composer.lock" ]; then
+  rm -f "$install_dir/composer.lock"
+fi
 
 # Install composer.json
 #cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
@@ -151,11 +167,7 @@ COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh -
     chmod 400 "$install_dir/config/config.inc.php"
     chown $app:$app "$install_dir/config/config.inc.php"
 
-    #=================================================
-    # UPDATE ROUNDCUBE CORE
-    #=================================================
-    ynh_script_progression "Updating $app core..."
-
+    # Updating core
     COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh --version=$oldversion -y
 popd
 
