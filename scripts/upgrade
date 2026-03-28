@@ -151,6 +151,13 @@ then
 fi
 
 #=================================================
+# PLUG IN MIGRATION
+#=================================================
+ynh_script_progression "Ccollected addresses migration..."
+
+ynh_mysql_db_shell < "../conf/collected_addresses.sql"
+
+#=================================================
 # UPDATE ROUNDCUBE CONFIGURATION
 #=================================================
 ynh_script_progression "Updating $app configuration..."
