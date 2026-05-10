@@ -32,7 +32,7 @@ ynh_config_add_phpfpm
 ynh_script_progression "Installing $app with Composer..."
 
 # Install composer.json
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
+#cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
 
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
