@@ -5,6 +5,8 @@ source /usr/share/yunohost/helpers
 
 ynh_app_setting_set --key=php_upload_max_filesize --value=256M
 
+timezone=$(timedatectl show --value --property=Timezone)
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -27,7 +29,7 @@ ynh_config_add_phpfpm
 #=================================================
 # INSTALL AND INITIALIZE COMPOSER
 #=================================================
-ynh_script_progression "Installing Roundcube with Composer..."
+ynh_script_progression "Installing $app with Composer..."
 
 # Install composer.json
 cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
@@ -48,10 +50,7 @@ ynh_mysql_db_shell < "$install_dir/SQL/mysql.initial.sql"
 #=================================================
 # CONFIGURE ROUNDCUBE
 #=================================================
-ynh_script_progression "Configuring Roundcube..."
-
-timezone=$(cat /etc/timezone)
-ynh_app_setting_set_default --key="timezone" --value="$timezone"
+ynh_script_progression "Configuring $app..."
 
 deskey=$(ynh_string_random --length=24)
 ynh_config_add --template="config.inc.php" --destination="$install_dir/config/config.inc.php"

@@ -24,6 +24,8 @@ fi
  # If language doesn't exist, create it
 ynh_app_setting_set_default --key=language --value="en_GB"
 
+timezone=$(timedatectl show --value --property=Timezone)
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
