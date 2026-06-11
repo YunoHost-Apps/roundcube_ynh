@@ -198,3 +198,7 @@ $config['skin'] = 'elastic';
 // -- config
 // Allow custom config
 $config['include_host_config'] = true;
+
+// domain Timezone
+$config['timezone'] = '__TIMEZONE__';
+

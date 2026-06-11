@@ -1,4 +1,4 @@
-You can extend - or even override - the Roundcube configuration which is coming with this package in the file `config/<ROUNDCUBE_DOMAIN>.inc.php`. Do not edit the file `config/config.inc.php` as future upgrades will overwrite it.
+You can extend - or even override - the Roundcube configuration which is coming with this package in the file `__INSTALL_DIR__/conf/local.inc.php`. Do not edit the file `__INSTALL_DIR__/config/config.inc.php` as future upgrades will overwrite it.
 
 You can install plugins - which will not be removed with upgrades. To do so, you can use the official [Plugin Repository](https://plugins.roundcube.net/).
 
