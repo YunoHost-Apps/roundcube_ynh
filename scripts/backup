@@ -20,6 +20,12 @@ ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_backup "/etc/php/$php_version/fpm/pool.d/$app.conf"
 
 #=================================================
+# BACKUP THE CLEANUP SERVICE
+#=================================================
+ynh_backup "/etc/systemd/system/$app-database-cleanup.timer"
+ynh_backup "/etc/systemd/system/$app-database-cleanup.service"
+
+#=================================================
 # BACKUP THE MYSQL DATABASE
 #=================================================
 ynh_print_info "Backing up the MySQL database..."

@@ -31,9 +31,6 @@ ynh_config_add_phpfpm
 #=================================================
 ynh_script_progression "Installing $app with Composer..."
 
-# Install composer.json
-cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
-
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
@@ -65,14 +62,15 @@ mkdir -p "$install_dir/"{logs,temp}
 
 # Install net_LDAP
 export COMPOSER_ALLOW_SUPERUSER=1
-ynh_composer_exec require kolab/net_ldap3
+ynh_composer_exec require kolab/net_ldap3 --update-no-dev
 
 # Install contextmenu and automatic_addressbook plugins
 # https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
 # https://plugins.roundcube.net/packages/johndoh/contextmenu
 ynh_composer_exec require \
-    johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version
+    johndoh/contextmenu:$contextmenu_version \
+    projectmyst/automatic_addressbook:$automatic_addressbook_version \
+    --update-no-dev
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
@@ -83,7 +81,7 @@ chown -R $app:www-data "$install_dir/plugins/enigma/home"
 # Install CardDAV plugin
 if [ $with_carddav -eq 1 ]
 then
-    ynh_composer_exec require roundcube/carddav $carddav_version --with-all-dependencies
+    ynh_composer_exec require roundcube/carddav:$carddav_version --with-all-dependencies --update-no-dev
 
     carddav_tmp_config="../conf/carddav.config.inc.php"
     carddav_server=0
@@ -132,6 +130,18 @@ ynh_store_file_checksum "$install_dir/config/config.inc.php"
 
 chmod 400 "$install_dir/config/config.inc.php"
 chown $app:$app "$install_dir/config/config.inc.php"
+
+#=================================================
+# ADD DATABASE CLEANUP SERVICE
+#=================================================
+
+ynh_config_add --template="database-cleanup.timer" --destination="/etc/systemd/system/$app-database-cleanup.timer"
+ynh_config_add --template="database-cleanup.service" --destination="/etc/systemd/system/$app-database-cleanup.service"
+yunohost service add "$app-database-cleanup" \
+    --description="Roundcube periodical database cleanup" \
+    --test_status="systemctl show $app-database-cleanup.service -p ActiveState --value | grep -v failed"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="enable"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="start"
 
 #=================================================
 # END OF SCRIPT

@@ -36,6 +36,18 @@ ynh_systemctl --service=php${php_version}-fpm --action=reload
 ynh_systemctl --service=nginx --action=reload
 
 #=================================================
+# RESTORE DATABASE CLEANUP SERVICE
+#=================================================
+ynh_script_progression "Restoring database cleanup service..."
+ynh_restore "/etc/systemd/system/$app-database-cleanup.service"
+ynh_restore "/etc/systemd/system/$app-database-cleanup.timer"
+yunohost service add "$app-database-cleanup" \
+    --description="Roundcube periodical database cleanup" \
+    --test_status="systemctl show $app-database-cleanup.service -p ActiveState --value | grep -v failed"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="enable"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="start"
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 

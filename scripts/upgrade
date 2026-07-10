@@ -26,6 +26,14 @@ ynh_app_setting_set_default --key=language --value="en_GB"
 
 timezone=$(timedatectl show --value --property=Timezone)
 
+
+if ynh_app_upgrading_from_version_before 1.7.2~ynh1; then
+	ynh_composer_exec remove sblaisot/automatic_addressbook
+    ynh_mysql_db_shell <<< "DROP TABLE IF EXISTS collected_contacts;"
+    ynh_composer_exec require projectmyst/automatic_addressbook:$automatic_addressbook_version \
+        --update-no-dev
+fi
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -93,14 +101,15 @@ ynh_script_progression "Upgrading additional plugins..."
 mkdir -p "$install_dir/"{logs,temp}
 
 # Install net_LDAP
-ynh_composer_exec require kolab/net_ldap3
+ynh_composer_exec require kolab/net_ldap3 --update-no-dev
 
 # Update or install contextmenu and automatic_addressbook plugins
-# https://plugins.roundcube.net/packages/sblaisot/automatic_addressbook
-# https://plugins.roundcube.net/packages/johndoh/contextmenu
-ynh_composer_exec update --no-dev --prefer-dist \
-    johndoh/contextmenu $contextmenu_version \
-    sblaisot/automatic_addressbook $automatic_addressbook_version
+# https://plugins.roundcube.net/#/packages/johndoh/contextmenu
+# https://plugins.roundcube.net/#/packages/projectmyst/automatic_addressbook
+ynh_composer_exec update --no-dev \
+    johndoh/contextmenu:$contextmenu_version
+ynh_composer_exec update --no-dev \
+    projectmyst/automatic_addressbook:$automatic_addressbook_version
 
 installed_plugins+=" 'contextmenu', 'automatic_addressbook',"
 
@@ -111,7 +120,7 @@ chown -R $app:$app "$install_dir/plugins/enigma/home"
 # Update or install CardDAV plugin
 if [ $with_carddav -eq 1 ]
 then
-    ynh_composer_exec require roundcube/carddav $carddav_version --with-all-dependencies
+    ynh_composer_exec require roundcube/carddav:$carddav_version --with-all-dependencies --update-no-dev
 
     carddav_tmp_config="../conf/carddav.config.inc.php"
     carddav_server=0
@@ -165,6 +174,18 @@ pushd "$install_dir"
     # Updating core
     COMPOSER_ALLOW_SUPERUSER=1 ynh_hide_warnings "php$php_version" ./bin/update.sh --version=$oldversion -y
 popd
+
+#=================================================
+# (RE)ADD DATABASE CLEANUP SERVICE
+#=================================================
+
+ynh_config_add --template="database-cleanup.timer" --destination="/etc/systemd/system/$app-database-cleanup.timer"
+ynh_config_add --template="database-cleanup.service" --destination="/etc/systemd/system/$app-database-cleanup.service"
+yunohost service add "$app-database-cleanup" \
+    --description="Roundcube periodical database cleanup" \
+    --test_status="systemctl show $app-database-cleanup.service -p ActiveState --value | grep -v failed"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="enable"
+ynh_systemctl --service="$app-database-cleanup.timer" --action="start"
 
 #=================================================
 # END OF SCRIPT

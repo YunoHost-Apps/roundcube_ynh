@@ -14,6 +14,19 @@ ynh_config_remove_nginx
 # Remove the dedicated PHP-FPM config
 ynh_config_remove_phpfpm
 
+
+#=================================================
+# REMOVE CLEANUP SERVICE
+#=================================================
+ynh_script_progression "Removing cleanup service..."
+
+if ynh_hide_warnings yunohost service status "$app-database-cleanup" >/dev/null
+then
+    yunohost service remove "$app-database-cleanup"
+fi
+ynh_config_remove_systemd "$app-database-cleanup"
+ynh_safe_rm "/etc/systemd/system/$app-database-cleanup.timer"
+
 #=================================================
 # END OF SCRIPT
 #=================================================

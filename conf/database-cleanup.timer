@@ -1,0 +1,11 @@
+[Unit]
+Description=Roundcube automatic database cleanup timer
+
+[Timer]
+OnCalendar=daily
+OnStartupSec=60min
+RandomizedDelaySec=60min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
