@@ -44,7 +44,7 @@ oldversion=$(grep RCMAIL_VERSION "$install_dir/program/include/iniset.php" | cut
 ynh_script_progression "Upgrading source files..."
 
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$install_dir" --full_replace=1 --keep="composer.json composer.lock config/ logs/ plugins/ vendor/"
+ynh_setup_source --dest_dir="$install_dir" --full_replace=1 --keep="config/ logs/ plugins/ vendor/"
 
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
@@ -66,9 +66,9 @@ ynh_config_add_nginx
 ynh_script_progression "Updating dependencies with Composer..."
 
 # remove composer.lock file which is likely to create error messages about outdated dependencies
-if [ -f "$install_dir/composer.lock" ]; then
-  rm -f "$install_dir/composer.lock"
-fi
+#if [ -f "$install_dir/composer.lock" ]; then
+#  rm -f "$install_dir/composer.lock"
+#fi
 
 # Install composer.json
 #cp "$install_dir/composer.json-dist" "$install_dir/composer.json"
