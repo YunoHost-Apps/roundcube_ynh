@@ -7,7 +7,7 @@ name = "Roundcube"
 description.en = "Web interface to check your mailbox"
 description.fr = "Interface web pour consulter votre boîte mail"
 
-version = "1.7.4~ynh1"
+version = "1.7.5~ynh1"
 
 maintainers = []
 
@@ -58,8 +58,8 @@ ram.runtime = "50M"
 
 [resources]
     [resources.sources.main]
-    url = "https://github.com/roundcube/roundcubemail/releases/download/1.7.4/roundcubemail-1.7.4.tar.gz"
-    sha256 = "9a97380593ece120d257051f65524a2b3f7fe9f6012342c9c7b3a5c1d6aae18f"
+    url = "https://github.com/roundcube/roundcubemail/releases/download/1.7.5/roundcubemail-1.7.5.tar.gz"
+    sha256 = "d1708c7678c8c9f8152707eeba024421c7b94758c8b0a37136f3a3ff695afd85"
     autoupdate.strategy = "latest_github_release"
     autoupdate.asset = "roundcubemail-\\d+\\.\\d+\\.\\d+\\.tar\\.gz$"
 
