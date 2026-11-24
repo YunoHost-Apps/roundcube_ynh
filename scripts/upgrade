@@ -81,17 +81,13 @@ ynh_config_add --template="config.inc.php" --destination="$install_dir/config/co
 
 ynh_script_progression "Running upstream migration"
 pushd "$install_dir/tmp_aaa"
-    ynh_hide_warnings ynh_exec_as_app php$php_version bin/installto.sh -y $install_dir
+ynh_hide_warnings ynh_exec_as_app php$php_version bin/installto.sh -y $install_dir
 popd
 
 ynh_safe_rm "$install_dir/tmp_aaa"
-
-# installto.sh runs bin/install-jsdeps.sh through its "#!/usr/bin/env php" shebang,
-# i.e. with the system default PHP instead of php$php_version. When that PHP lacks
-# mbstring, it fails (hidden by ynh_hide_warnings) and jQuery & co. are missing,
-# leaving a blank interface. Run it again explicitly with the right PHP version.
 pushd "$install_dir"
-    ynh_exec_as_app php$php_version bin/install-jsdeps.sh
+    ynh_exec_as_app "php$php_version" bin/install-jsdeps.sh
+    ynh_exec_as_app "php$php_version" bin/update.sh --version="$oldversion" -y
 popd
 
 ynh_composer_exec update --no-dev
