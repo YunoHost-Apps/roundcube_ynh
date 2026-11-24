@@ -50,6 +50,7 @@ ynh_mysql_db_shell < "$install_dir/SQL/mysql.initial.sql"
 ynh_script_progression "Configuring $app..."
 
 deskey=$(ynh_string_random --length=24)
+ynh_app_setting_set --key=deskey --value="$deskey"
 ynh_config_add --template="config.inc.php" --destination="$install_dir/config/config.inc.php"
 
 #=================================================
